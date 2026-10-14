@@ -49,12 +49,15 @@ async function getAll(p, params, max = 500) {
 }
 
 // ---------- Đăng nhập ----------
-export function loginUrl(appId, redirectUri, state) {
+// App loại Business dùng "Facebook Login for Business" → truyền config_id; app thường dùng scope.
+export function loginUrl(appId, redirectUri, state, configId) {
   const u = new URL(`https://www.facebook.com/${VERSION}/dialog/oauth`);
   u.searchParams.set('client_id', appId);
   u.searchParams.set('redirect_uri', redirectUri);
   u.searchParams.set('state', state);
-  u.searchParams.set('scope', REQUIRED_SCOPES.join(','));
+  u.searchParams.set('response_type', 'code');
+  if (configId) u.searchParams.set('config_id', configId);
+  else u.searchParams.set('scope', REQUIRED_SCOPES.join(','));
   return u.toString();
 }
 

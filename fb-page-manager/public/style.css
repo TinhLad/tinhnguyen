@@ -66,5 +66,6 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
 .publish { position: sticky; bottom: 0; box-shadow: 0 -4px 20px rgb(0 0 0 / .08); }
 .result { margin-top: 10px; } .result div { padding: 4px 0; }
 .idea { border-left: 3px solid var(--primary); padding: 6px 10px; margin-bottom: 8px; background: var(--bg); border-radius: 0 8px 8px 0; }
+.alert { border-color: var(--err); color: var(--err); white-space: pre-line; }
 #toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #111827; color: #fff; padding: 10px 16px; border-radius: 8px; opacity: 0; transition: opacity .2s; pointer-events: none; max-width: 90vw; z-index: 20; }
 #toast.show { opacity: 1; } #toast.err { background: var(--err); }

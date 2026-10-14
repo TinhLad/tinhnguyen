@@ -25,13 +25,25 @@ Cài ffmpeg: macOS `brew install ffmpeg` · Ubuntu `sudo apt install ffmpeg` · 
 
 ## 2. Tạo Facebook App (một lần)
 
-1. Vào https://developers.facebook.com/apps → **Create App** → chọn loại **Business**.
-2. Thêm sản phẩm **Facebook Login for Business** → *Settings* → *Valid OAuth Redirect URIs*: `http://localhost:3000/auth/callback`.
-3. Copy **App ID** và **App Secret** (Settings → Basic) vào `.env`.
-4. Các quyền app cần: `pages_show_list`, `pages_read_engagement`, `pages_read_user_content`, `pages_manage_posts`, `business_management`.
+1. Vào https://developers.facebook.com/apps → **Create App** → chọn loại **Business** (hoặc use case *"Manage everything on your Page"*).
+2. **Settings → Basic**: copy **App ID** và **App Secret** vào `.env` (`FB_APP_ID`, `FB_APP_SECRET`).
+3. Trong sản phẩm **Facebook Login** (hoặc **Facebook Login for Business**) → *Settings* → **Valid OAuth Redirect URIs**: thêm `http://localhost:3000/auth/callback` (đúng địa chỉ in ra ở cửa sổ lệnh khi chạy `npm start`).
+4. Nếu App dùng **Facebook Login for Business**: vào *Configurations* → **Create configuration** → loại *User access token* → chọn các quyền bên dưới → copy **Configuration ID** vào `FB_LOGIN_CONFIG_ID`.
+5. Các quyền cần: `pages_show_list`, `pages_read_engagement`, `pages_read_user_content`, `pages_manage_posts`, `business_management`.
+6. **Tắt (Ctrl+C) và chạy lại `npm start`** mỗi khi sửa `.env`.
 
 > **Dùng cho chính bạn:** chỉ cần tài khoản của bạn là *Admin/Developer* của App — **không cần App Review**, app ở chế độ Development vẫn đăng được lên Page bạn quản lý.
 > **Cho người khác dùng:** phải qua App Review + Business Verification cho các quyền trên.
+
+**Không đăng nhập được?**
+
+| Thông báo / hiện tượng | Cách xử lý |
+|---|---|
+| Trang không hiện danh sách quyền, nút không phản hồi | Bạn đang mở file `index.html` trực tiếp → phải chạy `npm start` rồi vào `http://localhost:3000` |
+| "Chưa điền FB_APP_ID và FB_APP_SECRET" | Điền vào `.env` (không phải `.env.example`), lưu file, chạy lại `npm start` |
+| Facebook báo *"URL blocked"* / *redirect_uri* không hợp lệ | Thêm đúng Redirect URI ở bước 3 |
+| Facebook báo *"Invalid Scopes"* / *"Feature unavailable"* | App loại Business → làm bước 4 (`FB_LOGIN_CONFIG_ID`), hoặc dùng Cách 2 bên dưới |
+| Đăng nhập xong nhưng 0 Page | Khi Facebook hỏi, chọn **tất cả** Page và cấp đủ quyền |
 
 **Cách nhanh (không cần OAuth):** mở [Graph API Explorer](https://developers.facebook.com/tools/explorer) → chọn App → *Get User Access Token* với các quyền trên → dán vào tab **Kết nối**. Nếu `.env` có App ID/Secret, token sẽ tự đổi sang loại dài hạn (~60 ngày), và Page token sinh ra từ đó không hết hạn.
 

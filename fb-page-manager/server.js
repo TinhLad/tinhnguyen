@@ -68,20 +68,33 @@ async function connect(userToken) {
 
 let oauthState = '';
 app.get('/auth/login', (req, res) => {
-  if (!process.env.FB_APP_ID) return res.status(400).send('Chưa cấu hình FB_APP_ID trong file .env');
+  if (!process.env.FB_APP_ID || !process.env.FB_APP_SECRET) {
+    return res.redirect('/?error=' + encodeURIComponent('Chưa điền FB_APP_ID và FB_APP_SECRET trong file .env (xem README mục 2), sau đó tắt và chạy lại npm start. Hoặc dùng Cách 2 — dán Access Token.'));
+  }
   oauthState = crypto.randomBytes(12).toString('hex');
-  res.redirect(fb.loginUrl(process.env.FB_APP_ID, REDIRECT, oauthState));
+  res.redirect(fb.loginUrl(process.env.FB_APP_ID, REDIRECT, oauthState, process.env.FB_LOGIN_CONFIG_ID));
 });
 
-app.get('/auth/callback', wrap(async (req, res) => {
+app.get('/auth/callback', async (req, res) => {
+  try {
+    await handleCallback(req, res);
+  } catch (e) {
+    console.error(e);
+    res.redirect('/?error=' + encodeURIComponent('Đăng nhập Facebook thất bại: ' + (e instanceof fb.GraphError ? fb.explain(e) : e.message)));
+  }
+});
+
+async function handleCallback(req, res) {
   if (req.query.error) return res.redirect('/?error=' + encodeURIComponent(req.query.error_description || req.query.error));
-  if (!req.query.state || req.query.state !== oauthState) return res.status(400).send('State không hợp lệ');
+  if (!req.query.state || req.query.state !== oauthState) {
+    return res.redirect('/?error=' + encodeURIComponent('Phiên đăng nhập không hợp lệ (có thể do server vừa khởi động lại). Bấm "Đăng nhập với Facebook" lần nữa.'));
+  }
   const token = await fb.exchangeCode({
     appId: process.env.FB_APP_ID, appSecret: process.env.FB_APP_SECRET, redirectUri: REDIRECT, code: req.query.code,
   });
   await connect(token);
   res.redirect('/');
-}));
+}
 
 // Cách nhanh: dán User Access Token lấy từ Graph API Explorer.
 app.post('/api/connect-token', wrap(async (req, res) => {
@@ -103,6 +116,7 @@ app.get('/api/status', (req, res) => res.json({
   pageCount: store.pages?.length || 0,
   ai: ai.aiEnabled(),
   oauth: Boolean(process.env.FB_APP_ID && process.env.FB_APP_SECRET),
+  redirectUri: REDIRECT,
   scopes: fb.REQUIRED_SCOPES,
 }));
 
@@ -263,5 +277,7 @@ app.get('/api/history', wrap(async (req, res) => res.json(await readJSON(HISTORY
 
 app.listen(PORT, () => {
   console.log(`FB Page Manager đang chạy: ${BASE_URL}`);
+  if (!process.env.FB_APP_ID || !process.env.FB_APP_SECRET) console.log('⚠ Chưa có FB_APP_ID / FB_APP_SECRET → nút "Đăng nhập với Facebook" chưa dùng được (vẫn dùng được cách dán token).');
+  else console.log(`ℹ Valid OAuth Redirect URI cần khai báo trong Facebook App: ${REDIRECT}`);
   if (!ai.aiEnabled()) console.log('⚠ Chưa có ANTHROPIC_API_KEY → tính năng AI viết bài/phân tích sẽ tắt.');
 });

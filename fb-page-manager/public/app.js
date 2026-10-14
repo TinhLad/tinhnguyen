@@ -61,6 +61,8 @@ async function loadStatus() {
   $('#scopes').innerHTML = S.status.scopes.map((s) => `<code>${s}</code>`).join(' ');
   $('#oauthHint').classList.toggle('hidden', S.status.oauth);
   $('#btnOauth').classList.toggle('hidden', !S.status.oauth);
+  $('#redirectHint').classList.toggle('hidden', !S.status.oauth);
+  $('#redirectHint').innerHTML = `Valid OAuth Redirect URI cần khai báo trong Facebook App: <code>${esc(S.status.redirectUri)}</code>`;
   const u = S.status.user;
   $('#who').innerHTML = u
     ? `${u.picture?.data?.url ? `<img src="${esc(u.picture.data.url)}" alt="">` : ''}${esc(u.name)} · ${S.status.pageCount} Page <button class="btn sm" id="btnLogout">Thoát</button>`
@@ -82,8 +84,16 @@ $('#btnToken').addEventListener('click', (e) => busy(e.target, 'Đang kết nố
   await loadStatus();
 }));
 
+function fatal(msg) {
+  $('#fatal').textContent = msg;
+  $('#fatal').classList.remove('hidden');
+}
+
 const qErr = new URLSearchParams(location.search).get('error');
-if (qErr) toast(qErr, true);
+if (qErr) {
+  fatal(qErr);
+  history.replaceState(null, '', '/');
+}
 
 // ================= 2. Tổng quan =================
 async function refreshPages(remote = true) {
@@ -360,4 +370,9 @@ $('#btnHistory').addEventListener('click', loadHistory);
 
 // ================= Khởi động =================
 syncKind();
-loadStatus().catch((e) => toast(e.message, true));
+if (location.protocol === 'file:') {
+  fatal('Bạn đang mở trực tiếp file index.html — web sẽ không hoạt động.\nHãy mở cửa sổ lệnh trong thư mục fb-page-manager, chạy "npm start", rồi vào http://localhost:3000');
+  $('#btnOauth').classList.add('hidden');
+} else {
+  loadStatus().catch((e) => fatal(`Không kết nối được server: ${e.message}\nKiểm tra cửa sổ lệnh "npm start" còn đang chạy không.`));
+}

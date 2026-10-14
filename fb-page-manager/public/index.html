@@ -28,7 +28,8 @@
         <h3>Cách 1 — Đăng nhập Facebook (khuyến nghị)</h3>
         <p class="muted">Cần cấu hình <code>FB_APP_ID</code>, <code>FB_APP_SECRET</code> trong file <code>.env</code>.</p>
         <a class="btn primary" id="btnOauth" href="/auth/login">Đăng nhập với Facebook</a>
-        <p id="oauthHint" class="warn hidden">Chưa cấu hình App ID/Secret — dùng Cách 2 hoặc xem README.</p>
+        <p id="oauthHint" class="warn hidden">⚠ Chưa điền <code>FB_APP_ID</code> / <code>FB_APP_SECRET</code> trong file <code>.env</code> → nút đăng nhập chưa dùng được. Điền xong, tắt (Ctrl+C) và chạy lại <code>npm start</code>. Trong lúc chờ, hãy dùng Cách 2.</p>
+        <p id="redirectHint" class="muted small hidden"></p>
       </div>
       <div class="card">
         <h3>Cách 2 — Dán Access Token</h3>
@@ -38,6 +39,7 @@
       </div>
     </div>
     <div id="connectState" class="card"></div>
+    <div id="fatal" class="card alert hidden"></div>
   </section>
 
   <!-- 2. TỔNG QUAN -->
