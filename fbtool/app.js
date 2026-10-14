@@ -5,8 +5,9 @@ import { makeSlideshow } from './lib/video.js';
 // ================= Trạng thái =================
 const S = {
   token: null,        // user token
+  expiresAt: null,    // ms; 0 = không hết hạn; null = không rõ
   user: null,
-  pages: [],          // có access_token của Page — chỉ giữ trong bộ nhớ/sessionStorage
+  pages: [],          // có access_token của Page — giữ trong localStorage tới khi bấm Thoát
   overview: null,
   targets: new Set(),
   analyzeSel: new Set(),
@@ -54,6 +55,16 @@ const requireLogin = () => {
   if (!S.token) throw new Error('Chưa kết nối Facebook (tab 1)');
 };
 
+// Phiên lưu trên máy đã hết hạn / bị thu hồi → xoá và báo kết nối lại.
+function sessionExpired() {
+  clearSession();
+  Object.assign(S, { token: null, expiresAt: null, user: null, pages: [] });
+  renderWho();
+  renderChips();
+  renderEditors();
+  fatal('Phiên đăng nhập Facebook đã hết hạn hoặc bị thu hồi — hãy kết nối lại ở tab 1.');
+}
+
 // ================= Điều hướng =================
 $('#nav').addEventListener('click', (e) => {
   const tab = e.target.dataset.tab;
@@ -70,16 +81,36 @@ $('#domainHint2').textContent = location.origin;
 $('#appId').value = store.get('localStorage', 'fbAppId', '');
 $('#configId').value = store.get('localStorage', 'fbConfigId', '');
 
-async function connect(token) {
+const SESSION = 'session';
+const saveSession = () => store.set('localStorage', SESSION, { token: S.token, expiresAt: S.expiresAt, user: S.user, pages: S.pages });
+const clearSession = () => { store.del('localStorage', SESSION); store.del('sessionStorage', SESSION); };
+
+async function connect(token, expiresAt) {
+  const appId = $('#appId').value.trim();
+  const secret = $('#appSecret').value.trim();
+  if (secret) {
+    if (!/^\d{5,}$/.test(appId)) throw new Error('Nhập Facebook App ID (Cách 1) để đổi sang token dài hạn');
+    ({ token, expiresAt } = await fb.exchangeLongLived(appId, secret, token));
+    $('#appSecret').value = '';
+  }
   const user = await fb.me(token);
   const pages = await fb.listPages(token);
-  Object.assign(S, { token, user, pages });
-  store.set('sessionStorage', 'session', { token, user, pages });
+  if (secret || expiresAt == null) expiresAt = (await fb.tokenExpiry(token)) ?? expiresAt;
+  Object.assign(S, { token, expiresAt, user, pages });
+  saveSession();
   renderWho();
   renderChips();
   renderEditors();
   fatal('');
   toast(`Đã kết nối ${pages.length} Page`);
+}
+
+function expiryText() {
+  if (S.expiresAt === 0) return 'Phiên đăng nhập không hết hạn.';
+  if (!S.expiresAt) return 'Không rõ thời hạn token.';
+  const left = S.expiresAt - Date.now();
+  const when = left > 864e5 ? `còn ${Math.floor(left / 864e5)} ngày` : `còn ${Math.max(1, Math.round(left / 6e4))} phút`;
+  return `Phiên đăng nhập hết hạn lúc ${fmtDate(S.expiresAt)} (${when}).${left < 3 * 3600e3 ? ' Nhập App Secret rồi kết nối lại để giữ đăng nhập ~60 ngày.' : ''}`;
 }
 
 function renderWho() {
@@ -88,10 +119,10 @@ function renderWho() {
     ? `${u.picture?.data?.url ? `<img src="${esc(u.picture.data.url)}" alt="">` : ''}${esc(u.name)} · ${S.pages.length} Page <button class="btn sm" id="btnLogout">Thoát</button>`
     : '<span>Chưa kết nối</span>';
   $('#connectState').innerHTML = u
-    ? `✅ Đã kết nối tài khoản <b>${esc(u.name)}</b> — quản lý <b>${S.pages.length}</b> Page.${S.pages.length ? '' : ' <span class="warn">Không thấy Page nào: kiểm tra lại quyền pages_show_list / business_management.</span>'}`
+    ? `✅ Đã kết nối tài khoản <b>${esc(u.name)}</b> — quản lý <b>${S.pages.length}</b> Page.${S.pages.length ? '' : ' <span class="warn">Không thấy Page nào: kiểm tra lại quyền pages_show_list / business_management.</span>'}<div class="small muted">${esc(expiryText())}</div>`
     : '<span class="muted">Chưa kết nối.</span>';
   $('#btnLogout')?.addEventListener('click', () => {
-    store.del('sessionStorage', 'session');
+    clearSession();
     location.reload();
   });
 }
@@ -113,7 +144,8 @@ $('#btnFbLogin').addEventListener('click', (e) => busy(e.target, 'Đang mở Fac
   store.set('localStorage', 'fbAppId', appId);
   store.set('localStorage', 'fbConfigId', configId);
   try {
-    await connect(await fb.sdkLogin(appId, configId));
+    const { token, expiresAt } = await fb.sdkLogin(appId, configId);
+    await connect(token, expiresAt);
   } catch (err) {
     fatal(`Đăng nhập Facebook thất bại: ${fb.explain(err)}\nKiểm tra mục "Cần cài đặt gì trong Facebook App?" ở trên, hoặc dùng Cách 2 — dán Access Token.`);
     throw err;
@@ -159,7 +191,7 @@ async function loadPages(pages, limit) {
 
 $('#btnRefreshPages').addEventListener('click', (e) => busy(e.target, 'Đang đồng bộ…', async () => {
   requireLogin();
-  await connect(S.token);
+  await connect(S.token, S.expiresAt);
 }));
 
 $('#btnOverview').addEventListener('click', (e) => busy(e.target, 'Đang quét…', async () => {
@@ -482,10 +514,19 @@ $('#btnClearHistory').addEventListener('click', () => {
 
 // ================= Khởi động =================
 syncKind();
-const saved = store.get('sessionStorage', 'session', null);
+const saved = store.get('localStorage', SESSION, null) || store.get('sessionStorage', SESSION, null);
 if (saved?.token) {
-  Object.assign(S, saved);
-  renderWho();
+  if (saved.expiresAt && saved.expiresAt < Date.now()) {
+    sessionExpired();
+  } else {
+    Object.assign(S, saved);
+    saveSession();
+    store.del('sessionStorage', SESSION);
+    renderWho();
+    renderEditors();
+    // Kiểm tra token còn sống; chỉ xoá phiên khi Facebook báo token không hợp lệ (190).
+    fb.me(S.token).catch((e) => { if (e.code === 190) sessionExpired(); });
+  }
 }
 renderChips();
 if (location.protocol === 'file:') {

@@ -65,10 +65,29 @@ export async function sdkLogin(appId, configId) {
   return new Promise((resolve, reject) => {
     const opts = configId ? { config_id: configId } : { scope: SCOPES.join(','), auth_type: 'rerequest' };
     FB.login((r) => {
-      if (r.authResponse?.accessToken) resolve(r.authResponse.accessToken);
+      const a = r.authResponse;
+      if (a?.accessToken) resolve({ token: a.accessToken, expiresAt: a.expiresIn ? Date.now() + a.expiresIn * 1000 : null });
       else reject(new Error('Bạn đã huỷ đăng nhập hoặc chưa cấp quyền.'));
     }, opts);
   });
+}
+
+// Đổi token ngắn hạn (1–2 giờ) sang token dài hạn (~60 ngày). App Secret chỉ dùng cho lần gọi này.
+export async function exchangeLongLived(appId, appSecret, token) {
+  const r = await get('oauth/access_token', {
+    grant_type: 'fb_exchange_token', client_id: appId, client_secret: appSecret, fb_exchange_token: token,
+  });
+  return { token: r.access_token, expiresAt: r.expires_in ? Date.now() + r.expires_in * 1000 : null };
+}
+
+// Thời điểm hết hạn của token: số ms, 0 = không hết hạn, null = không rõ.
+export async function tokenExpiry(token) {
+  try {
+    const { data } = await get('debug_token', { input_token: token, access_token: token });
+    return data.expires_at ? data.expires_at * 1000 : 0;
+  } catch {
+    return null;
+  }
 }
 
 export const me = (token) => get('me', { access_token: token, fields: 'id,name,picture{url}' });
