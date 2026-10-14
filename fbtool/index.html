@@ -25,10 +25,14 @@
     <h2>Kết nối Facebook</h2>
     <div class="grid2">
       <div class="card">
-        <h3>Cách 1 — Đăng nhập Facebook</h3>
-        <label>Facebook App ID<input id="appId" inputmode="numeric" placeholder="VD: 1234567890123456"></label>
-        <label>Configuration ID <span class="small">(chỉ cần nếu App dùng Facebook Login for Business)</span><input id="configId" placeholder="Để trống nếu không có"></label>
+        <h3>Cách 1 — Đăng nhập Facebook (khuyên dùng)</h3>
+        <p class="muted small">Bấm nút, đăng nhập trong cửa sổ của Facebook như bình thường. Lần sau mở trang, nếu trình duyệt vẫn đăng nhập Facebook thì tool tự kết nối.</p>
         <button class="btn primary" id="btnFbLogin">Đăng nhập với Facebook</button>
+        <details id="appSettings" class="small">
+          <summary>Cài đặt App (App ID)</summary>
+          <label>Facebook App ID<input id="appId" inputmode="numeric" placeholder="VD: 1234567890123456"></label>
+          <label>Configuration ID <span class="small">(chỉ cần nếu App dùng Facebook Login for Business)</span><input id="configId" placeholder="Để trống nếu không có"></label>
+        </details>
         <details class="small muted">
           <summary>Cần cài đặt gì trong Facebook App?</summary>
           <ol>

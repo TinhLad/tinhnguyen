@@ -85,6 +85,20 @@ export async function sdkLogin(appId, configId) {
   });
 }
 
+// Đăng nhập im lặng: nếu trình duyệt vẫn đăng nhập Facebook và đã cho phép App, lấy token mới không cần bấm gì.
+// Trả về null nếu không được (chưa đăng nhập Facebook, trình duyệt chặn cookie bên thứ ba…).
+export async function silentLogin(appId) {
+  const FB = await loadSdk(appId);
+  return new Promise((resolve) => {
+    const timer = setTimeout(() => resolve(null), 8000);
+    FB.getLoginStatus((r) => {
+      clearTimeout(timer);
+      const a = r.status === 'connected' && r.authResponse;
+      resolve(a?.accessToken ? { token: a.accessToken, expiresAt: a.expiresIn ? Date.now() + a.expiresIn * 1000 : null } : null);
+    }, true);
+  });
+}
+
 // Đổi token ngắn hạn (1–2 giờ) sang token dài hạn (~60 ngày). App Secret chỉ dùng cho lần gọi này.
 export async function exchangeLongLived(appId, appSecret, token) {
   const r = await get('oauth/access_token', {

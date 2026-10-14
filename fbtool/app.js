@@ -63,7 +63,22 @@ function sessionExpired() {
   renderWho();
   renderChips();
   renderEditors();
-  fatal('Phiên đăng nhập Facebook đã hết hạn hoặc bị thu hồi — hãy kết nối lại ở tab 1.');
+  fatal('Phiên đăng nhập Facebook đã hết hạn hoặc bị thu hồi — hãy bấm "Đăng nhập với Facebook" ở tab 1.');
+  autoLogin();
+}
+
+// Tự đăng nhập khi mở trang (không cần bấm) — bỏ qua nếu người dùng vừa bấm Thoát.
+async function autoLogin() {
+  const appId = $('#appId').value.trim();
+  if (autoLogin.running || S.token || store.get('localStorage', 'loggedOut', false)) return;
+  if (!/^\d{5,}$/.test(appId) || location.protocol !== 'https:') return;
+  autoLogin.running = true;
+  try {
+    const r = await fb.silentLogin(appId);
+    if (r && !S.token) await connect(r.token, r.expiresAt);
+  } catch { /* không tự đăng nhập được → người dùng bấm nút */ } finally {
+    autoLogin.running = false;
+  }
 }
 
 // ================= Điều hướng =================
@@ -79,7 +94,10 @@ $('#nav').addEventListener('click', (e) => {
 $('#scopes').innerHTML = fb.SCOPES.map((s) => `<code>${s}</code>`).join(' ');
 $('#domainHint').textContent = location.hostname || 'tên miền của trang';
 $('#domainHint2').textContent = location.origin;
-$('#appId').value = store.get('localStorage', 'fbAppId', '');
+// App ID gắn sẵn cho trang này (mã công khai, không phải bí mật) — để trống thì dùng App ID nhập ở "Cài đặt App".
+const DEFAULT_APP_ID = '1882486536464902';
+$('#appId').value = store.get('localStorage', 'fbAppId', '') || DEFAULT_APP_ID;
+$('#appSettings').open = !$('#appId').value;
 $('#configId').value = store.get('localStorage', 'fbConfigId', '');
 
 // Tải sẵn Facebook SDK khi đã có App ID, để cửa sổ đăng nhập không bị trình duyệt chặn.
@@ -107,6 +125,7 @@ async function connect(token, expiresAt) {
   if (secret || expiresAt == null) expiresAt = (await fb.tokenExpiry(token)) ?? expiresAt;
   const missing = await fb.missingScopes(token).catch(() => []);
   Object.assign(S, { token, expiresAt, user, pages, missing });
+  store.del('localStorage', 'loggedOut');
   S.targets = new Set([...S.targets].filter(postable));
   saveSession();
   renderWho();
@@ -142,6 +161,7 @@ function renderWho() {
     : '<span class="muted">Chưa kết nối.</span>';
   $('#btnLogout')?.addEventListener('click', () => {
     clearSession();
+    store.set('localStorage', 'loggedOut', true);
     location.reload();
   });
 }
@@ -574,6 +594,7 @@ if (saved?.token) {
   }
 }
 renderChips();
+if (!S.token) autoLogin();
 if (location.protocol === 'file:') {
   fatal('Bạn đang mở file trực tiếp từ máy. Hãy mở bằng link GitHub Pages (https://…github.io/…/fbtool/) để web hoạt động đầy đủ.');
 }
