@@ -95,7 +95,7 @@ $('#scopes').innerHTML = fb.SCOPES.map((s) => `<code>${s}</code>`).join(' ');
 $('#domainHint').textContent = location.hostname || 'tên miền của trang';
 $('#domainHint2').textContent = location.origin;
 // App ID gắn sẵn cho trang này (mã công khai, không phải bí mật) — để trống thì dùng App ID nhập ở "Cài đặt App".
-const DEFAULT_APP_ID = '';
+const DEFAULT_APP_ID = '1882486536464902';
 $('#appId').value = store.get('localStorage', 'fbAppId', '') || DEFAULT_APP_ID;
 $('#appSettings').open = !$('#appId').value;
 $('#configId').value = store.get('localStorage', 'fbConfigId', '');
