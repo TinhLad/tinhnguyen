@@ -49,7 +49,13 @@
       <span class="muted">Chưa kết nối.</span>
     </div>
     <div id="fatal" class="card alert hidden"></div>
-    <p class="muted small">🔒 Token chỉ lưu tạm trong tab trình duyệt này (đóng tab là xoá), không gửi đi đâu ngoài Facebook. Token Graph Explorer/đăng nhập thường hết hạn sau 1–2 giờ — khi đó kết nối lại.</p>
+    <div class="card">
+      <h3>Giữ đăng nhập lâu dài (tuỳ chọn, nên làm)</h3>
+      <p class="muted small">Token thường chỉ sống 1–2 giờ. Nhập <b>App Secret</b> của App (Settings → Basic) trước khi bấm Đăng nhập/Kết nối, tool sẽ đổi sang token <b>~60 ngày</b>; token Page lấy từ đó <b>không hết hạn</b>. App Secret chỉ dùng một lần để đổi token, <b>không được lưu</b> ở đâu cả. Với Cách 2, token phải được tạo bằng chính App có App ID ở Cách 1.</p>
+      <label>App Secret<input id="appSecret" type="password" autocomplete="off" placeholder="Để trống nếu không cần giữ lâu"></label>
+      <p class="muted small">Không muốn nhập App Secret? Dán token vào <a href="https://developers.facebook.com/tools/debug/accesstoken/" target="_blank" rel="noopener">Access Token Debugger</a> → bấm <i>Extend Access Token</i> → dán token mới vào Cách 2.</p>
+    </div>
+    <p class="muted small">🔒 Phiên đăng nhập được lưu trên trình duyệt này (đóng tab vẫn còn) cho đến khi bạn bấm <b>Thoát</b> hoặc token hết hạn. Token chỉ gửi tới Facebook. Đừng dùng trên máy dùng chung.</p>
   </section>
 
   <!-- 2. TỔNG QUAN -->
