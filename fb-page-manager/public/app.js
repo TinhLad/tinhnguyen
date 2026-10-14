@@ -371,7 +371,7 @@ $('#btnHistory').addEventListener('click', loadHistory);
 // ================= Khởi động =================
 syncKind();
 if (location.protocol === 'file:') {
-  fatal('Bạn đang mở trực tiếp file index.html — web sẽ không hoạt động.\nHãy mở cửa sổ lệnh trong thư mục fb-page-manager, chạy "npm start", rồi vào http://localhost:3000');
+  fatal('Bạn đang mở trực tiếp file index.html — web sẽ không hoạt động.\nCách mở đúng: đóng tab này → vào thư mục fb-page-manager → bấm đúp file MO-WEB.bat (Mac: MO-WEB.command).\nWeb sẽ tự mở ở địa chỉ http://localhost:3000');
   $('#btnOauth').classList.add('hidden');
 } else {
   loadStatus().catch((e) => fatal(`Không kết nối được server: ${e.message}\nKiểm tra cửa sổ lệnh "npm start" còn đang chạy không.`));

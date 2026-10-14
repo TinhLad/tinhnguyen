@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FB Page Manager</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="top">
+  <div class="brand">📣 FB Page Manager</div>
+  <nav id="nav">
+    <button data-tab="connect" class="active">1. Kết nối</button>
+    <button data-tab="overview">2. Tổng quan Page</button>
+    <button data-tab="analyze">3. Phân tích AI</button>
+    <button data-tab="compose">4. Soạn &amp; Đăng</button>
+    <button data-tab="history">5. Lịch sử</button>
+  </nav>
+  <div id="who" class="who"><span>Chưa kết nối</span></div>
+</header>
+
+<main>
+  <!-- 1. KẾT NỐI -->
+  <section id="tab-connect" class="tab active">
+    <h2>Kết nối Facebook</h2>
+    <div class="grid2">
+      <div class="card">
+        <h3>Cách 1 — Đăng nhập Facebook</h3>
+        <label>Facebook App ID<input id="appId" inputmode="numeric" placeholder="VD: 1234567890123456"></label>
+        <label>Configuration ID <span class="small">(chỉ cần nếu App dùng Facebook Login for Business)</span><input id="configId" placeholder="Để trống nếu không có"></label>
+        <button class="btn primary" id="btnFbLogin">Đăng nhập với Facebook</button>
+        <details class="small muted">
+          <summary>Cần cài đặt gì trong Facebook App?</summary>
+          <ol>
+            <li><b>Settings → Basic → App Domains</b>: thêm <code id="domainHint"></code></li>
+            <li><b>Facebook Login → Settings</b>: bật <i>Login with the JavaScript SDK</i>, thêm <code id="domainHint2"></code> vào <i>Allowed Domains for the JavaScript SDK</i></li>
+            <li>Tài khoản của bạn phải là Admin/Developer của App (không cần App Review khi dùng cho Page của chính mình)</li>
+          </ol>
+        </details>
+      </div>
+      <div class="card">
+        <h3>Cách 2 — Dán Access Token (nhanh nhất)</h3>
+        <p class="muted small">Mở <a href="https://developers.facebook.com/tools/explorer" target="_blank" rel="noopener">Graph API Explorer</a> → <i>Get User Access Token</i> → tick các quyền: <span id="scopes"></span></p>
+        <textarea id="tokenInput" rows="3" placeholder="EAAG..."></textarea>
+        <button class="btn primary" id="btnToken">Kết nối</button>
+      </div>
+    </div>
+    <div id="connectState" class="card">
+      <span class="muted">Chưa kết nối.</span>
+    </div>
+    <div id="fatal" class="card alert hidden"></div>
+    <p class="muted small">🔒 Token chỉ lưu tạm trong tab trình duyệt này (đóng tab là xoá), không gửi đi đâu ngoài Facebook. Token Graph Explorer/đăng nhập thường hết hạn sau 1–2 giờ — khi đó kết nối lại.</p>
+  </section>
+
+  <!-- 2. TỔNG QUAN -->
+  <section id="tab-overview" class="tab">
+    <div class="row between">
+      <h2>Tổng quan các Page</h2>
+      <div class="row">
+        <label class="muted">Số bài phân tích/Page
+          <select id="postLimit"><option>10</option><option selected>25</option><option>50</option><option>100</option></select>
+        </label>
+        <button class="btn" id="btnRefreshPages">Đồng bộ danh sách Page</button>
+        <button class="btn primary" id="btnOverview">Quét nội dung</button>
+      </div>
+    </div>
+    <div id="kpis" class="kpis"></div>
+    <div class="card table-wrap">
+      <table id="pageTable">
+        <thead><tr>
+          <th>Page</th><th>Danh mục</th><th class="num">Followers</th><th class="num">Bài 30 ngày</th>
+          <th class="num">TB tương tác/bài</th><th class="num">TB 30 ngày</th><th>Giờ tốt nhất</th><th>Bài gần nhất</th><th></th>
+        </tr></thead>
+        <tbody><tr><td colspan="9" class="muted">Bấm “Quét nội dung” để tải dữ liệu.</td></tr></tbody>
+      </table>
+    </div>
+    <div id="postDetail"></div>
+  </section>
+
+  <!-- 3. PHÂN TÍCH AI -->
+  <section id="tab-analyze" class="tab">
+    <h2>Phân tích nội dung bằng AI</h2>
+    <div class="card">
+      <h3>① Chọn Page cần phân tích <span class="muted small">(không chọn = tất cả)</span></h3>
+      <div id="analyzePages" class="chips"></div>
+      <p></p>
+      <button class="btn primary" id="btnAnalyzePrompt">Quét dữ liệu &amp; tạo prompt</button>
+    </div>
+    <div id="analyzeFlow" class="card hidden">
+      <h3>② Copy prompt → dán vào Claude</h3>
+      <textarea id="analyzePrompt" rows="6" readonly></textarea>
+      <button class="btn primary" data-copy="analyzePrompt">📋 Copy prompt &amp; mở Claude</button>
+      <h3 style="margin-top:16px">③ Dán kết quả Claude trả về</h3>
+      <textarea id="analyzeAnswer" rows="6" placeholder="Dán toàn bộ câu trả lời (có khối ```json) vào đây"></textarea>
+      <button class="btn primary" id="btnAnalyzeShow">Hiển thị phân tích</button>
+    </div>
+    <div id="analysis"></div>
+  </section>
+
+  <!-- 4. SOẠN & ĐĂNG -->
+  <section id="tab-compose" class="tab">
+    <h2>Soạn bài &amp; đăng 1 click</h2>
+
+    <div class="card">
+      <h3>① Chọn Page sẽ đăng</h3>
+      <div class="row">
+        <button class="btn sm" id="selAll">Chọn tất cả</button>
+        <button class="btn sm" id="selNone">Bỏ chọn</button>
+        <input id="pageFilter" placeholder="Lọc theo tên / danh mục…">
+      </div>
+      <div id="targetPages" class="chips"></div>
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <h3>② Viết nội dung bằng AI</h3>
+        <label>Chủ đề / thông tin sản phẩm<textarea id="topic" rows="4" placeholder="VD: Ra mắt serum vitamin C 15%, dung tích 30ml, giảm 20% đến 20/10…"></textarea></label>
+        <div class="grid3">
+          <label>Mục tiêu
+            <select id="goal"><option>Tăng tương tác</option><option>Bán hàng / chuyển đổi</option><option>Nhận diện thương hiệu</option><option>Kéo traffic về website</option><option>Thu lead / inbox</option></select>
+          </label>
+          <label>Giọng văn
+            <select id="tone"><option>Thân thiện, gần gũi</option><option>Chuyên gia, đáng tin</option><option>Trẻ trung, hài hước</option><option>Sang trọng, tinh tế</option><option>Ngắn gọn, thẳng thắn</option></select>
+          </label>
+          <label>Độ dài
+            <select id="length"><option>Ngắn (40-70 từ)</option><option selected>Vừa (80-150 từ)</option><option>Dài (200-300 từ)</option></select>
+          </label>
+        </div>
+        <label>Call-to-action<input id="cta" placeholder="VD: Inbox ngay để nhận tư vấn"></label>
+        <button class="btn primary" id="btnWritePrompt">✨ Tạo prompt viết bài cho từng Page</button>
+        <div id="writeFlow" class="hidden">
+          <textarea id="writePrompt" rows="5" readonly></textarea>
+          <button class="btn" data-copy="writePrompt">📋 Copy prompt &amp; mở Claude</button>
+          <label>Dán kết quả Claude trả về<textarea id="writeAnswer" rows="5" placeholder="Dán câu trả lời có khối ```json"></textarea></label>
+          <button class="btn primary" id="btnWriteApply">Điền vào từng Page</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>③ Hình ảnh / Video</h3>
+        <div class="row wrap">
+          <label class="radio"><input type="radio" name="kind" value="text" checked> Chỉ chữ</label>
+          <label class="radio"><input type="radio" name="kind" value="link"> Link</label>
+          <label class="radio"><input type="radio" name="kind" value="photo"> Ảnh</label>
+          <label class="radio"><input type="radio" name="kind" value="video"> Video</label>
+        </div>
+        <div id="kind-link" class="kindbox hidden"><input id="link" placeholder="https://…"></div>
+        <div id="kind-photo" class="kindbox hidden"><input type="file" id="photoFile" accept="image/*"></div>
+        <div id="kind-video" class="kindbox hidden">
+          <div class="row wrap">
+            <label class="radio"><input type="radio" name="vsrc" value="upload" checked> Video có sẵn</label>
+            <label class="radio"><input type="radio" name="vsrc" value="make"> Tạo video từ ảnh</label>
+          </div>
+          <div id="vsrc-upload"><input type="file" id="videoFile" accept="video/*"></div>
+          <div id="vsrc-make" class="hidden">
+            <label>Ảnh các cảnh (chọn nhiều)<input type="file" id="vImages" accept="image/*" multiple></label>
+            <label>Chữ trên từng cảnh (mỗi dòng 1 cảnh)<textarea id="vTexts" rows="4" placeholder="AI sẽ gợi ý khi bạn dán kết quả viết bài"></textarea></label>
+            <div class="grid3">
+              <label>Khung hình<select id="vFormat"><option value="9:16">9:16 (Reels)</option><option value="1:1">1:1 (Feed)</option><option value="16:9">16:9</option></select></label>
+              <label>Giây/cảnh<input id="vSeconds" type="number" value="3" min="1" max="15"></label>
+              <label>Màu nền<input id="vBg" type="color" value="#1e3a8a"></label>
+            </div>
+            <label>Nhạc nền (tuỳ chọn — dùng nhạc có bản quyền)<input type="file" id="vAudio" accept="audio/*"></label>
+            <button class="btn" id="btnMakeVideo">🎬 Tạo video</button>
+            <p class="muted small">Video được dựng theo thời gian thực — giữ tab này mở trong lúc tạo.</p>
+          </div>
+          <label>Tiêu đề video<input id="vTitle"></label>
+        </div>
+        <div id="mediaPreview"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="row between">
+        <h3>④ Nội dung từng Page</h3>
+        <button class="btn sm" id="btnSameText">Dùng 1 nội dung cho tất cả</button>
+      </div>
+      <div id="editors"><p class="muted">Chọn Page ở bước ① để soạn nội dung.</p></div>
+    </div>
+
+    <div class="card publish">
+      <div class="row wrap between">
+        <label class="row"><input type="checkbox" id="schedOn"> Hẹn giờ đăng
+          <input type="datetime-local" id="schedAt" disabled>
+        </label>
+        <button class="btn primary big" id="btnPublish">🚀 Đăng lên 0 Page</button>
+      </div>
+      <div id="publishResult"></div>
+    </div>
+  </section>
+
+  <!-- 5. LỊCH SỬ -->
+  <section id="tab-history" class="tab">
+    <div class="row between"><h2>Lịch sử đăng bài</h2><button class="btn" id="btnClearHistory">Xoá lịch sử</button></div>
+    <p class="muted small">Lưu trên trình duyệt này.</p>
+    <div id="historyList"></div>
+  </section>
+</main>
+
+<div id="toast"></div>
+<script>
+  if (location.protocol === 'file:') {
+    var f = document.getElementById('fatal');
+    f.textContent = 'Bạn đang mở file trực tiếp từ máy nên web không chạy được. Hãy mở bằng link GitHub Pages: https://tinhlad.github.io/tinhnguyen/fbtool/';
+    f.classList.remove('hidden');
+  }
+</script>
+<script type="module" src="app.js"></script>
+</body>
+</html>
