@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FB Page Manager</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="top">
+  <div class="brand">📣 FB Page Manager</div>
+  <nav id="nav">
+    <button data-tab="connect" class="active">1. Kết nối</button>
+    <button data-tab="overview">2. Tổng quan Page</button>
+    <button data-tab="analyze">3. Phân tích AI</button>
+    <button data-tab="compose">4. Soạn &amp; Đăng</button>
+    <button data-tab="history">5. Lịch sử</button>
+  </nav>
+  <div id="who" class="who"></div>
+</header>
+
+<main>
+  <!-- 1. KẾT NỐI -->
+  <section id="tab-connect" class="tab active">
+    <h2>Kết nối Facebook</h2>
+    <div class="grid2">
+      <div class="card">
+        <h3>Cách 1 — Đăng nhập Facebook (khuyến nghị)</h3>
+        <p class="muted">Cần cấu hình <code>FB_APP_ID</code>, <code>FB_APP_SECRET</code> trong file <code>.env</code>.</p>
+        <a class="btn primary" id="btnOauth" href="/auth/login">Đăng nhập với Facebook</a>
+        <p id="oauthHint" class="warn hidden">Chưa cấu hình App ID/Secret — dùng Cách 2 hoặc xem README.</p>
+      </div>
+      <div class="card">
+        <h3>Cách 2 — Dán Access Token</h3>
+        <p class="muted">Lấy tại Graph API Explorer với các quyền: <span id="scopes"></span></p>
+        <textarea id="tokenInput" rows="3" placeholder="EAAG..."></textarea>
+        <button class="btn primary" id="btnToken">Kết nối</button>
+      </div>
+    </div>
+    <div id="connectState" class="card"></div>
+  </section>
+
+  <!-- 2. TỔNG QUAN -->
+  <section id="tab-overview" class="tab">
+    <div class="row between">
+      <h2>Tổng quan các Page</h2>
+      <div class="row">
+        <label class="muted">Số bài phân tích/Page
+          <select id="postLimit"><option>10</option><option selected>25</option><option>50</option><option>100</option></select>
+        </label>
+        <button class="btn" id="btnRefreshPages">Đồng bộ danh sách Page</button>
+        <button class="btn primary" id="btnOverview">Quét nội dung</button>
+      </div>
+    </div>
+    <div id="kpis" class="kpis"></div>
+    <div class="card table-wrap">
+      <table id="pageTable">
+        <thead><tr>
+          <th>Page</th><th>Danh mục</th><th class="num">Followers</th><th class="num">Bài 30 ngày</th>
+          <th class="num">TB tương tác/bài</th><th class="num">TB 30 ngày</th><th>Giờ tốt nhất</th><th>Bài gần nhất</th><th></th>
+        </tr></thead>
+        <tbody><tr><td colspan="9" class="muted">Bấm “Quét nội dung” để tải dữ liệu.</td></tr></tbody>
+      </table>
+    </div>
+    <div id="postDetail"></div>
+  </section>
+
+  <!-- 3. PHÂN TÍCH AI -->
+  <section id="tab-analyze" class="tab">
+    <div class="row between">
+      <h2>Phân tích nội dung bằng AI</h2>
+      <button class="btn primary" id="btnAnalyze">Phân tích các Page đã chọn</button>
+    </div>
+    <p class="muted">Chọn Page cần phân tích (mặc định: tất cả).</p>
+    <div id="analyzePages" class="chips"></div>
+    <div id="analysis"></div>
+  </section>
+
+  <!-- 4. SOẠN & ĐĂNG -->
+  <section id="tab-compose" class="tab">
+    <h2>Soạn bài &amp; đăng 1 click</h2>
+
+    <div class="card">
+      <h3>① Chọn Page sẽ đăng</h3>
+      <div class="row">
+        <button class="btn sm" id="selAll">Chọn tất cả</button>
+        <button class="btn sm" id="selNone">Bỏ chọn</button>
+        <input id="pageFilter" placeholder="Lọc theo tên / danh mục…">
+      </div>
+      <div id="targetPages" class="chips"></div>
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <h3>② Viết nội dung bằng AI</h3>
+        <label>Chủ đề / thông tin sản phẩm<textarea id="topic" rows="4" placeholder="VD: Ra mắt serum vitamin C 15%, dung tích 30ml, giảm 20% đến 20/10…"></textarea></label>
+        <div class="grid3">
+          <label>Mục tiêu
+            <select id="goal"><option>Tăng tương tác</option><option>Bán hàng / chuyển đổi</option><option>Nhận diện thương hiệu</option><option>Kéo traffic về website</option><option>Thu lead / inbox</option></select>
+          </label>
+          <label>Giọng văn
+            <select id="tone"><option>Thân thiện, gần gũi</option><option>Chuyên gia, đáng tin</option><option>Trẻ trung, hài hước</option><option>Sang trọng, tinh tế</option><option>Ngắn gọn, thẳng thắn</option></select>
+          </label>
+          <label>Độ dài
+            <select id="length"><option>Ngắn (40-70 từ)</option><option selected>Vừa (80-150 từ)</option><option>Dài (200-300 từ)</option></select>
+          </label>
+        </div>
+        <label>Call-to-action<input id="cta" placeholder="VD: Inbox ngay để nhận tư vấn"></label>
+        <button class="btn primary" id="btnWrite">✨ Viết bài cho từng Page</button>
+        <p class="muted small">AI viết một phiên bản riêng cho mỗi Page để tránh nội dung trùng lặp.</p>
+      </div>
+
+      <div class="card">
+        <h3>③ Hình ảnh / Video</h3>
+        <div class="row wrap">
+          <label class="radio"><input type="radio" name="kind" value="text" checked> Chỉ chữ</label>
+          <label class="radio"><input type="radio" name="kind" value="link"> Link</label>
+          <label class="radio"><input type="radio" name="kind" value="photo"> Ảnh</label>
+          <label class="radio"><input type="radio" name="kind" value="video"> Video</label>
+        </div>
+        <div id="kind-link" class="kindbox hidden"><input id="link" placeholder="https://…"></div>
+        <div id="kind-photo" class="kindbox hidden">
+          <input type="file" id="photoFile" accept="image/*">
+        </div>
+        <div id="kind-video" class="kindbox hidden">
+          <div class="row wrap">
+            <label class="radio"><input type="radio" name="vsrc" value="upload" checked> Tải video có sẵn</label>
+            <label class="radio"><input type="radio" name="vsrc" value="make"> Tạo video từ ảnh</label>
+          </div>
+          <div id="vsrc-upload"><input type="file" id="videoFile" accept="video/*"></div>
+          <div id="vsrc-make" class="hidden">
+            <label>Ảnh các cảnh (chọn nhiều)<input type="file" id="vImages" accept="image/*" multiple></label>
+            <label>Chữ trên từng cảnh (mỗi dòng 1 cảnh)<textarea id="vTexts" rows="4" placeholder="Bấm 'Viết bài' để AI gợi ý tự động"></textarea></label>
+            <div class="grid3">
+              <label>Khung hình<select id="vFormat"><option value="9:16">9:16 (Reels)</option><option value="1:1">1:1 (Feed)</option><option value="16:9">16:9</option></select></label>
+              <label>Giây/cảnh<input id="vSeconds" type="number" value="3" min="1" max="15"></label>
+              <label>Màu nền (khi không có ảnh)<input id="vBg" type="color" value="#1e3a8a"></label>
+            </div>
+            <label>Nhạc nền (tuỳ chọn — dùng nhạc có bản quyền)<input type="file" id="vAudio" accept="audio/*"></label>
+            <button class="btn" id="btnMakeVideo">🎬 Tạo video</button>
+          </div>
+          <label>Tiêu đề video<input id="vTitle"></label>
+        </div>
+        <div id="mediaPreview"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="row between">
+        <h3>④ Nội dung từng Page</h3>
+        <div class="row">
+          <button class="btn sm" id="btnSameText">Dùng 1 nội dung cho tất cả</button>
+        </div>
+      </div>
+      <div id="editors"><p class="muted">Chọn Page ở bước ① để soạn nội dung.</p></div>
+    </div>
+
+    <div class="card publish">
+      <div class="row wrap between">
+        <label class="row"><input type="checkbox" id="schedOn"> Hẹn giờ đăng
+          <input type="datetime-local" id="schedAt" disabled>
+        </label>
+        <button class="btn primary big" id="btnPublish">🚀 Đăng lên 0 Page</button>
+      </div>
+      <div id="publishResult"></div>
+    </div>
+  </section>
+
+  <!-- 5. LỊCH SỬ -->
+  <section id="tab-history" class="tab">
+    <div class="row between"><h2>Lịch sử đăng bài</h2><button class="btn" id="btnHistory">Tải lại</button></div>
+    <div id="historyList"></div>
+  </section>
+</main>
+
+<div id="toast"></div>
+<script src="app.js"></script>
+</body>
+</html>
