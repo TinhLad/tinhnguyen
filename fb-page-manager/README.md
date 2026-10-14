@@ -12,6 +12,16 @@ Web app chạy trên máy của bạn (hoặc VPS), dùng **Facebook Graph API c
 
 ## 1. Cài đặt
 
+### Cách dễ nhất — bấm đúp 1 file
+
+1. Cài **Node.js** bản LTS tại https://nodejs.org (cài xong khởi động lại máy).
+2. **Windows:** bấm đúp **`MO-WEB.bat`** · **Mac:** chuột phải **`MO-WEB.command`** → *Open*.
+3. Web tự mở tại **http://localhost:3000**. Giữ cửa sổ đen mở trong lúc dùng.
+
+> ⚠ Không bấm đúp `public/index.html` — mở kiểu đó web sẽ không hoạt động.
+
+### Cách thủ công (dòng lệnh)
+
 Yêu cầu: **Node.js ≥ 20** và **ffmpeg** (để tạo video).
 
 ```bash
