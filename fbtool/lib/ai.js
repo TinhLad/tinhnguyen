@@ -73,3 +73,59 @@ export const PROVIDERS = {
   claude: { label: 'Claude (Anthropic)', ask: askClaude, keyName: 'anthropicKey', chat: 'https://claude.ai/new', placeholder: 'sk-ant-…',
     help: 'Lấy key: console.anthropic.com → API Keys → Create Key (cần nạp tiền ở Billing; mỗi lần viết tốn khoảng vài trăm đồng).' },
 };
+
+// ================= Tạo ảnh =================
+const SIZES = { '1:1': [1080, 1080], '4:5': [1080, 1350], '16:9': [1280, 720], '9:16': [1080, 1920] };
+const NO_TEXT = ' No text, no letters, no watermark in the image. Photorealistic, high quality, suitable for a Facebook post.';
+
+// Miễn phí, không cần key (Pollinations.ai — dịch vụ cộng đồng, có thể chậm hoặc tạm ngừng).
+export async function imageFree(prompt, ratio = '1:1') {
+  const [w, h] = SIZES[ratio] || SIZES['1:1'];
+  const url = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt + NO_TEXT)}?width=${w}&height=${h}&nologo=true&seed=${Date.now() % 1e6}`;
+  let res;
+  try { res = await fetch(url); } catch { throw new Error('Không kết nối được dịch vụ tạo ảnh miễn phí — thử lại hoặc chọn Gemini.'); }
+  if (!res.ok) throw new Error(`Dịch vụ tạo ảnh miễn phí đang bận (mã ${res.status}) — đợi 1 phút rồi thử lại, hoặc chọn Gemini.`);
+  const blob = await res.blob();
+  if (!blob.type.startsWith('image/')) throw new Error('Dịch vụ tạo ảnh miễn phí không trả về ảnh — thử lại sau.');
+  return blob;
+}
+
+// Gemini tạo ảnh — Google KHÔNG cho dùng miễn phí, cần bật thanh toán (Billing) cho key.
+let imageModel;
+async function findImageModel(apiKey) {
+  if (imageModel) return imageModel;
+  const res = await fetch('https://generativelanguage.googleapis.com/v1beta/models?pageSize=1000', { headers: { 'x-goog-api-key': apiKey } }).catch(() => null);
+  const data = res && (await res.json().catch(() => ({})));
+  if (!res?.ok) throw new Error(data?.error?.message ? `Gemini báo lỗi: ${data.error.message}` : 'Không kết nối được tới Gemini.');
+  const ids = (data.models || []).filter((m) => (m.supportedGenerationMethods || []).includes('generateContent'))
+    .map((m) => m.name.replace('models/', '')).filter((n) => /flash.*image|image.*flash/.test(n));
+  // Ưu tiên bản mới nhất; cùng phiên bản thì bản đầy đủ trước bản lite/preview.
+  const ver = (n) => parseFloat(n.match(/gemini-(\d+(?:\.\d+)?)/)?.[1] || 0);
+  const rank = (n) => ver(n) * 10 - (n.includes('lite') ? 2 : 0) - (n.includes('preview') ? 1 : 0);
+  ids.sort((a, b) => rank(b) - rank(a));
+  if (!ids.length) throw new Error('Key Gemini này chưa dùng được model tạo ảnh.');
+  return (imageModel = ids[0]);
+}
+
+export async function imageGemini(apiKey, prompt, ratio = '1:1') {
+  const model = await findImageModel(apiKey);
+  const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json', 'x-goog-api-key': apiKey },
+    body: JSON.stringify({
+      contents: [{ role: 'user', parts: [{ text: `Create an image, aspect ratio ${ratio}. ${prompt}.${NO_TEXT}` }] }],
+      generationConfig: { responseModalities: ['IMAGE'], imageConfig: { aspectRatio: ratio } },
+    }),
+  }).catch(() => { throw new Error('Không kết nối được tới Gemini.'); });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    const msg = data.error?.message || res.statusText;
+    if (res.status === 429 || /free tier|billing|quota/i.test(msg)) throw new Error('Gemini chỉ cho tạo ảnh khi key đã bật thanh toán (aistudio.google.com → Billing). Hoặc chọn "Miễn phí" để tạo ảnh không cần key.');
+    throw new Error(`Gemini báo lỗi: ${msg}`);
+  }
+  const part = (data.candidates?.[0]?.content?.parts || []).find((p) => p.inlineData?.data);
+  if (!part) throw new Error('Gemini không tạo được ảnh cho mô tả này (có thể bị bộ lọc an toàn chặn) — thử viết mô tả khác.');
+  const bin = atob(part.inlineData.data);
+  const bytes = Uint8Array.from(bin, (c) => c.charCodeAt(0));
+  return new Blob([bytes], { type: part.inlineData.mimeType || 'image/png' });
+}

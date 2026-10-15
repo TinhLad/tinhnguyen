@@ -1,7 +1,7 @@
-import * as fb from './lib/graph.js?v=7';
-import { analyzePrompt, writePrompt, parseAnswer } from './lib/prompts.js?v=7';
-import { makeSlideshow } from './lib/video.js?v=7';
-import { PROVIDERS } from './lib/ai.js?v=7';
+import * as fb from './lib/graph.js?v=8';
+import { analyzePrompt, writePrompt, parseAnswer } from './lib/prompts.js?v=8';
+import { makeSlideshow } from './lib/video.js?v=8';
+import { PROVIDERS, imageFree, imageGemini } from './lib/ai.js?v=8';
 
 // ================= Trạng thái =================
 const S = {
@@ -458,6 +458,7 @@ function applyWrite() {
   }
   if (r.video_slides?.length) $('#vTexts').value = r.video_slides.join('\n');
   if (r.headline) $('#vTitle').value = r.headline;
+  if (r.image_prompt && !String(r.image_prompt).includes('...')) $('#imgPrompt').value = r.image_prompt;
   renderChips();
   renderEditors();
   if (!n) throw new Error('Kết quả không có bài nào khớp với Page đã chọn — hãy tạo prompt mới (nút ✨) rồi gửi lại cho Claude.');
@@ -509,7 +510,75 @@ async function runAi(btn, promptId, answerId, then, prepare) {
     then();
   });
 }
-$('#btnWriteAi').addEventListener('click', (e) => runAi(e.target, 'writePrompt', 'writeAnswer', applyWrite, buildWritePrompt));
+$('#btnWriteAi').addEventListener('click', (e) => runAi(e.target, 'writePrompt', 'writeAnswer', () => {
+  applyWrite();
+  if ($('#autoImage').checked && $('#imgPrompt').value.trim()) {
+    $('input[name=kind][value=photo]').checked = true;
+    syncKind();
+    makeImage($('#btnMakeImage'));
+  }
+}, buildWritePrompt));
+
+// ================= AI tạo ảnh =================
+async function makeImage(btn) {
+  await busy(btn, '🎨 Đang tạo ảnh… (10-60 giây)', async () => {
+    const prompt = $('#imgPrompt').value.trim() || $('#topic').value.trim();
+    if (!prompt) throw new Error('Nhập mô tả ảnh (hoặc chủ đề bài viết) trước');
+    const ratio = $('#imgRatio').value;
+    let blob;
+    if ($('#imgProvider').value === 'gemini') {
+      const key = store.get('localStorage', PROVIDERS.gemini.keyName, '');
+      if (!key) throw new Error('Chưa có Gemini API key — dán key ở mục "🔑 Chọn AI & API key" (bước ②)');
+      blob = await imageGemini(key, prompt, ratio);
+    } else {
+      blob = await imageFree(prompt, ratio);
+    }
+    const ext = (blob.type.split('/')[1] || 'png').replace('jpeg', 'jpg');
+    setMedia({ file: blob, name: `anh-ai.${ext}`, type: blob.type, url: URL.createObjectURL(blob) });
+    $('#mediaPreview').insertAdjacentHTML('beforeend', `<div><a class="btn sm" href="${esc(S.media.url)}" download="${esc(S.media.name)}">⬇ Tải ảnh về máy</a></div>`);
+    toast('Đã tạo ảnh — ảnh sẽ được đăng kèm bài');
+  });
+}
+$('#btnMakeImage').addEventListener('click', (e) => makeImage(e.target));
+$('#imgProvider').value = store.get('localStorage', 'imgProvider', 'free');
+$('#imgProvider').addEventListener('change', (e) => store.set('localStorage', 'imgProvider', e.target.value));
+
+// ================= Thư viện prompt đã lưu =================
+const PROMPT_FIELDS = ['topic', 'goal', 'tone', 'length', 'cta', 'imgPrompt', 'imgRatio'];
+const savedPrompts = () => store.get('localStorage', 'savedPrompts', []);
+function renderSavedPrompts(sel = '') {
+  $('#savedPrompts').innerHTML = `<option value="">📚 Prompt đã lưu (${savedPrompts().length})…</option>` +
+    savedPrompts().map((p, i) => `<option value="${i}">${esc(p.name)}</option>`).join('');
+  $('#savedPrompts').value = sel;
+}
+renderSavedPrompts();
+$('#btnSavePrompt').addEventListener('click', () => {
+  if (!$('#topic').value.trim()) return toast('Nhập chủ đề trước khi lưu', true);
+  const name = window.prompt('Đặt tên cho prompt này:', $('#topic').value.trim().split('\n')[0].slice(0, 50));
+  if (!name?.trim()) return;
+  const list = savedPrompts().filter((p) => p.name !== name.trim());
+  const item = { name: name.trim(), savedAt: Date.now() };
+  PROMPT_FIELDS.forEach((f) => (item[f] = $(`#${f}`).value));
+  list.unshift(item);
+  store.set('localStorage', 'savedPrompts', list.slice(0, 200));
+  renderSavedPrompts('0');
+  toast(`Đã lưu prompt "${item.name}"`);
+});
+$('#savedPrompts').addEventListener('change', (e) => {
+  const p = savedPrompts()[e.target.value];
+  if (!p) return;
+  PROMPT_FIELDS.forEach((f) => { if (p[f] != null) $(`#${f}`).value = p[f]; });
+  toast(`Đã nạp prompt "${p.name}" — bấm 🤖 AI viết trực tiếp`);
+});
+$('#btnDelPrompt').addEventListener('click', () => {
+  const i = $('#savedPrompts').value;
+  if (i === '') return toast('Chọn prompt cần xoá trong danh sách trước', true);
+  const list = savedPrompts();
+  if (!window.confirm(`Xoá prompt "${list[i].name}"?`)) return;
+  list.splice(i, 1);
+  store.set('localStorage', 'savedPrompts', list);
+  renderSavedPrompts();
+});
 $('#btnAnalyzeAi').addEventListener('click', (e) => runAi(e.target, 'analyzePrompt', 'analyzeAnswer',
   () => renderAnalysis(parseAnswer($('#analyzeAnswer').value, 'summary'))));
 
