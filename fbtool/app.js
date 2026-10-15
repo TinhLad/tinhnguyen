@@ -1,7 +1,7 @@
-import * as fb from './lib/graph.js?v=6';
-import { analyzePrompt, writePrompt, parseAnswer } from './lib/prompts.js?v=6';
-import { makeSlideshow } from './lib/video.js?v=6';
-import { askClaude } from './lib/ai.js?v=6';
+import * as fb from './lib/graph.js?v=7';
+import { analyzePrompt, writePrompt, parseAnswer } from './lib/prompts.js?v=7';
+import { makeSlideshow } from './lib/video.js?v=7';
+import { PROVIDERS } from './lib/ai.js?v=7';
 
 // ================= Trạng thái =================
 const S = {
@@ -297,12 +297,12 @@ document.addEventListener('click', async (e) => {
   const text = $(`#${id}`).value;
   try {
     await navigator.clipboard.writeText(text);
-    toast('Đã copy prompt — dán (Ctrl+V) vào Claude');
+    toast(`Đã copy prompt — dán (Ctrl+V) vào ${provider().label.split(' ')[0]}`);
   } catch {
     $(`#${id}`).select();
     toast('Hãy bấm Ctrl+C để copy prompt', true);
   }
-  window.open('https://claude.ai/new', '_blank', 'noopener');
+  window.open(provider().chat, '_blank', 'noopener');
 });
 
 // ================= 3. Phân tích AI =================
@@ -469,32 +469,43 @@ $('#btnWriteApply').addEventListener('click', () => {
   try { applyWrite(); } catch (err) { toast(err.message, true); }
 });
 
-// ================= AI viết trực tiếp (Claude API, key riêng của người dùng) =================
-const AI_KEY = 'anthropicKey';
-function syncKeyInputs(v) { $$('.aiKey').forEach((i) => (i.value = v)); }
-syncKeyInputs(store.get('localStorage', AI_KEY, ''));
+// ================= AI viết trực tiếp (Gemini hoặc Claude, key riêng của người dùng) =================
+const provider = () => PROVIDERS[store.get('localStorage', 'aiProvider', 'gemini')] || PROVIDERS.gemini;
+const aiKey = () => store.get('localStorage', provider().keyName, '');
+function syncAiBox() {
+  const pv = provider();
+  $$('.aiProvider').forEach((s) => (s.value = store.get('localStorage', 'aiProvider', 'gemini')));
+  $$('.aiKey').forEach((i) => { i.value = aiKey(); i.placeholder = pv.placeholder; });
+  $$('.aiHelp').forEach((h) => (h.textContent = pv.help));
+}
+syncAiBox();
+document.addEventListener('change', (e) => {
+  if (!e.target.classList?.contains('aiProvider')) return;
+  store.set('localStorage', 'aiProvider', e.target.value);
+  syncAiBox();
+});
 document.addEventListener('input', (e) => {
   if (!e.target.classList?.contains('aiKey')) return;
   const v = e.target.value.trim();
-  v ? store.set('localStorage', AI_KEY, v) : store.del('localStorage', AI_KEY);
-  syncKeyInputs(v);
+  v ? store.set('localStorage', provider().keyName, v) : store.del('localStorage', provider().keyName);
+  $$('.aiKey').forEach((i) => i !== e.target && (i.value = v));
 });
 document.addEventListener('click', (e) => {
   if (!e.target.classList?.contains('aiKeyClear')) return;
-  store.del('localStorage', AI_KEY);
-  syncKeyInputs('');
+  store.del('localStorage', provider().keyName);
+  syncAiBox();
   toast('Đã xoá API key khỏi máy này');
 });
 
 async function runAi(btn, promptId, answerId, then, prepare) {
-  const key = store.get('localStorage', AI_KEY, '');
+  const key = aiKey();
   if (!key) {
     btn.closest('.card').querySelector('details.aiBox').open = true;
-    return toast('Dán Claude API key vào ô bên dưới trước (xem hướng dẫn lấy key)', true);
+    return toast(`Chọn AI và dán ${provider().label} API key vào ô bên dưới trước (có hướng dẫn lấy key)`, true);
   }
   await busy(btn, '🤖 AI đang viết… (10-60 giây)', async () => {
     if (prepare) await prepare();
-    $(`#${answerId}`).value = await askClaude(key, $(`#${promptId}`).value);
+    $(`#${answerId}`).value = await provider().ask(key, $(`#${promptId}`).value);
     then();
   });
 }

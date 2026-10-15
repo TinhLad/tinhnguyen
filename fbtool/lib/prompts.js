@@ -55,7 +55,7 @@ ${JSON.stringify(pages.map((p) => ({ page_id: p.id, name: p.name, category: p.ca
 </pages>`;
 }
 
-const PASTE_HELP = 'Hãy dán CÂU TRẢ LỜI mà Claude viết ra (bấm nút Copy dưới câu trả lời trên Claude.ai), không phải prompt hay mẫu định dạng.';
+const PASTE_HELP = 'Hãy dán CÂU TRẢ LỜI mà AI viết ra (bấm nút Copy dưới câu trả lời trên Gemini/Claude), không phải prompt hay mẫu định dạng.';
 
 // Đoạn JSON "mẫu" trong prompt (giá trị "...") — người dùng hay dán nhầm cái này.
 const isTemplate = (o) => JSON.stringify(o).includes('"..."');

@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>FB Page Manager</title>
-  <link rel="stylesheet" href="style.css?v=6">
+  <link rel="stylesheet" href="style.css?v=7">
 </head>
 <body>
 <header class="top">
@@ -102,14 +102,15 @@
       <div class="row wrap">
         <button class="btn primary" id="btnAnalyzeAi">🤖 AI phân tích trực tiếp</button>
         <span class="muted small">hoặc (miễn phí)</span>
-        <button class="btn" data-copy="analyzePrompt">📋 Copy prompt &amp; mở Claude</button>
+        <button class="btn" data-copy="analyzePrompt">📋 Copy prompt &amp; mở Gemini/Claude</button>
       </div>
-      <details class="aiBox"><summary class="small">🔑 Claude API key (tuỳ chọn — để AI viết trực tiếp)</summary>
-            <div class="row"><input class="aiKey" type="password" placeholder="sk-ant-…" autocomplete="off"><button class="btn sm aiKeyClear" type="button">Xoá key</button></div>
-            <p class="small muted">Key chỉ lưu trên trình duyệt máy này. Lấy key: console.anthropic.com → API Keys → Create Key (cần nạp tiền ở Billing; mỗi lần viết tốn khoảng vài trăm đồng).</p>
+      <details class="aiBox"><summary class="small">🔑 Chọn AI &amp; API key (để AI viết trực tiếp)</summary>
+            <div class="row wrap"><select class="aiProvider"><option value="gemini">Gemini (Google) — có gói miễn phí</option><option value="claude">Claude (Anthropic) — trả phí</option></select>
+              <input class="aiKey" type="password" autocomplete="off"><button class="btn sm aiKeyClear" type="button">Xoá key</button></div>
+            <p class="small muted"><span class="aiHelp"></span> Key chỉ lưu trên trình duyệt máy này.</p>
           </details>
       <h3 style="margin-top:16px">③ Kết quả từ Claude</h3>
-      <textarea id="analyzeAnswer" rows="6" placeholder="Nếu dùng Claude.ai: bấm nút Copy dưới CÂU TRẢ LỜI của Claude rồi dán vào đây (không dán lại prompt)"></textarea>
+      <textarea id="analyzeAnswer" rows="6" placeholder="Nếu dùng web Gemini/Claude: bấm nút Copy dưới CÂU TRẢ LỜI của AI rồi dán vào đây (không dán lại prompt)"></textarea>
       <button class="btn primary" id="btnAnalyzeShow">Hiển thị phân tích</button>
     </div>
     <div id="analysis"></div>
@@ -150,14 +151,15 @@
           <span class="muted small">hoặc (miễn phí)</span>
           <button class="btn" id="btnWritePrompt">✨ Tạo prompt để dán vào Claude.ai</button>
         </div>
-        <details class="aiBox"><summary class="small">🔑 Claude API key (tuỳ chọn — để AI viết trực tiếp)</summary>
-            <div class="row"><input class="aiKey" type="password" placeholder="sk-ant-…" autocomplete="off"><button class="btn sm aiKeyClear" type="button">Xoá key</button></div>
-            <p class="small muted">Key chỉ lưu trên trình duyệt máy này. Lấy key: console.anthropic.com → API Keys → Create Key (cần nạp tiền ở Billing; mỗi lần viết tốn khoảng vài trăm đồng).</p>
+        <details class="aiBox"><summary class="small">🔑 Chọn AI &amp; API key (để AI viết trực tiếp)</summary>
+            <div class="row wrap"><select class="aiProvider"><option value="gemini">Gemini (Google) — có gói miễn phí</option><option value="claude">Claude (Anthropic) — trả phí</option></select>
+              <input class="aiKey" type="password" autocomplete="off"><button class="btn sm aiKeyClear" type="button">Xoá key</button></div>
+            <p class="small muted"><span class="aiHelp"></span> Key chỉ lưu trên trình duyệt máy này.</p>
           </details>
         <div id="writeFlow" class="hidden">
           <textarea id="writePrompt" rows="5" readonly></textarea>
-          <button class="btn" data-copy="writePrompt">📋 Copy prompt &amp; mở Claude</button>
-          <label>Kết quả Claude trả về<textarea id="writeAnswer" rows="5" placeholder="Nếu dùng Claude.ai: bấm nút Copy dưới CÂU TRẢ LỜI của Claude rồi dán vào đây (không dán lại prompt)"></textarea></label>
+          <button class="btn" data-copy="writePrompt">📋 Copy prompt &amp; mở Gemini/Claude</button>
+          <label>Kết quả AI trả về<textarea id="writeAnswer" rows="5" placeholder="Nếu dùng web Gemini/Claude: bấm nút Copy dưới CÂU TRẢ LỜI của AI rồi dán vào đây (không dán lại prompt)"></textarea></label>
           <button class="btn primary" id="btnWriteApply">Điền vào từng Page</button>
         </div>
       </div>
@@ -231,6 +233,6 @@
     f.classList.remove('hidden');
   }
 </script>
-<script type="module" src="app.js?v=6"></script>
+<script type="module" src="app.js?v=7"></script>
 </body>
 </html>
