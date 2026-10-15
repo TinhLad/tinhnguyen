@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>FB Page Manager</title>
-  <link rel="stylesheet" href="style.css?v=7">
+  <link rel="stylesheet" href="style.css?v=8">
 </head>
 <body>
 <header class="top">
@@ -133,6 +133,11 @@
     <div class="grid2">
       <div class="card">
         <h3>② Viết nội dung bằng AI</h3>
+        <div class="row wrap">
+          <select id="savedPrompts"><option value="">📚 Prompt đã lưu…</option></select>
+          <button class="btn sm" id="btnSavePrompt" type="button">💾 Lưu prompt này</button>
+          <button class="btn sm" id="btnDelPrompt" type="button">🗑 Xoá</button>
+        </div>
         <label>Chủ đề / thông tin sản phẩm<textarea id="topic" rows="4" placeholder="VD: Ra mắt serum vitamin C 15%, dung tích 30ml, giảm 20% đến 20/10…"></textarea></label>
         <div class="grid3">
           <label>Mục tiêu
@@ -148,6 +153,7 @@
         <label>Call-to-action<input id="cta" placeholder="VD: Inbox ngay để nhận tư vấn"></label>
         <div class="row wrap">
           <button class="btn primary" id="btnWriteAi">🤖 AI viết trực tiếp</button>
+          <label class="row small"><input type="checkbox" id="autoImage" checked> 🎨 Tạo ảnh luôn</label>
           <span class="muted small">hoặc (miễn phí)</span>
           <button class="btn" id="btnWritePrompt">✨ Tạo prompt để dán vào Claude.ai</button>
         </div>
@@ -173,7 +179,18 @@
           <label class="radio"><input type="radio" name="kind" value="video"> Video</label>
         </div>
         <div id="kind-link" class="kindbox hidden"><input id="link" placeholder="https://…"></div>
-        <div id="kind-photo" class="kindbox hidden"><input type="file" id="photoFile" accept="image/*"></div>
+        <div id="kind-photo" class="kindbox hidden">
+          <input type="file" id="photoFile" accept="image/*">
+          <div class="aiImage">
+            <label>🎨 Hoặc để AI tạo ảnh — mô tả ảnh<textarea id="imgPrompt" rows="3" placeholder="VD: trẻ em vùng cao vui đêm trung thu, đèn lồng, ánh sáng ấm (AI viết bài sẽ tự gợi ý)"></textarea></label>
+            <div class="row wrap">
+              <select id="imgRatio"><option value="1:1">1:1 (Feed)</option><option value="4:5">4:5 (Feed dọc)</option><option value="16:9">16:9 (ngang)</option><option value="9:16">9:16 (Story)</option></select>
+              <select id="imgProvider"><option value="free">Miễn phí (không cần key)</option><option value="gemini">Gemini (cần key đã bật thanh toán)</option></select>
+              <button class="btn primary" id="btnMakeImage" type="button">🎨 AI tạo ảnh</button>
+            </div>
+            <p class="small muted">Ảnh AI có thể chưa hoàn hảo — xem kỹ trước khi đăng. Bấm lại để tạo ảnh khác.</p>
+          </div>
+        </div>
         <div id="kind-video" class="kindbox hidden">
           <div class="row wrap">
             <label class="radio"><input type="radio" name="vsrc" value="upload" checked> Video có sẵn</label>
@@ -233,6 +250,6 @@
     f.classList.remove('hidden');
   }
 </script>
-<script type="module" src="app.js?v=7"></script>
+<script type="module" src="app.js?v=8"></script>
 </body>
 </html>

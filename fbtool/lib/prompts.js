@@ -42,13 +42,15 @@ export function writePrompt({ topic, goal, tone, length, cta, link, pages }) {
 ${link ? `- Link đính kèm: ${link}\n` : ''}
 Viết một phiên bản riêng cho TỪNG Page dưới đây — điều chỉnh theo lĩnh vực và giọng văn của Page, mở bài khác nhau
 (Facebook giảm phân phối nội dung trùng lặp giữa các Page). Emoji vừa phải, xuống dòng dễ đọc, 3-6 hashtag.
-Kèm 3-6 câu ngắn (tối đa ~12 từ) để chèn lên từng cảnh video slideshow.
+Kèm 3-6 câu ngắn (tối đa ~12 từ) để chèn lên từng cảnh video slideshow,
+và 1 mô tả ảnh minh hoạ bằng tiếng Anh (image_prompt: chủ thể, bối cảnh, ánh sáng, phong cách; không chứa chữ trong ảnh).
 
 ${RULES}
 Cấu trúc JSON:
 {"headline": "tiêu đề ngắn cho video",
  "variants": [{"page_id": "...", "page_name": "...", "message": "...", "hashtags": ["#..."]}],
- "video_slides": ["...", "..."]}
+ "video_slides": ["...", "..."],
+ "image_prompt": "..."}
 
 <pages>
 ${JSON.stringify(pages.map((p) => ({ page_id: p.id, name: p.name, category: p.category, sample_posts: p.samples || [] })))}
