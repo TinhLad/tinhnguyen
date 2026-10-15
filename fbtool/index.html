@@ -97,11 +97,19 @@
       <button class="btn primary" id="btnAnalyzePrompt">Quét dữ liệu &amp; tạo prompt</button>
     </div>
     <div id="analyzeFlow" class="card hidden">
-      <h3>② Copy prompt → dán vào Claude</h3>
+      <h3>② Cho AI phân tích</h3>
       <textarea id="analyzePrompt" rows="6" readonly></textarea>
-      <button class="btn primary" data-copy="analyzePrompt">📋 Copy prompt &amp; mở Claude</button>
-      <h3 style="margin-top:16px">③ Dán kết quả Claude trả về</h3>
-      <textarea id="analyzeAnswer" rows="6" placeholder="Dán toàn bộ câu trả lời (có khối ```json) vào đây"></textarea>
+      <div class="row wrap">
+        <button class="btn primary" id="btnAnalyzeAi">🤖 AI phân tích trực tiếp</button>
+        <span class="muted small">hoặc (miễn phí)</span>
+        <button class="btn" data-copy="analyzePrompt">📋 Copy prompt &amp; mở Claude</button>
+      </div>
+      <details class="aiBox"><summary class="small">🔑 Claude API key (tuỳ chọn — để AI viết trực tiếp)</summary>
+            <div class="row"><input class="aiKey" type="password" placeholder="sk-ant-…" autocomplete="off"><button class="btn sm aiKeyClear" type="button">Xoá key</button></div>
+            <p class="small muted">Key chỉ lưu trên trình duyệt máy này. Lấy key: console.anthropic.com → API Keys → Create Key (cần nạp tiền ở Billing; mỗi lần viết tốn khoảng vài trăm đồng).</p>
+          </details>
+      <h3 style="margin-top:16px">③ Kết quả từ Claude</h3>
+      <textarea id="analyzeAnswer" rows="6" placeholder="Nếu dùng Claude.ai: bấm nút Copy dưới CÂU TRẢ LỜI của Claude rồi dán vào đây (không dán lại prompt)"></textarea>
       <button class="btn primary" id="btnAnalyzeShow">Hiển thị phân tích</button>
     </div>
     <div id="analysis"></div>
@@ -140,8 +148,16 @@
         <button class="btn primary" id="btnWritePrompt">✨ Tạo prompt viết bài cho từng Page</button>
         <div id="writeFlow" class="hidden">
           <textarea id="writePrompt" rows="5" readonly></textarea>
-          <button class="btn" data-copy="writePrompt">📋 Copy prompt &amp; mở Claude</button>
-          <label>Dán kết quả Claude trả về<textarea id="writeAnswer" rows="5" placeholder="Dán câu trả lời có khối ```json"></textarea></label>
+          <div class="row wrap">
+            <button class="btn primary" id="btnWriteAi">🤖 AI viết trực tiếp</button>
+            <span class="muted small">hoặc (miễn phí)</span>
+            <button class="btn" data-copy="writePrompt">📋 Copy prompt &amp; mở Claude</button>
+          </div>
+          <details class="aiBox"><summary class="small">🔑 Claude API key (tuỳ chọn — để AI viết trực tiếp)</summary>
+            <div class="row"><input class="aiKey" type="password" placeholder="sk-ant-…" autocomplete="off"><button class="btn sm aiKeyClear" type="button">Xoá key</button></div>
+            <p class="small muted">Key chỉ lưu trên trình duyệt máy này. Lấy key: console.anthropic.com → API Keys → Create Key (cần nạp tiền ở Billing; mỗi lần viết tốn khoảng vài trăm đồng).</p>
+          </details>
+          <label>Kết quả Claude trả về<textarea id="writeAnswer" rows="5" placeholder="Nếu dùng Claude.ai: bấm nút Copy dưới CÂU TRẢ LỜI của Claude rồi dán vào đây (không dán lại prompt)"></textarea></label>
           <button class="btn primary" id="btnWriteApply">Điền vào từng Page</button>
         </div>
       </div>
