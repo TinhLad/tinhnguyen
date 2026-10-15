@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>FB Page Manager</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=6">
 </head>
 <body>
 <header class="top">
@@ -145,18 +145,18 @@
           </label>
         </div>
         <label>Call-to-action<input id="cta" placeholder="VD: Inbox ngay để nhận tư vấn"></label>
-        <button class="btn primary" id="btnWritePrompt">✨ Tạo prompt viết bài cho từng Page</button>
-        <div id="writeFlow" class="hidden">
-          <textarea id="writePrompt" rows="5" readonly></textarea>
-          <div class="row wrap">
-            <button class="btn primary" id="btnWriteAi">🤖 AI viết trực tiếp</button>
-            <span class="muted small">hoặc (miễn phí)</span>
-            <button class="btn" data-copy="writePrompt">📋 Copy prompt &amp; mở Claude</button>
-          </div>
-          <details class="aiBox"><summary class="small">🔑 Claude API key (tuỳ chọn — để AI viết trực tiếp)</summary>
+        <div class="row wrap">
+          <button class="btn primary" id="btnWriteAi">🤖 AI viết trực tiếp</button>
+          <span class="muted small">hoặc (miễn phí)</span>
+          <button class="btn" id="btnWritePrompt">✨ Tạo prompt để dán vào Claude.ai</button>
+        </div>
+        <details class="aiBox"><summary class="small">🔑 Claude API key (tuỳ chọn — để AI viết trực tiếp)</summary>
             <div class="row"><input class="aiKey" type="password" placeholder="sk-ant-…" autocomplete="off"><button class="btn sm aiKeyClear" type="button">Xoá key</button></div>
             <p class="small muted">Key chỉ lưu trên trình duyệt máy này. Lấy key: console.anthropic.com → API Keys → Create Key (cần nạp tiền ở Billing; mỗi lần viết tốn khoảng vài trăm đồng).</p>
           </details>
+        <div id="writeFlow" class="hidden">
+          <textarea id="writePrompt" rows="5" readonly></textarea>
+          <button class="btn" data-copy="writePrompt">📋 Copy prompt &amp; mở Claude</button>
           <label>Kết quả Claude trả về<textarea id="writeAnswer" rows="5" placeholder="Nếu dùng Claude.ai: bấm nút Copy dưới CÂU TRẢ LỜI của Claude rồi dán vào đây (không dán lại prompt)"></textarea></label>
           <button class="btn primary" id="btnWriteApply">Điền vào từng Page</button>
         </div>
@@ -231,6 +231,6 @@
     f.classList.remove('hidden');
   }
 </script>
-<script type="module" src="app.js"></script>
+<script type="module" src="app.js?v=6"></script>
 </body>
 </html>

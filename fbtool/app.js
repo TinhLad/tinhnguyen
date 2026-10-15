@@ -1,7 +1,7 @@
-import * as fb from './lib/graph.js';
-import { analyzePrompt, writePrompt, parseAnswer } from './lib/prompts.js';
-import { makeSlideshow } from './lib/video.js';
-import { askClaude } from './lib/ai.js';
+import * as fb from './lib/graph.js?v=6';
+import { analyzePrompt, writePrompt, parseAnswer } from './lib/prompts.js?v=6';
+import { makeSlideshow } from './lib/video.js?v=6';
+import { askClaude } from './lib/ai.js?v=6';
 
 // ================= Trạng thái =================
 const S = {
@@ -414,7 +414,7 @@ $('#btnSameText').addEventListener('click', () => {
   renderEditors();
 });
 
-$('#btnWritePrompt').addEventListener('click', (e) => busy(e.target, 'Đang chuẩn bị…', async () => {
+async function buildWritePrompt() {
   requireLogin();
   if (!$('#topic').value.trim()) throw new Error('Nhập chủ đề / thông tin bài viết');
   const pages = [...S.targets].map(pageById).filter(Boolean);
@@ -429,7 +429,9 @@ $('#btnWritePrompt').addEventListener('click', (e) => busy(e.target, 'Đang chu�
     length: $('#length').value, cta: $('#cta').value, link: $('#link').value, pages: withSamples,
   });
   $('#writeFlow').classList.remove('hidden');
-}));
+}
+
+$('#btnWritePrompt').addEventListener('click', (e) => busy(e.target, 'Đang chuẩn bị…', buildWritePrompt));
 
 // Khớp kết quả với Page: theo page_id, nếu không có thì theo tên Page.
 const norm = (s = '') => String(s).normalize('NFC').toLowerCase().replace(/\s+/g, ' ').trim();
@@ -484,18 +486,19 @@ document.addEventListener('click', (e) => {
   toast('Đã xoá API key khỏi máy này');
 });
 
-async function runAi(btn, promptId, answerId, then) {
+async function runAi(btn, promptId, answerId, then, prepare) {
   const key = store.get('localStorage', AI_KEY, '');
   if (!key) {
     btn.closest('.card').querySelector('details.aiBox').open = true;
     return toast('Dán Claude API key vào ô bên dưới trước (xem hướng dẫn lấy key)', true);
   }
   await busy(btn, '🤖 AI đang viết… (10-60 giây)', async () => {
+    if (prepare) await prepare();
     $(`#${answerId}`).value = await askClaude(key, $(`#${promptId}`).value);
     then();
   });
 }
-$('#btnWriteAi').addEventListener('click', (e) => runAi(e.target, 'writePrompt', 'writeAnswer', applyWrite));
+$('#btnWriteAi').addEventListener('click', (e) => runAi(e.target, 'writePrompt', 'writeAnswer', applyWrite, buildWritePrompt));
 $('#btnAnalyzeAi').addEventListener('click', (e) => runAi(e.target, 'analyzePrompt', 'analyzeAnswer',
   () => renderAnalysis(parseAnswer($('#analyzeAnswer').value, 'summary'))));
 
