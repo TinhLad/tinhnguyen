@@ -1,5 +1,5 @@
-// Phiên bản GitHub Pages không giữ API key AI trên trang công khai.
-// Thay vào đó: tạo sẵn prompt kèm dữ liệu Page → người dùng dán vào Claude.ai → dán kết quả JSON trở lại.
+// Hai cách dùng prompt: (1) miễn phí — copy sang Claude.ai rồi dán kết quả JSON trở lại;
+// (2) "AI viết trực tiếp" — gọi Claude API bằng key riêng của người dùng (lib/ai.js).
 
 const RULES = `Viết tiếng Việt tự nhiên, đúng chính tả. Không bịa số liệu, giá, khuyến mãi hay cam kết mà tôi không cung cấp.
 Tuân thủ Tiêu chuẩn cộng đồng Facebook (không clickbait "share để nhận quà", không gây hiểu lầm về sức khoẻ/tài chính).
@@ -47,7 +47,7 @@ Kèm 3-6 câu ngắn (tối đa ~12 từ) để chèn lên từng cảnh video s
 ${RULES}
 Cấu trúc JSON:
 {"headline": "tiêu đề ngắn cho video",
- "variants": [{"page_id": "...", "message": "...", "hashtags": ["#..."]}],
+ "variants": [{"page_id": "...", "page_name": "...", "message": "...", "hashtags": ["#..."]}],
  "video_slides": ["...", "..."]}
 
 <pages>
@@ -55,13 +55,42 @@ ${JSON.stringify(pages.map((p) => ({ page_id: p.id, name: p.name, category: p.ca
 </pages>`;
 }
 
-// Lấy JSON từ câu trả lời (chấp nhận có/không có ```json).
-export function parseAnswer(text) {
-  const fenced = text.match(/```(?:json)?\s*([\s\S]*?)```/);
-  const raw = fenced ? fenced[1] : text.slice(text.indexOf('{'), text.lastIndexOf('}') + 1);
-  try {
-    return JSON.parse(raw);
-  } catch {
-    throw new Error('Không đọc được kết quả — hãy copy nguyên phần JSON mà Claude trả về.');
+const PASTE_HELP = 'Hãy dán CÂU TRẢ LỜI mà Claude viết ra (bấm nút Copy dưới câu trả lời trên Claude.ai), không phải prompt hay mẫu định dạng.';
+
+// Đoạn JSON "mẫu" trong prompt (giá trị "...") — người dùng hay dán nhầm cái này.
+const isTemplate = (o) => JSON.stringify(o).includes('"..."');
+
+// Tìm mọi khối {...} cân bằng ngoặc trong văn bản (bỏ qua ngoặc trong chuỗi).
+function jsonCandidates(text) {
+  const out = [];
+  for (const m of text.matchAll(/```(?:json)?\s*([\s\S]*?)```/gi)) out.push(m[1]);
+  for (let i = text.indexOf('{'); i !== -1; i = text.indexOf('{', i + 1)) {
+    let depth = 0, str = false, esc = false;
+    for (let j = i; j < text.length; j++) {
+      const c = text[j];
+      if (str) { if (esc) esc = false; else if (c === '\\') esc = true; else if (c === '"') str = false; continue; }
+      if (c === '"') str = true;
+      else if (c === '{') depth++;
+      else if (c === '}' && --depth === 0) { out.push(text.slice(i, j + 1)); i = j; break; }
+    }
   }
+  return out;
+}
+
+// Lấy JSON từ câu trả lời: chấp nhận có/không có ```json, có chữ giải thích trước/sau.
+// key: trường bắt buộc phải có (VD 'variants' cho viết bài, 'summary' cho phân tích).
+export function parseAnswer(text, key) {
+  text = (text || '').trim();
+  if (!text) throw new Error(`Ô kết quả đang trống. ${PASTE_HELP}`);
+  if (text.includes('<pages>') || text.includes('<data>')) throw new Error(`Bạn đang dán lại PROMPT. ${PASTE_HELP}`);
+  let sawTemplate = false;
+  for (const raw of jsonCandidates(text)) {
+    let o;
+    try { o = JSON.parse(raw.trim()); } catch { continue; }
+    if (!o || typeof o !== 'object' || (key && !(key in o))) continue;
+    if (isTemplate(o)) { sawTemplate = true; continue; }
+    return o;
+  }
+  if (sawTemplate) throw new Error(`Đây là MẪU ĐỊNH DẠNG (toàn dấu "..."), chưa phải bài viết. ${PASTE_HELP}`);
+  throw new Error(`Không đọc được kết quả — có thể câu trả lời bị thiếu đoạn cuối. ${PASTE_HELP}`);
 }

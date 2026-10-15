@@ -1,6 +1,7 @@
 import * as fb from './lib/graph.js';
 import { analyzePrompt, writePrompt, parseAnswer } from './lib/prompts.js';
 import { makeSlideshow } from './lib/video.js';
+import { askClaude } from './lib/ai.js';
 
 // ================= Trạng thái =================
 const S = {
@@ -317,7 +318,7 @@ $('#btnAnalyzePrompt').addEventListener('click', (e) => busy(e.target, 'Đang qu
 
 $('#btnAnalyzeShow').addEventListener('click', () => {
   try {
-    renderAnalysis(parseAnswer($('#analyzeAnswer').value));
+    renderAnalysis(parseAnswer($('#analyzeAnswer').value, 'summary'));
   } catch (err) {
     toast(err.message, true);
   }
@@ -430,24 +431,73 @@ $('#btnWritePrompt').addEventListener('click', (e) => busy(e.target, 'Đang chu�
   $('#writeFlow').classList.remove('hidden');
 }));
 
-$('#btnWriteApply').addEventListener('click', () => {
-  try {
-    const r = parseAnswer($('#writeAnswer').value);
-    let n = 0;
-    for (const v of r.variants || []) {
-      if (!S.targets.has(v.page_id)) continue;
-      const tags = (v.hashtags || []).map((h) => (h.startsWith('#') ? h : `#${h}`)).join(' ');
-      S.texts[v.page_id] = `${(v.message || '').trim()}\n\n${tags}`.trim();
-      n++;
-    }
-    if (r.video_slides?.length) $('#vTexts').value = r.video_slides.join('\n');
-    if (r.headline) $('#vTitle').value = r.headline;
-    renderEditors();
-    toast(n ? `Đã điền nội dung cho ${n} Page — hãy đọc lại trước khi đăng` : 'Không khớp Page nào — kiểm tra lại kết quả', !n);
-  } catch (err) {
-    toast(err.message, true);
+// Khớp kết quả với Page: theo page_id, nếu không có thì theo tên Page.
+const norm = (s = '') => String(s).normalize('NFC').toLowerCase().replace(/\s+/g, ' ').trim();
+function matchPage(v) {
+  const byId = pageById(String(v.page_id ?? '').trim());
+  if (byId) return byId;
+  const name = norm(v.page_name || v.name);
+  return name ? S.pages.find((p) => norm(p.name) === name) || S.pages.find((p) => norm(p.name).includes(name) || name.includes(norm(p.name))) : null;
+}
+
+function applyWrite() {
+  const r = parseAnswer($('#writeAnswer').value, 'variants');
+  const variants = r.variants || [];
+  // Chỉ 1 Page được chọn và 1 phiên bản → dùng luôn dù không khớp id/tên.
+  const only = S.targets.size === 1 && variants.length === 1 ? pageById([...S.targets][0]) : null;
+  let n = 0;
+  for (const v of variants) {
+    const p = matchPage(v) || only;
+    if (!p || !postable(p.id)) continue;
+    S.targets.add(p.id);
+    const tags = (v.hashtags || []).map((h) => (h.startsWith('#') ? h : `#${h}`)).join(' ');
+    S.texts[p.id] = `${(v.message || '').trim()}\n\n${tags}`.trim();
+    n++;
   }
+  if (r.video_slides?.length) $('#vTexts').value = r.video_slides.join('\n');
+  if (r.headline) $('#vTitle').value = r.headline;
+  renderChips();
+  renderEditors();
+  if (!n) throw new Error('Kết quả không có bài nào khớp với Page đã chọn — hãy tạo prompt mới (nút ✨) rồi gửi lại cho Claude.');
+  toast(`Đã điền nội dung cho ${n} Page — hãy đọc lại trước khi đăng`);
+  $('#editors').scrollIntoView({ behavior: 'smooth' });
+}
+
+$('#btnWriteApply').addEventListener('click', () => {
+  try { applyWrite(); } catch (err) { toast(err.message, true); }
 });
+
+// ================= AI viết trực tiếp (Claude API, key riêng của người dùng) =================
+const AI_KEY = 'anthropicKey';
+function syncKeyInputs(v) { $$('.aiKey').forEach((i) => (i.value = v)); }
+syncKeyInputs(store.get('localStorage', AI_KEY, ''));
+document.addEventListener('input', (e) => {
+  if (!e.target.classList?.contains('aiKey')) return;
+  const v = e.target.value.trim();
+  v ? store.set('localStorage', AI_KEY, v) : store.del('localStorage', AI_KEY);
+  syncKeyInputs(v);
+});
+document.addEventListener('click', (e) => {
+  if (!e.target.classList?.contains('aiKeyClear')) return;
+  store.del('localStorage', AI_KEY);
+  syncKeyInputs('');
+  toast('Đã xoá API key khỏi máy này');
+});
+
+async function runAi(btn, promptId, answerId, then) {
+  const key = store.get('localStorage', AI_KEY, '');
+  if (!key) {
+    btn.closest('.card').querySelector('details.aiBox').open = true;
+    return toast('Dán Claude API key vào ô bên dưới trước (xem hướng dẫn lấy key)', true);
+  }
+  await busy(btn, '🤖 AI đang viết… (10-60 giây)', async () => {
+    $(`#${answerId}`).value = await askClaude(key, $(`#${promptId}`).value);
+    then();
+  });
+}
+$('#btnWriteAi').addEventListener('click', (e) => runAi(e.target, 'writePrompt', 'writeAnswer', applyWrite));
+$('#btnAnalyzeAi').addEventListener('click', (e) => runAi(e.target, 'analyzePrompt', 'analyzeAnswer',
+  () => renderAnalysis(parseAnswer($('#analyzeAnswer').value, 'summary'))));
 
 // Loại media
 function syncKind() {
