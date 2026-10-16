@@ -79,7 +79,9 @@ export function normalizeBase(raw) {
   url = url.replace(/\/(chat\/completions|messages|models)$/i, '');
   try {
     const u = new URL(url);
-    if (u.pathname === '/' || u.pathname === '') return `${u.origin}/v1`;
+    // Dán nhầm link trang quản lý (VD .../dashboard/models?model=...) → về gốc tên miền.
+    if (u.pathname === '/' || u.pathname === '' || /^\/(dashboard|console|keys|docs|pricing|account)\b/i.test(u.pathname)) return `${u.origin}/v1`;
+    url = `${u.origin}${u.pathname}`.replace(/\/+$/, '');
   } catch {
     throw new Error('Địa chỉ API không hợp lệ — dán dạng https://ten-web.com/v1');
   }
@@ -91,24 +93,59 @@ function customHeaders(key, format) {
   return { Authorization: `Bearer ${key}` };
 }
 
+// Lỗi kèm thông tin để biết có nên thử địa chỉ API khác không:
+// apiLike = máy chủ trả lời đúng kiểu API (JSON) → địa chỉ đúng, lỗi nằm ở key/model/tiền.
+function apiError(message, status, apiLike) {
+  return Object.assign(new Error(message), { status, apiLike });
+}
+
 async function customFetch(url, init, label = 'Web trung gian') {
   let res;
   try {
     res = await fetch(url, init);
   } catch {
-    throw new Error(`Không kết nối được ${label}. Có 3 khả năng: (1) sai địa chỉ API, (2) mạng lỗi, (3) web đó không cho gọi trực tiếp từ trình duyệt (CORS) — hỏi bên bán API có hỗ trợ "gọi từ trình duyệt / CORS" không.`);
+    throw apiError(`Không kết nối được ${label}. Có 3 khả năng: (1) sai địa chỉ API, (2) mạng lỗi, (3) web đó không cho gọi trực tiếp từ trình duyệt (CORS) — hỏi bên bán API có hỗ trợ "gọi từ trình duyệt / CORS" không.`, 0, false);
   }
-  const data = await res.json().catch(() => ({}));
-  if (!res.ok) {
-    const msg = data.error?.message || data.message || (typeof data.error === 'string' ? data.error : '') || res.statusText;
-    if (res.status === 401 || res.status === 403) throw new Error(`API key không đúng / hết hạn / không có quyền dùng model này (${msg}).`);
-    if (res.status === 402 || /quota|balance|credit|insufficient|余额/i.test(msg)) throw new Error(`Tài khoản trên web trung gian hết tiền / hết hạn mức — nạp thêm rồi thử lại (${msg}).`);
-    if (res.status === 404) throw new Error(`Sai địa chỉ API hoặc sai tên model (${msg}). Kiểm tra lại "Địa chỉ API" (thường kết thúc bằng /v1) và tên model.`);
-    if (res.status === 429) throw new Error('Gọi quá nhanh / vượt hạn mức — đợi 1 phút rồi thử lại.');
-    if (res.status >= 500) throw new Error(`Web trung gian đang lỗi hoặc quá tải (mã ${res.status}) — thử lại sau, hoặc đổi model khác.`);
-    throw new Error(`Web trung gian báo lỗi (mã ${res.status}): ${msg}`);
-  }
+  const isJson = (res.headers.get('content-type') || '').includes('json');
+  const data = await res.json().catch(() => null);
+  if (res.ok && !data) throw apiError('Địa chỉ này trả về một trang web chứ không phải API — kiểm tra lại "Địa chỉ API" trong mục API / Docs của web trung gian.', 404, false);
+  if (!res.ok) throw httpError(res, data || {}, isJson && !!data);
   return data;
+}
+
+function httpError(res, data, apiLike) {
+  const fail = (m) => apiError(m, res.status, apiLike);
+  const msg = data.error?.message || data.message || (typeof data.error === 'string' ? data.error : '') || res.statusText;
+  if (res.status === 401 || res.status === 403) return fail(`API key không đúng / hết hạn / không có quyền dùng model này (${msg}).`);
+  if (res.status === 402 || /quota|balance|credit|insufficient|余额/i.test(msg)) return fail(`Tài khoản trên web trung gian hết tiền / hết hạn mức — nạp thêm rồi thử lại (${msg}).`);
+  if (res.status === 404) return fail(`Sai địa chỉ API hoặc sai tên model (${msg}). Kiểm tra lại "Địa chỉ API" (thường kết thúc bằng /v1) và tên model.`);
+  if (res.status === 429) return fail('Gọi quá nhanh / vượt hạn mức — đợi 1 phút rồi thử lại.');
+  if (res.status >= 500) return fail(`Web trung gian đang lỗi hoặc quá tải (mã ${res.status}) — thử lại sau, hoặc đổi model khác.`);
+  return fail(`Web trung gian báo lỗi (mã ${res.status}): ${msg}`);
+}
+
+// Các địa chỉ API hay gặp của web trung gian, thử lần lượt khi người dùng không chắc.
+export function baseCandidates(raw) {
+  const first = normalizeBase(raw);
+  if (!first) return [];
+  const u = new URL(first);
+  const host = u.hostname.replace(/^(www|api)\./, '');
+  return [...new Set([first, `${u.origin}/v1`, `${u.origin}/api/v1`, `https://api.${host}/v1`, `${u.origin}/openai/v1`])];
+}
+
+// Gửi 1 câu hỏi ngắn tới từng địa chỉ cho tới khi có địa chỉ trả lời đúng kiểu API.
+export async function probeCustom(key, cfg = {}) {
+  let firstErr;
+  for (const base of baseCandidates(cfg.base)) {
+    try {
+      const reply = await askCustom(key, 'Trả lời đúng 1 từ: OK', { ...cfg, base });
+      return { base, reply };
+    } catch (err) {
+      if (err.apiLike) throw Object.assign(err, { base }); // địa chỉ đúng, lỗi do key/model/tiền
+      firstErr ??= err;
+    }
+  }
+  throw firstErr || new Error('Chưa nhập "Địa chỉ API" của web trung gian.');
 }
 
 export async function askCustom(key, prompt, cfg = {}) {
