@@ -70,3 +70,4 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
 #toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #111827; color: #fff; padding: 10px 16px; border-radius: 8px; opacity: 0; transition: opacity .2s; pointer-events: none; max-width: 90vw; z-index: 20; }
 #toast.show { opacity: 1; } #toast.err { background: var(--err); }
 details { margin-top: 12px; } details ol { padding-left: 18px; } summary { cursor: pointer; }
+.customAi { margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--line); } .aiTestResult { flex-basis: 100%; }

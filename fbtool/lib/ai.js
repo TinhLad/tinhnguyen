@@ -67,11 +67,96 @@ export async function askGemini(apiKey, prompt) {
   throw lastErr;
 }
 
+// ================= Web trung gian (API proxy / reseller) =================
+// Hỗ trợ 2 chuẩn phổ biến: OpenAI (/chat/completions) và Anthropic (/messages).
+// cfg = { base, model, format: 'openai' | 'anthropic' }
+
+// Chuẩn hoá địa chỉ: bỏ "/" cuối và đuôi endpoint nếu người dùng dán thừa; thiếu đường dẫn thì thêm /v1.
+export function normalizeBase(raw) {
+  let url = String(raw || '').trim().replace(/\/+$/, '');
+  if (!url) return '';
+  if (!/^https?:\/\//i.test(url)) url = `https://${url}`;
+  url = url.replace(/\/(chat\/completions|messages|models)$/i, '');
+  try {
+    const u = new URL(url);
+    if (u.pathname === '/' || u.pathname === '') return `${u.origin}/v1`;
+  } catch {
+    throw new Error('Địa chỉ API không hợp lệ — dán dạng https://ten-web.com/v1');
+  }
+  return url;
+}
+
+function customHeaders(key, format) {
+  if (format === 'anthropic') return { 'x-api-key': key, 'anthropic-version': '2023-06-01' };
+  return { Authorization: `Bearer ${key}` };
+}
+
+async function customFetch(url, init, label = 'Web trung gian') {
+  let res;
+  try {
+    res = await fetch(url, init);
+  } catch {
+    throw new Error(`Không kết nối được ${label}. Có 3 khả năng: (1) sai địa chỉ API, (2) mạng lỗi, (3) web đó không cho gọi trực tiếp từ trình duyệt (CORS) — hỏi bên bán API có hỗ trợ "gọi từ trình duyệt / CORS" không.`);
+  }
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    const msg = data.error?.message || data.message || (typeof data.error === 'string' ? data.error : '') || res.statusText;
+    if (res.status === 401 || res.status === 403) throw new Error(`API key không đúng / hết hạn / không có quyền dùng model này (${msg}).`);
+    if (res.status === 402 || /quota|balance|credit|insufficient|余额/i.test(msg)) throw new Error(`Tài khoản trên web trung gian hết tiền / hết hạn mức — nạp thêm rồi thử lại (${msg}).`);
+    if (res.status === 404) throw new Error(`Sai địa chỉ API hoặc sai tên model (${msg}). Kiểm tra lại "Địa chỉ API" (thường kết thúc bằng /v1) và tên model.`);
+    if (res.status === 429) throw new Error('Gọi quá nhanh / vượt hạn mức — đợi 1 phút rồi thử lại.');
+    if (res.status >= 500) throw new Error(`Web trung gian đang lỗi hoặc quá tải (mã ${res.status}) — thử lại sau, hoặc đổi model khác.`);
+    throw new Error(`Web trung gian báo lỗi (mã ${res.status}): ${msg}`);
+  }
+  return data;
+}
+
+export async function askCustom(key, prompt, cfg = {}) {
+  const base = normalizeBase(cfg.base);
+  if (!base) throw new Error('Chưa nhập "Địa chỉ API" của web trung gian.');
+  if (!cfg.model) throw new Error('Chưa nhập tên model (bấm "Tải danh sách model" để chọn).');
+  const format = cfg.format === 'anthropic' ? 'anthropic' : 'openai';
+  const headers = { 'content-type': 'application/json', ...customHeaders(key, format) };
+
+  if (format === 'anthropic') {
+    const data = await customFetch(`${base}/messages`, {
+      method: 'POST', headers,
+      body: JSON.stringify({ model: cfg.model, max_tokens: 8000, messages: [{ role: 'user', content: prompt }] }),
+    });
+    if (data.stop_reason === 'max_tokens') throw new Error('Câu trả lời quá dài bị cắt — hãy chọn ít Page hơn rồi thử lại.');
+    const text = (data.content || []).filter((b) => b.type === 'text').map((b) => b.text).join('\n');
+    if (!text) throw new Error('Model không trả về nội dung — thử lại hoặc đổi model.');
+    return text;
+  }
+
+  const data = await customFetch(`${base}/chat/completions`, {
+    method: 'POST', headers,
+    body: JSON.stringify({ model: cfg.model, max_tokens: 8000, messages: [{ role: 'user', content: prompt }] }),
+  });
+  const choice = data.choices?.[0];
+  if (choice?.finish_reason === 'length') throw new Error('Câu trả lời quá dài bị cắt — hãy chọn ít Page hơn rồi thử lại.');
+  const content = choice?.message?.content;
+  const text = Array.isArray(content) ? content.map((c) => c.text || '').join('\n') : content || '';
+  if (!text) throw new Error('Model không trả về nội dung — thử lại hoặc đổi model.');
+  return text;
+}
+
+// Lấy danh sách model mà web trung gian cung cấp (GET /models).
+export async function listCustomModels(key, cfg = {}) {
+  const base = normalizeBase(cfg.base);
+  if (!base) throw new Error('Chưa nhập "Địa chỉ API" của web trung gian.');
+  const data = await customFetch(`${base}/models`, { headers: customHeaders(key, cfg.format) });
+  const ids = (data.data || data.models || []).map((m) => (typeof m === 'string' ? m : m.id || m.name)).filter(Boolean);
+  return [...new Set(ids)].sort();
+}
+
 export const PROVIDERS = {
   gemini: { label: 'Gemini (Google)', ask: askGemini, keyName: 'geminiKey', chat: 'https://gemini.google.com/app', placeholder: 'AIza…',
     help: 'Lấy key miễn phí: aistudio.google.com → Get API key → Create API key. Gói miễn phí có giới hạn lượt dùng mỗi ngày.' },
   claude: { label: 'Claude (Anthropic)', ask: askClaude, keyName: 'anthropicKey', chat: 'https://claude.ai/new', placeholder: 'sk-ant-…',
     help: 'Lấy key: console.anthropic.com → API Keys → Create Key (cần nạp tiền ở Billing; mỗi lần viết tốn khoảng vài trăm đồng).' },
+  custom: { label: 'Web trung gian', ask: askCustom, keyName: 'customKey', chat: null, placeholder: 'sk-… (API key của web trung gian)',
+    help: 'Dán Địa chỉ API (Base URL), API key và tên model lấy trong trang quản lý của web trung gian. Lưu ý: web trung gian đọc được toàn bộ nội dung bạn gửi — chỉ dùng bên uy tín.' },
 };
 
 // ================= Tạo ảnh =================
