@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>FB Page Manager</title>
-  <link rel="stylesheet" href="style.css?v=8">
+  <link rel="stylesheet" href="style.css?v=9">
 </head>
 <body>
 <header class="top">
@@ -105,9 +105,23 @@
         <button class="btn" data-copy="analyzePrompt">📋 Copy prompt &amp; mở Gemini/Claude</button>
       </div>
       <details class="aiBox"><summary class="small">🔑 Chọn AI &amp; API key (để AI viết trực tiếp)</summary>
-            <div class="row wrap"><select class="aiProvider"><option value="gemini">Gemini (Google) — có gói miễn phí</option><option value="claude">Claude (Anthropic) — trả phí</option></select>
+            <div class="row wrap"><select class="aiProvider"><option value="gemini">Gemini (Google) — có gói miễn phí</option><option value="claude">Claude (Anthropic) — trả phí</option><option value="custom">Web trung gian (API riêng)</option></select>
               <input class="aiKey" type="password" autocomplete="off"><button class="btn sm aiKeyClear" type="button">Xoá key</button></div>
             <p class="small muted"><span class="aiHelp"></span> Key chỉ lưu trên trình duyệt máy này.</p>
+            <div class="customAi hidden">
+              <label>Địa chỉ API (Base URL)<input class="aiBase" placeholder="VD: https://ten-web-trung-gian.com/v1" autocomplete="off"></label>
+              <div class="grid2">
+                <label>Chuẩn API
+                  <select class="aiFormat"><option value="openai">Chuẩn OpenAI (/chat/completions) — phổ biến nhất</option><option value="anthropic">Chuẩn Anthropic (/messages)</option></select>
+                </label>
+                <label>Tên model<input class="aiModel" list="aiModelList" placeholder="VD: claude-sonnet-4-5, gpt-4o…" autocomplete="off"></label>
+              </div>
+              <div class="row wrap">
+                <button class="btn sm aiLoadModels" type="button">📥 Tải danh sách model</button>
+                <button class="btn sm aiTest" type="button">✅ Kiểm tra kết nối</button>
+                <span class="small muted aiTestResult"></span>
+              </div>
+            </div>
           </details>
       <h3 style="margin-top:16px">③ Kết quả từ Claude</h3>
       <textarea id="analyzeAnswer" rows="6" placeholder="Nếu dùng web Gemini/Claude: bấm nút Copy dưới CÂU TRẢ LỜI của AI rồi dán vào đây (không dán lại prompt)"></textarea>
@@ -158,9 +172,23 @@
           <button class="btn" id="btnWritePrompt">✨ Tạo prompt để dán vào Claude.ai</button>
         </div>
         <details class="aiBox"><summary class="small">🔑 Chọn AI &amp; API key (để AI viết trực tiếp)</summary>
-            <div class="row wrap"><select class="aiProvider"><option value="gemini">Gemini (Google) — có gói miễn phí</option><option value="claude">Claude (Anthropic) — trả phí</option></select>
+            <div class="row wrap"><select class="aiProvider"><option value="gemini">Gemini (Google) — có gói miễn phí</option><option value="claude">Claude (Anthropic) — trả phí</option><option value="custom">Web trung gian (API riêng)</option></select>
               <input class="aiKey" type="password" autocomplete="off"><button class="btn sm aiKeyClear" type="button">Xoá key</button></div>
             <p class="small muted"><span class="aiHelp"></span> Key chỉ lưu trên trình duyệt máy này.</p>
+            <div class="customAi hidden">
+              <label>Địa chỉ API (Base URL)<input class="aiBase" placeholder="VD: https://ten-web-trung-gian.com/v1" autocomplete="off"></label>
+              <div class="grid2">
+                <label>Chuẩn API
+                  <select class="aiFormat"><option value="openai">Chuẩn OpenAI (/chat/completions) — phổ biến nhất</option><option value="anthropic">Chuẩn Anthropic (/messages)</option></select>
+                </label>
+                <label>Tên model<input class="aiModel" list="aiModelList" placeholder="VD: claude-sonnet-4-5, gpt-4o…" autocomplete="off"></label>
+              </div>
+              <div class="row wrap">
+                <button class="btn sm aiLoadModels" type="button">📥 Tải danh sách model</button>
+                <button class="btn sm aiTest" type="button">✅ Kiểm tra kết nối</button>
+                <span class="small muted aiTestResult"></span>
+              </div>
+            </div>
           </details>
         <div id="writeFlow" class="hidden">
           <textarea id="writePrompt" rows="5" readonly></textarea>
@@ -242,6 +270,7 @@
   </section>
 </main>
 
+<datalist id="aiModelList"></datalist>
 <div id="toast"></div>
 <script>
   if (location.protocol === 'file:') {
@@ -250,6 +279,6 @@
     f.classList.remove('hidden');
   }
 </script>
-<script type="module" src="app.js?v=8"></script>
+<script type="module" src="app.js?v=9"></script>
 </body>
 </html>

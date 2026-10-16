@@ -1,7 +1,7 @@
 import * as fb from './lib/graph.js?v=8';
 import { analyzePrompt, writePrompt, parseAnswer } from './lib/prompts.js?v=8';
 import { makeSlideshow } from './lib/video.js?v=8';
-import { PROVIDERS, imageFree, imageGemini } from './lib/ai.js?v=8';
+import { PROVIDERS, imageFree, imageGemini, listCustomModels } from './lib/ai.js?v=9';
 
 // ================= Trạng thái =================
 const S = {
@@ -297,12 +297,12 @@ document.addEventListener('click', async (e) => {
   const text = $(`#${id}`).value;
   try {
     await navigator.clipboard.writeText(text);
-    toast(`Đã copy prompt — dán (Ctrl+V) vào ${provider().label.split(' ')[0]}`);
+    toast(provider().chat ? `Đã copy prompt — dán (Ctrl+V) vào ${provider().label.split(' ')[0]}` : 'Đã copy prompt — dán (Ctrl+V) vào trang chat AI bạn dùng');
   } catch {
     $(`#${id}`).select();
     toast('Hãy bấm Ctrl+C để copy prompt', true);
   }
-  window.open(provider().chat, '_blank', 'noopener');
+  if (provider().chat) window.open(provider().chat, '_blank', 'noopener');
 });
 
 // ================= 3. Phân tích AI =================
@@ -473,19 +473,43 @@ $('#btnWriteApply').addEventListener('click', () => {
 // ================= AI viết trực tiếp (Gemini hoặc Claude, key riêng của người dùng) =================
 const provider = () => PROVIDERS[store.get('localStorage', 'aiProvider', 'gemini')] || PROVIDERS.gemini;
 const aiKey = () => store.get('localStorage', provider().keyName, '');
+// Cấu hình web trung gian: địa chỉ API, chuẩn API, tên model.
+const CUSTOM_FIELDS = { aiBase: 'customBase', aiFormat: 'customFormat', aiModel: 'customModel' };
+const customCfg = () => ({
+  base: store.get('localStorage', 'customBase', ''),
+  format: store.get('localStorage', 'customFormat', 'openai'),
+  model: store.get('localStorage', 'customModel', ''),
+});
 function syncAiBox() {
   const pv = provider();
+  const isCustom = pv === PROVIDERS.custom;
   $$('.aiProvider').forEach((s) => (s.value = store.get('localStorage', 'aiProvider', 'gemini')));
   $$('.aiKey').forEach((i) => { i.value = aiKey(); i.placeholder = pv.placeholder; });
   $$('.aiHelp').forEach((h) => (h.textContent = pv.help));
+  $$('.customAi').forEach((d) => d.classList.toggle('hidden', !isCustom));
+  const cfg = customCfg();
+  $$('.aiBase').forEach((i) => (i.value = cfg.base));
+  $$('.aiFormat').forEach((i) => (i.value = cfg.format));
+  $$('.aiModel').forEach((i) => (i.value = cfg.model));
 }
 syncAiBox();
 document.addEventListener('change', (e) => {
+  if (e.target.classList?.contains('aiFormat')) {
+    store.set('localStorage', 'customFormat', e.target.value);
+    return syncAiBox();
+  }
   if (!e.target.classList?.contains('aiProvider')) return;
   store.set('localStorage', 'aiProvider', e.target.value);
   syncAiBox();
 });
 document.addEventListener('input', (e) => {
+  const field = Object.keys(CUSTOM_FIELDS).find((c) => e.target.classList?.contains(c));
+  if (field) {
+    const v = e.target.value.trim();
+    v ? store.set('localStorage', CUSTOM_FIELDS[field], v) : store.del('localStorage', CUSTOM_FIELDS[field]);
+    $$(`.${field}`).forEach((i) => i !== e.target && (i.value = e.target.value));
+    return;
+  }
   if (!e.target.classList?.contains('aiKey')) return;
   const v = e.target.value.trim();
   v ? store.set('localStorage', provider().keyName, v) : store.del('localStorage', provider().keyName);
@@ -498,15 +522,46 @@ document.addEventListener('click', (e) => {
   toast('Đã xoá API key khỏi máy này');
 });
 
+// Nút "Tải danh sách model" & "Kiểm tra kết nối" của web trung gian.
+document.addEventListener('click', (e) => {
+  const btn = e.target;
+  const load = btn.classList?.contains('aiLoadModels');
+  const test = btn.classList?.contains('aiTest');
+  if (!load && !test) return;
+  const out = btn.closest('.customAi').querySelector('.aiTestResult');
+  const key = store.get('localStorage', 'customKey', '');
+  if (!key) return toast('Dán API key của web trung gian trước', true);
+  out.textContent = '';
+  busy(btn, load ? 'Đang tải…' : 'Đang kiểm tra…', async () => {
+    try {
+      if (load) {
+        const ids = await listCustomModels(key, customCfg());
+        $('#aiModelList').innerHTML = ids.map((id) => `<option value="${esc(id)}">`).join('');
+        out.textContent = ids.length ? `Có ${ids.length} model — bấm vào ô "Tên model" để chọn.` : 'Web không trả về danh sách — hãy gõ tên model theo hướng dẫn của web.';
+        if (ids.length) btn.closest('.customAi').querySelector('.aiModel').focus();
+      } else {
+        const reply = await PROVIDERS.custom.ask(key, 'Trả lời đúng 1 từ: OK', customCfg());
+        out.textContent = `✅ Kết nối được! Model trả lời: "${reply.trim().slice(0, 40)}"`;
+      }
+    } catch (err) {
+      out.textContent = `❌ ${err.message}`;
+      throw err;
+    }
+  });
+});
+
 async function runAi(btn, promptId, answerId, then, prepare) {
   const key = aiKey();
-  if (!key) {
+  const isCustom = provider() === PROVIDERS.custom;
+  const missing = !key ? `dán ${provider().label} API key` : isCustom && !customCfg().base ? 'nhập Địa chỉ API của web trung gian'
+    : isCustom && !customCfg().model ? 'nhập tên model của web trung gian' : '';
+  if (missing) {
     btn.closest('.card').querySelector('details.aiBox').open = true;
-    return toast(`Chọn AI và dán ${provider().label} API key vào ô bên dưới trước (có hướng dẫn lấy key)`, true);
+    return toast(`Chọn AI và ${missing} vào ô bên dưới trước`, true);
   }
   await busy(btn, '🤖 AI đang viết… (10-60 giây)', async () => {
     if (prepare) await prepare();
-    $(`#${answerId}`).value = await provider().ask(key, $(`#${promptId}`).value);
+    $(`#${answerId}`).value = await provider().ask(key, $(`#${promptId}`).value, customCfg());
     then();
   });
 }
