@@ -1,7 +1,7 @@
 import * as fb from './lib/graph.js?v=8';
 import { analyzePrompt, writePrompt, parseAnswer } from './lib/prompts.js?v=8';
 import { makeSlideshow } from './lib/video.js?v=8';
-import { PROVIDERS, imageFree, imageGemini, listCustomModels, probeCustom, modelIdProblem } from './lib/ai.js?v=12';
+import { PROVIDERS, imageFree, imageGemini, listCustomModels, probeCustom, modelIdProblem, bridgeScript } from './lib/ai.js?v=13';
 
 // ================= Trạng thái =================
 const S = {
@@ -474,11 +474,12 @@ $('#btnWriteApply').addEventListener('click', () => {
 const provider = () => PROVIDERS[store.get('localStorage', 'aiProvider', 'gemini')] || PROVIDERS.gemini;
 const aiKey = () => store.get('localStorage', provider().keyName, '');
 // Cấu hình web trung gian: địa chỉ API, chuẩn API, tên model.
-const CUSTOM_FIELDS = { aiBase: 'customBase', aiFormat: 'customFormat', aiModel: 'customModel' };
+const CUSTOM_FIELDS = { aiBase: 'customBase', aiFormat: 'customFormat', aiModel: 'customModel', aiBridge: 'customBridge' };
 const customCfg = () => ({
   base: store.get('localStorage', 'customBase', ''),
   format: store.get('localStorage', 'customFormat', 'openai'),
   model: store.get('localStorage', 'customModel', ''),
+  bridge: store.get('localStorage', 'customBridge', ''),
 });
 function syncAiBox() {
   const pv = provider();
@@ -491,6 +492,8 @@ function syncAiBox() {
   $$('.aiBase').forEach((i) => (i.value = cfg.base));
   $$('.aiFormat').forEach((i) => (i.value = cfg.format));
   $$('.aiModel').forEach((i) => (i.value = cfg.model));
+  $$('.aiBridge').forEach((i) => (i.value = cfg.bridge));
+  if (cfg.bridge) $$('.bridgeBox').forEach((d) => (d.open = true));
 }
 syncAiBox();
 document.addEventListener('change', (e) => {
@@ -524,6 +527,17 @@ document.addEventListener('click', (e) => {
   store.del('localStorage', provider().keyName);
   syncAiBox();
   toast('Đã xoá API key khỏi máy này');
+});
+
+document.addEventListener('click', async (e) => {
+  if (!e.target.classList?.contains('aiBridgeCopy')) return;
+  const code = bridgeScript(customCfg().base || 'https://api.xkiro.com/v1');
+  try {
+    await navigator.clipboard.writeText(code);
+    toast('Đã copy mã cầu nối — dán vào script.google.com');
+  } catch {
+    window.prompt('Copy mã dưới đây (Ctrl+C):', code);
+  }
 });
 
 function saveBase(base) {
@@ -560,6 +574,8 @@ document.addEventListener('click', (e) => {
     } catch (err) {
       if (err.base && err.base !== customCfg().base) saveBase(err.base);
       out.textContent = `❌ ${err.message}`;
+      // Bị chặn CORS → mở sẵn hướng dẫn Cầu nối.
+      if ((err.cors || err.status === 0) && !customCfg().bridge) btn.closest('.customAi').querySelector('.bridgeBox').open = true;
       throw err;
     }
   });
