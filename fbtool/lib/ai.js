@@ -99,18 +99,77 @@ function apiError(message, status, apiLike) {
   return Object.assign(new Error(message), { status, apiLike });
 }
 
-async function customFetch(url, init, label = 'Web trung gian') {
+// Gọi API trực tiếp, hoặc qua "cầu nối" Google Apps Script (bridge) khi web trung gian chặn trình duyệt (CORS).
+async function customFetch(url, init = {}, bridge = '') {
+  const res = bridge ? await viaBridge(bridge, url, init) : await direct(url, init);
+  let data = null;
+  try { data = JSON.parse(res.text); } catch { /* không phải JSON */ }
+  const ok = res.status >= 200 && res.status < 300;
+  if (ok && !data) throw apiError('Địa chỉ này trả về một trang web chứ không phải API — kiểm tra lại "Địa chỉ API" trong mục API / Docs của web trung gian.', 404, false);
+  if (!ok) throw httpError(res, data || {}, !!data);
+  return data;
+}
+
+async function direct(url, init) {
   let res;
   try {
     res = await fetch(url, init);
   } catch {
-    throw apiError(`Không kết nối được ${label}. Có 3 khả năng: (1) sai địa chỉ API, (2) mạng lỗi, (3) web đó không cho gọi trực tiếp từ trình duyệt (CORS) — hỏi bên bán API có hỗ trợ "gọi từ trình duyệt / CORS" không.`, 0, false);
+    throw apiError('Không kết nối được Web trung gian. Có 3 khả năng: (1) sai địa chỉ API, (2) mạng lỗi, (3) web đó không cho gọi trực tiếp từ trình duyệt (CORS) — khi đó hãy dùng "Cầu nối" bên dưới.', 0, false);
   }
-  const isJson = (res.headers.get('content-type') || '').includes('json');
-  const data = await res.json().catch(() => null);
-  if (res.ok && !data) throw apiError('Địa chỉ này trả về một trang web chứ không phải API — kiểm tra lại "Địa chỉ API" trong mục API / Docs của web trung gian.', 404, false);
-  if (!res.ok) throw httpError(res, data || {}, isJson && !!data);
-  return data;
+  return { status: res.status, statusText: res.statusText, text: await res.text() };
+}
+
+// Gửi dạng text/plain (không kích hoạt kiểm tra CORS "preflight"); Apps Script gọi API thay trình duyệt.
+async function viaBridge(bridge, url, init) {
+  let res;
+  try {
+    res = await fetch(bridge, {
+      method: 'POST',
+      headers: { 'content-type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ url, method: init.method || 'GET', headers: init.headers || {}, body: init.body || null }),
+    });
+  } catch {
+    throw apiError('Không kết nối được Cầu nối — kiểm tra lại link Cầu nối (phải là link "Ứng dụng web" kết thúc bằng /exec, quyền truy cập "Bất kỳ ai").', 0, false);
+  }
+  let out;
+  try { out = JSON.parse(await res.text()); } catch {
+    throw apiError('Cầu nối trả về trang lạ — thường do chưa chọn quyền truy cập "Bất kỳ ai" (Anyone) khi triển khai Apps Script.', 0, false);
+  }
+  if (out.error) throw apiError(`Cầu nối báo lỗi: ${out.error}`, 0, false);
+  return { status: out.status, statusText: '', text: out.body || '' };
+}
+
+// Mã Apps Script để người dùng dán vào script.google.com (chỉ cho phép gọi tới tên miền API đã nhập).
+export function bridgeScript(base) {
+  let host = 'api.xkiro.com';
+  try { host = new URL(normalizeBase(base)).hostname || host; } catch { /* dùng mặc định */ }
+  return `// Cầu nối FB Page Manager → web trung gian. Dán toàn bộ vào script.google.com rồi Triển khai → Ứng dụng web.
+const ALLOWED_HOSTS = ['${host}']; // chỉ cho phép gọi tới các tên miền này
+
+function doPost(e) {
+  try {
+    const req = JSON.parse(e.postData.contents);
+    const m = String(req.url).match(/^https:\\/\\/([^\\/:]+)/);
+    if (!m || ALLOWED_HOSTS.indexOf(m[1]) < 0) return out({ error: 'Cầu nối không cho phép gọi ' + req.url + ' — thêm tên miền vào ALLOWED_HOSTS.' });
+    const headers = Object.assign({}, req.headers || {});
+    const contentType = headers['content-type'];
+    delete headers['content-type'];
+    const opt = { method: String(req.method || 'GET').toLowerCase(), headers: headers, muteHttpExceptions: true };
+    if (req.body) { opt.payload = req.body; opt.contentType = contentType || 'application/json'; }
+    const res = UrlFetchApp.fetch(req.url, opt);
+    return out({ status: res.getResponseCode(), body: res.getContentText() });
+  } catch (err) {
+    return out({ error: String(err) });
+  }
+}
+
+function doGet() { return out({ ok: true, message: 'Cầu nối đang chạy' }); }
+
+function out(o) {
+  return ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON);
+}
+`;
 }
 
 function httpError(res, data, apiLike) {
@@ -149,12 +208,12 @@ export async function probeCustom(key, cfg = {}) {
   }
   // Mọi địa chỉ đều "không kết nối được": phân biệt máy chủ CÓ tồn tại nhưng chặn trình duyệt (CORS)
   // với máy chủ KHÔNG tồn tại, bằng 1 yêu cầu no-cors (trình duyệt cho gửi nhưng không cho đọc kết quả).
-  for (const base of unreachable) {
+  for (const base of cfg.bridge ? [] : unreachable) {
     if (await reachable(`${base}/models`)) {
-      throw Object.assign(new Error(`Đã tìm thấy máy chủ API tại ${base} nhưng web trung gian CHẶN gọi trực tiếp từ trình duyệt (lỗi CORS), nên chưa kiểm tra được key và model. Cách khắc phục: hỏi hỗ trợ của web trung gian có bật "CORS / cho phép gọi API từ trình duyệt" không; nếu không, cần một cầu nối (proxy) để gọi thay.`), { base, cors: true });
+      throw Object.assign(new Error(`Đã tìm thấy máy chủ API tại ${base} nhưng web trung gian CHẶN gọi trực tiếp từ trình duyệt (lỗi CORS), nên chưa kiểm tra được key và model. Cách khắc phục: làm "🌉 Cầu nối" theo hướng dẫn ngay bên dưới (khoảng 3 phút, miễn phí).`), { base, cors: true });
     }
   }
-  if (unreachable.length) throw new Error('Không tìm thấy máy chủ API ở các địa chỉ phổ biến — hãy tìm đúng "Base URL / Endpoint" trong trang API Keys hoặc Tài liệu (Docs) của web trung gian rồi dán vào.');
+  if (unreachable.length && !cfg.bridge) throw new Error('Không tìm thấy máy chủ API ở các địa chỉ phổ biến — hãy tìm đúng "Base URL / Endpoint" trong trang API Keys hoặc Tài liệu (Docs) của web trung gian rồi dán vào.');
   throw firstErr || new Error('Chưa nhập "Địa chỉ API" của web trung gian.');
 }
 
@@ -191,7 +250,7 @@ export async function askCustom(key, prompt, cfg = {}) {
     const data = await customFetch(`${base}/messages`, {
       method: 'POST', headers,
       body: JSON.stringify({ model: cfg.model, max_tokens: 8000, messages: [{ role: 'user', content: prompt }] }),
-    });
+    }, cfg.bridge);
     if (data.stop_reason === 'max_tokens') throw new Error('Câu trả lời quá dài bị cắt — hãy chọn ít Page hơn rồi thử lại.');
     const text = (data.content || []).filter((b) => b.type === 'text').map((b) => b.text).join('\n');
     if (!text) throw new Error('Model không trả về nội dung — thử lại hoặc đổi model.');
@@ -201,7 +260,7 @@ export async function askCustom(key, prompt, cfg = {}) {
   const data = await customFetch(`${base}/chat/completions`, {
     method: 'POST', headers,
     body: JSON.stringify({ model: cfg.model, max_tokens: 8000, messages: [{ role: 'user', content: prompt }] }),
-  });
+  }, cfg.bridge);
   const choice = data.choices?.[0];
   if (choice?.finish_reason === 'length') throw new Error('Câu trả lời quá dài bị cắt — hãy chọn ít Page hơn rồi thử lại.');
   const content = choice?.message?.content;
@@ -214,7 +273,13 @@ export async function askCustom(key, prompt, cfg = {}) {
 export async function listCustomModels(key, cfg = {}) {
   const base = normalizeBase(cfg.base);
   if (!base) throw new Error('Chưa nhập "Địa chỉ API" của web trung gian.');
-  const data = await customFetch(`${base}/models`, { headers: customHeaders(key, cfg.format) });
+  // Nhiều web (VD xKiro) cho xem danh sách model công khai: thử không kèm key trước (không bị kiểm tra CORS preflight).
+  let data;
+  try {
+    data = await customFetch(`${base}/models`, {}, cfg.bridge);
+  } catch {
+    data = await customFetch(`${base}/models`, { headers: customHeaders(key, cfg.format) }, cfg.bridge);
+  }
   const ids = (data.data || data.models || []).map((m) => (typeof m === 'string' ? m : m.id || m.name)).filter(Boolean);
   return [...new Set(ids)].sort();
 }

@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>FB Page Manager</title>
-  <link rel="stylesheet" href="style.css?v=11">
+  <link rel="stylesheet" href="style.css?v=13">
 </head>
 <body>
 <header class="top">
@@ -69,6 +69,18 @@
                 <button class="btn sm aiTest" type="button">✅ Kiểm tra kết nối</button>
                 <span class="small muted aiTestResult"></span>
               </div>
+              <details class="bridgeBox">
+                <summary class="small">🌉 Cầu nối (chỉ cần khi báo lỗi CORS / "chặn gọi từ trình duyệt")</summary>
+                <ol class="small">
+                  <li>Mở <a href="https://script.google.com/home/projects/create" target="_blank" rel="noopener">script.google.com → Dự án mới</a> (đăng nhập Google của bạn).</li>
+                  <li>Xoá hết mã có sẵn, bấm <b>📋 Copy mã cầu nối</b> bên dưới rồi dán vào. Bấm 💾 Lưu.</li>
+                  <li>Bấm <b>Triển khai (Deploy) → Tùy chọn triển khai mới</b> → bánh răng ⚙ chọn <b>Ứng dụng web</b> → <i>Thực thi với tư cách:</i> <b>Tôi</b>; <i>Ai có quyền truy cập:</i> <b>Bất kỳ ai</b> → <b>Triển khai</b> → cấp quyền (Advanced → Go to … → Allow).</li>
+                  <li>Copy <b>URL ứng dụng web</b> (kết thúc bằng <code>/exec</code>) dán vào ô dưới, rồi bấm <b>✅ Kiểm tra kết nối</b>.</li>
+                </ol>
+                <button class="btn sm aiBridgeCopy" type="button">📋 Copy mã cầu nối</button>
+                <label>Link Cầu nối (URL ứng dụng web)<input class="aiBridge" placeholder="https://script.google.com/macros/s/…/exec" autocomplete="off"></label>
+                <p class="small muted">Cầu nối chạy trên tài khoản Google của bạn, chỉ chuyển tiếp yêu cầu tới tên miền API đã nhập. Để trống ô này để gọi trực tiếp như bình thường.</p>
+              </details>
             </div>
           </div>
     </div>
@@ -144,6 +156,18 @@
                 <button class="btn sm aiTest" type="button">✅ Kiểm tra kết nối</button>
                 <span class="small muted aiTestResult"></span>
               </div>
+              <details class="bridgeBox">
+                <summary class="small">🌉 Cầu nối (chỉ cần khi báo lỗi CORS / "chặn gọi từ trình duyệt")</summary>
+                <ol class="small">
+                  <li>Mở <a href="https://script.google.com/home/projects/create" target="_blank" rel="noopener">script.google.com → Dự án mới</a> (đăng nhập Google của bạn).</li>
+                  <li>Xoá hết mã có sẵn, bấm <b>📋 Copy mã cầu nối</b> bên dưới rồi dán vào. Bấm 💾 Lưu.</li>
+                  <li>Bấm <b>Triển khai (Deploy) → Tùy chọn triển khai mới</b> → bánh răng ⚙ chọn <b>Ứng dụng web</b> → <i>Thực thi với tư cách:</i> <b>Tôi</b>; <i>Ai có quyền truy cập:</i> <b>Bất kỳ ai</b> → <b>Triển khai</b> → cấp quyền (Advanced → Go to … → Allow).</li>
+                  <li>Copy <b>URL ứng dụng web</b> (kết thúc bằng <code>/exec</code>) dán vào ô dưới, rồi bấm <b>✅ Kiểm tra kết nối</b>.</li>
+                </ol>
+                <button class="btn sm aiBridgeCopy" type="button">📋 Copy mã cầu nối</button>
+                <label>Link Cầu nối (URL ứng dụng web)<input class="aiBridge" placeholder="https://script.google.com/macros/s/…/exec" autocomplete="off"></label>
+                <p class="small muted">Cầu nối chạy trên tài khoản Google của bạn, chỉ chuyển tiếp yêu cầu tới tên miền API đã nhập. Để trống ô này để gọi trực tiếp như bình thường.</p>
+              </details>
             </div>
           </details>
       <h3 style="margin-top:16px">③ Kết quả từ Claude</h3>
@@ -211,6 +235,18 @@
                 <button class="btn sm aiTest" type="button">✅ Kiểm tra kết nối</button>
                 <span class="small muted aiTestResult"></span>
               </div>
+              <details class="bridgeBox">
+                <summary class="small">🌉 Cầu nối (chỉ cần khi báo lỗi CORS / "chặn gọi từ trình duyệt")</summary>
+                <ol class="small">
+                  <li>Mở <a href="https://script.google.com/home/projects/create" target="_blank" rel="noopener">script.google.com → Dự án mới</a> (đăng nhập Google của bạn).</li>
+                  <li>Xoá hết mã có sẵn, bấm <b>📋 Copy mã cầu nối</b> bên dưới rồi dán vào. Bấm 💾 Lưu.</li>
+                  <li>Bấm <b>Triển khai (Deploy) → Tùy chọn triển khai mới</b> → bánh răng ⚙ chọn <b>Ứng dụng web</b> → <i>Thực thi với tư cách:</i> <b>Tôi</b>; <i>Ai có quyền truy cập:</i> <b>Bất kỳ ai</b> → <b>Triển khai</b> → cấp quyền (Advanced → Go to … → Allow).</li>
+                  <li>Copy <b>URL ứng dụng web</b> (kết thúc bằng <code>/exec</code>) dán vào ô dưới, rồi bấm <b>✅ Kiểm tra kết nối</b>.</li>
+                </ol>
+                <button class="btn sm aiBridgeCopy" type="button">📋 Copy mã cầu nối</button>
+                <label>Link Cầu nối (URL ứng dụng web)<input class="aiBridge" placeholder="https://script.google.com/macros/s/…/exec" autocomplete="off"></label>
+                <p class="small muted">Cầu nối chạy trên tài khoản Google của bạn, chỉ chuyển tiếp yêu cầu tới tên miền API đã nhập. Để trống ô này để gọi trực tiếp như bình thường.</p>
+              </details>
             </div>
           </details>
         <div id="writeFlow" class="hidden">
@@ -302,6 +338,6 @@
     f.classList.remove('hidden');
   }
 </script>
-<script type="module" src="app.js?v=12"></script>
+<script type="module" src="app.js?v=13"></script>
 </body>
 </html>
