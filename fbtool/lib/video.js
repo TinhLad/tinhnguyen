@@ -60,7 +60,8 @@ export async function makeSlideshow({ images = [], texts = [], audio, format = '
   const mime = pickMime();
   if (!mime) throw new Error('Trình duyệt không hỗ trợ ghi video — hãy dùng Chrome hoặc Edge bản mới.');
   const [W, H] = FORMATS[format] || FORMATS['9:16'];
-  const imgs = await Promise.all([...images].map(loadImage));
+  // Phần tử null = cảnh không có ảnh (chỉ nền màu + chữ), giữ đúng thứ tự cảnh.
+  const imgs = await Promise.all([...images].map((f) => (f ? loadImage(f) : null)));
   const n = Math.max(imgs.length, texts.length, 1);
   const dur = Math.min(Math.max(Number(seconds) || 3, 1), 15);
   const total = n * dur;
@@ -96,7 +97,8 @@ export async function makeSlideshow({ images = [], texts = [], audio, format = '
     const local = t - i * dur;
     ctx.fillStyle = bgColor;
     ctx.fillRect(0, 0, W, H);
-    if (imgs.length) drawCover(ctx, imgs[i % imgs.length], W, H, 1 + 0.12 * (local / dur));
+    const im = imgs.length ? imgs[i % imgs.length] : null;
+    if (im) drawCover(ctx, im, W, H, 1 + 0.12 * (local / dur));
     drawCaption(ctx, texts[i], W, H);
     // Hiệu ứng mờ dần đầu/cuối mỗi cảnh
     const fade = Math.min(local / 0.4, (dur - local) / 0.4, 1);
@@ -125,7 +127,7 @@ export async function makeSlideshow({ images = [], texts = [], audio, format = '
   audioEl?.pause();
   audioCtx?.close();
   stream.getTracks().forEach((t) => t.stop());
-  imgs.forEach((im) => URL.revokeObjectURL(im.src));
+  imgs.forEach((im) => im && URL.revokeObjectURL(im.src));
 
   const type = mime.split(';')[0];
   return { blob: new Blob(chunks, { type }), seconds: total, ext: type === 'video/mp4' ? 'mp4' : 'webm' };

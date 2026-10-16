@@ -1,7 +1,7 @@
 import * as fb from './lib/graph.js?v=8';
 import { analyzePrompt, writePrompt, parseAnswer } from './lib/prompts.js?v=8';
 import { makeSlideshow } from './lib/video.js?v=8';
-import { PROVIDERS, imageFree, imageGemini, listCustomModels, probeCustom, modelIdProblem, bridgeScript } from './lib/ai.js?v=13';
+import { PROVIDERS, imageFree, imageGemini, imageCustom, listCustomModels, probeCustom, modelIdProblem, bridgeScript } from './lib/ai.js?v=14';
 
 // ================= Trạng thái =================
 const S = {
@@ -407,6 +407,65 @@ $('#editors').addEventListener('input', (e) => {
   $(`[data-count="${id}"]`).textContent = `${e.target.value.length} ký tự`;
 });
 
+// ================= 🔥 Bài viral → bài mới =================
+// Điểm viral = tương tác của bài ÷ tương tác trung bình của chính Page đó (công bằng giữa Page lớn và nhỏ).
+async function findViral() {
+  requireLogin();
+  const days = Number($('#viralDays').value) || 14;
+  const since = Date.now() - days * 864e5;
+  const pages = await loadPages(S.pages, 50);
+  const list = [];
+  for (const p of pages) {
+    const avg = Math.max(p.stats?.avgEngagement || 0, 1);
+    for (const x of p.posts) {
+      if (new Date(x.created_time).getTime() < since || !x.message.trim() || x.engagement < 5) continue;
+      list.push({ ...x, pageName: p.name, pageId: p.id, score: x.engagement / avg });
+    }
+  }
+  list.sort((a, b) => b.score - a.score || b.engagement - a.engagement);
+  S.viral = list.slice(0, 10);
+  renderViral(pages.filter((p) => p.error).length);
+}
+
+function renderViral(errors) {
+  const v = S.viral || [];
+  $('#viralList').innerHTML = !v.length
+    ? `<p class="muted">Không có bài nào đủ tương tác trong khoảng thời gian này — thử chọn 30 hoặc 90 ngày.${errors ? ` (${errors} Page không đọc được)` : ''}</p>`
+    : `<div class="posts">${v.map((x, i) => `
+      <div class="post">
+        ${x.picture ? `<img src="${esc(x.picture)}" alt="" loading="lazy">` : ''}
+        <div class="small"><b>#${i + 1}</b> · ${esc(x.pageName)} · ${fmtDate(x.created_time)}</div>
+        <div class="small"><span class="badge ok">🔥 x${x.score.toFixed(1)} so với TB</span> 👍 ${fmt(x.reactions)} · 💬 ${fmt(x.comments)} · ↗ ${fmt(x.shares)}</div>
+        <div class="msg">${esc(x.message)}</div>
+        <div class="row wrap"><button class="btn sm primary" data-viral="${i}">✨ Viết lại từ bài này</button>
+          ${x.permalink_url ? `<a class="small" href="${esc(x.permalink_url)}" target="_blank" rel="noopener">Xem bài</a>` : ''}</div>
+      </div>`).join('')}</div>`;
+}
+
+function useSource(src) {
+  S.source = src;
+  $('#viralSource').classList.remove('hidden');
+  $('#viralSource').innerHTML = `<div class="idea"><b>✅ Đang dùng làm cảm hứng:</b> ${src.external ? 'nội dung bạn dán' : `bài của ${esc(src.page)} (${fmt(src.engagement)} tương tác)`}
+    <div class="small muted">${esc(src.text.slice(0, 200))}${src.text.length > 200 ? '…' : ''}</div>
+    <div class="small">Tiếp theo: chọn Page ở ①, chọn "Kèm theo" ở ② rồi bấm <b>🤖 AI viết trực tiếp</b>. <button class="btn sm" id="btnClearSource" type="button">Bỏ chọn</button></div></div>`;
+  $('#btnClearSource').onclick = () => { S.source = null; $('#viralSource').classList.add('hidden'); };
+  $('#viralSource').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  toast('Đã chọn bài làm cảm hứng — AI sẽ viết bài MỚI, không chép nguyên văn');
+}
+
+$('#btnFindViral').addEventListener('click', (e) => busy(e.target, 'Đang đọc bài trên các Page…', findViral));
+$('#viralList').addEventListener('click', (e) => {
+  const i = e.target.dataset.viral;
+  if (i == null) return;
+  const x = S.viral[i];
+  useSource({ text: x.message, page: x.pageName, engagement: x.engagement, external: false });
+});
+$('#btnUseExternal').addEventListener('click', () => {
+  const text = $('#viralExternal').value.trim();
+  if (text.length < 30) return toast('Dán nội dung bài (ít nhất vài câu) trước', true);
+  useSource({ text, external: true });
+});
+
 $('#btnSameText').addEventListener('click', () => {
   const first = [...S.targets].map((id) => S.texts[id]).find(Boolean);
   if (!first) return toast('Hãy viết nội dung cho ít nhất 1 Page trước', true);
@@ -416,7 +475,7 @@ $('#btnSameText').addEventListener('click', () => {
 
 async function buildWritePrompt() {
   requireLogin();
-  if (!$('#topic').value.trim()) throw new Error('Nhập chủ đề / thông tin bài viết');
+  if (!$('#topic').value.trim() && !S.source) throw new Error('Nhập chủ đề / thông tin bài viết, hoặc chọn 1 bài viral ở khung 🔥');
   const pages = [...S.targets].map(pageById).filter(Boolean);
   if (!pages.length) throw new Error('Chọn Page ở bước ① trước');
   // Lấy vài bài cũ làm mẫu giọng văn cho từng Page.
@@ -426,7 +485,7 @@ async function buildWritePrompt() {
   }));
   $('#writePrompt').value = writePrompt({
     topic: $('#topic').value, goal: $('#goal').value, tone: $('#tone').value,
-    length: $('#length').value, cta: $('#cta').value, link: $('#link').value, pages: withSamples,
+    length: $('#length').value, cta: $('#cta').value, link: $('#link').value, pages: withSamples, source: S.source,
   });
   $('#writeFlow').classList.remove('hidden');
 }
@@ -457,6 +516,11 @@ function applyWrite() {
     n++;
   }
   if (r.video_slides?.length) $('#vTexts').value = r.video_slides.join('\n');
+  const scenes = (r.video_scenes || []).filter((x) => x?.caption && !String(x.caption).includes('...'));
+  if (scenes.length) {
+    $('#vScenes').value = scenes.map((x) => `${String(x.caption).replace(/\|/g, '/')} | ${x.image_prompt || ''}`).join('\n');
+    if (!r.video_slides?.length) $('#vTexts').value = scenes.map((x) => x.caption).join('\n');
+  }
   if (r.headline) $('#vTitle').value = r.headline;
   if (r.image_prompt && !String(r.image_prompt).includes('...')) $('#imgPrompt').value = r.image_prompt;
   renderChips();
@@ -598,27 +662,41 @@ async function runAi(btn, promptId, answerId, then, prepare) {
 }
 $('#btnWriteAi').addEventListener('click', (e) => runAi(e.target, 'writePrompt', 'writeAnswer', () => {
   applyWrite();
-  if ($('#autoImage').checked && $('#imgPrompt').value.trim()) {
+  const auto = $('#autoMedia').value;
+  if (auto === 'photo' && $('#imgPrompt').value.trim()) {
     $('input[name=kind][value=photo]').checked = true;
     syncKind();
     makeImage($('#btnMakeImage'));
+  } else if (auto === 'video' && $('#vScenes').value.trim()) {
+    $('input[name=kind][value=video]').checked = true;
+    $('input[name=vsrc][value=ai]').checked = true;
+    syncKind();
+    makeAiVideo($('#btnAiVideo'));
   }
 }, buildWritePrompt));
 
 // ================= AI tạo ảnh =================
+// Tạo 1 ảnh theo nguồn ảnh đang chọn (Miễn phí / Gemini / Web trung gian).
+async function genImage(prompt, ratio) {
+  const src = $('#imgProvider').value;
+  if (src === 'gemini') {
+    const key = store.get('localStorage', PROVIDERS.gemini.keyName, '');
+    if (!key) throw new Error('Chưa có Gemini API key — dán key ở khung "🤖 Cài đặt AI" (tab 1)');
+    return imageGemini(key, prompt, ratio);
+  }
+  if (src === 'custom') {
+    const key = store.get('localStorage', PROVIDERS.custom.keyName, '');
+    if (!key) throw new Error('Chưa có API key web trung gian — điền ở khung "🤖 Cài đặt AI" (tab 1)');
+    return imageCustom(key, customCfg(), $('#imgModel').value.trim(), prompt, ratio);
+  }
+  return imageFree(prompt, ratio);
+}
+
 async function makeImage(btn) {
   await busy(btn, '🎨 Đang tạo ảnh… (10-60 giây)', async () => {
     const prompt = $('#imgPrompt').value.trim() || $('#topic').value.trim();
     if (!prompt) throw new Error('Nhập mô tả ảnh (hoặc chủ đề bài viết) trước');
-    const ratio = $('#imgRatio').value;
-    let blob;
-    if ($('#imgProvider').value === 'gemini') {
-      const key = store.get('localStorage', PROVIDERS.gemini.keyName, '');
-      if (!key) throw new Error('Chưa có Gemini API key — dán key ở mục "🔑 Chọn AI & API key" (bước ②)');
-      blob = await imageGemini(key, prompt, ratio);
-    } else {
-      blob = await imageFree(prompt, ratio);
-    }
+    const blob = await genImage(prompt, $('#imgRatio').value);
     const ext = (blob.type.split('/')[1] || 'png').replace('jpeg', 'jpg');
     setMedia({ file: blob, name: `anh-ai.${ext}`, type: blob.type, url: URL.createObjectURL(blob) });
     $('#mediaPreview').insertAdjacentHTML('beforeend', `<div><a class="btn sm" href="${esc(S.media.url)}" download="${esc(S.media.name)}">⬇ Tải ảnh về máy</a></div>`);
@@ -627,7 +705,50 @@ async function makeImage(btn) {
 }
 $('#btnMakeImage').addEventListener('click', (e) => makeImage(e.target));
 $('#imgProvider').value = store.get('localStorage', 'imgProvider', 'free');
-$('#imgProvider').addEventListener('change', (e) => store.set('localStorage', 'imgProvider', e.target.value));
+$('#imgModel').value = store.get('localStorage', 'imgModel', '');
+const syncImgModel = () => $('#imgModel').classList.toggle('hidden', $('#imgProvider').value !== 'custom');
+syncImgModel();
+$('#vImgProvider').value = $('#imgProvider').value;
+$('#imgProvider').addEventListener('change', (e) => { store.set('localStorage', 'imgProvider', e.target.value); $('#vImgProvider').value = e.target.value; syncImgModel(); });
+$('#vImgProvider').addEventListener('change', (e) => { $('#imgProvider').value = e.target.value; $('#imgProvider').dispatchEvent(new Event('change')); });
+$('#imgModel').addEventListener('input', (e) => store.set('localStorage', 'imgModel', e.target.value.trim()));
+
+// ================= AI tạo video: kịch bản cảnh → AI vẽ ảnh từng cảnh → dựng video =================
+const VIDEO_RATIO = { '9:16': '9:16', '1:1': '1:1', '16:9': '16:9' };
+function parseScenes() {
+  return $('#vScenes').value.split('\n').map((l) => l.trim()).filter(Boolean).map((l) => {
+    const [caption, ...rest] = l.split('|');
+    return { caption: caption.trim(), prompt: rest.join('|').trim() || caption.trim() };
+  });
+}
+async function makeAiVideo(btn) {
+  await busy(btn, '🤖 Đang tạo video…', async () => {
+    const scenes = parseScenes();
+    if (!scenes.length) throw new Error('Chưa có kịch bản cảnh — bấm "🤖 AI viết trực tiếp" với "Kèm theo: Video AI", hoặc tự viết mỗi dòng: Chữ | mô tả ảnh');
+    if (scenes.length > 10) throw new Error('Tối đa 10 cảnh mỗi video');
+    const ratio = VIDEO_RATIO[$('#vFormat').value] || '9:16';
+    const images = [];
+    let failed = 0;
+    for (const [i, sc] of scenes.entries()) {
+      btn.textContent = `🎨 AI vẽ cảnh ${i + 1}/${scenes.length}…`;
+      try {
+        images.push(await genImage(sc.prompt, ratio));
+      } catch (err) {
+        if (i === 0 && !images.length && scenes.length > 1 && /key|Chưa|model/i.test(err.message)) throw err; // lỗi cấu hình → báo ngay
+        images.push(null); // cảnh lỗi → dùng nền màu, video vẫn đủ cảnh
+        failed++;
+      }
+    }
+    const r = await makeSlideshow({
+      images, texts: scenes.map((x) => x.caption), audio: $('#vAudio').files[0], format: $('#vFormat').value,
+      seconds: $('#vSeconds').value, bgColor: $('#vBg').value,
+      onProgress: (p) => (btn.textContent = `🎬 Đang dựng video… ${Math.round(p * 100)}%`),
+    });
+    setMedia({ file: r.blob, name: `video-ai.${r.ext}`, type: r.blob.type, url: URL.createObjectURL(r.blob) });
+    toast(failed ? `Đã tạo video ${r.seconds}s — ${failed} cảnh không vẽ được ảnh nên dùng nền màu` : `Đã tạo video AI ${r.seconds}s — xem lại trước khi đăng`, !!failed);
+  });
+}
+$('#btnAiVideo').addEventListener('click', (e) => makeAiVideo(e.target));
 
 // ================= Thư viện prompt đã lưu =================
 const PROMPT_FIELDS = ['topic', 'goal', 'tone', 'length', 'cta', 'imgPrompt', 'imgRatio'];
@@ -675,6 +796,10 @@ function syncKind() {
   const src = $('input[name=vsrc]:checked').value;
   $('#vsrc-upload').classList.toggle('hidden', src !== 'upload');
   $('#vsrc-make').classList.toggle('hidden', src !== 'make');
+  $('#vsrc-ai').classList.toggle('hidden', src !== 'ai');
+  $('#vCommon').classList.toggle('hidden', src === 'upload');
+  $('#btnMakeVideo').classList.toggle('hidden', src !== 'make');
+  $('#btnAiVideo').classList.toggle('hidden', src !== 'ai');
 }
 $$('input[name=kind], input[name=vsrc]').forEach((r) => r.addEventListener('change', () => {
   setMedia(null);
