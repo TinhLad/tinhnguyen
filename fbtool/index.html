@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>FB Page Manager</title>
-  <link rel="stylesheet" href="style.css?v=10">
+  <link rel="stylesheet" href="style.css?v=11">
 </head>
 <body>
 <header class="top">
@@ -57,12 +57,12 @@
               <input class="aiKey" type="password" autocomplete="off"><button class="btn sm aiKeyClear" type="button">Xoá key</button></div>
             <p class="small muted"><span class="aiHelp"></span> Key chỉ lưu trên trình duyệt máy này.</p>
             <div class="customAi hidden">
-              <label>Địa chỉ API (Base URL)<input class="aiBase" placeholder="VD: https://ten-web-trung-gian.com/v1" autocomplete="off"></label>
+              <label>Địa chỉ API (Base URL)<input class="aiBase" placeholder="VD: https://ten-web.com/v1 — không chắc thì dán tên miền, bấm Kiểm tra để tự dò" autocomplete="off"></label>
               <div class="grid2">
                 <label>Chuẩn API
                   <select class="aiFormat"><option value="openai">Chuẩn OpenAI (/chat/completions) — phổ biến nhất</option><option value="anthropic">Chuẩn Anthropic (/messages)</option></select>
                 </label>
-                <label>Tên model<input class="aiModel" list="aiModelList" placeholder="VD: claude-sonnet-4-5, gpt-4o…" autocomplete="off"></label>
+                <label>Tên model<input class="aiModel" list="aiModelList" placeholder="Tên model, hoặc dán cả link trang model" autocomplete="off"></label>
               </div>
               <div class="row wrap">
                 <button class="btn sm aiLoadModels" type="button">📥 Tải danh sách model</button>
@@ -132,12 +132,12 @@
               <input class="aiKey" type="password" autocomplete="off"><button class="btn sm aiKeyClear" type="button">Xoá key</button></div>
             <p class="small muted"><span class="aiHelp"></span> Key chỉ lưu trên trình duyệt máy này.</p>
             <div class="customAi hidden">
-              <label>Địa chỉ API (Base URL)<input class="aiBase" placeholder="VD: https://ten-web-trung-gian.com/v1" autocomplete="off"></label>
+              <label>Địa chỉ API (Base URL)<input class="aiBase" placeholder="VD: https://ten-web.com/v1 — không chắc thì dán tên miền, bấm Kiểm tra để tự dò" autocomplete="off"></label>
               <div class="grid2">
                 <label>Chuẩn API
                   <select class="aiFormat"><option value="openai">Chuẩn OpenAI (/chat/completions) — phổ biến nhất</option><option value="anthropic">Chuẩn Anthropic (/messages)</option></select>
                 </label>
-                <label>Tên model<input class="aiModel" list="aiModelList" placeholder="VD: claude-sonnet-4-5, gpt-4o…" autocomplete="off"></label>
+                <label>Tên model<input class="aiModel" list="aiModelList" placeholder="Tên model, hoặc dán cả link trang model" autocomplete="off"></label>
               </div>
               <div class="row wrap">
                 <button class="btn sm aiLoadModels" type="button">📥 Tải danh sách model</button>
@@ -199,12 +199,12 @@
               <input class="aiKey" type="password" autocomplete="off"><button class="btn sm aiKeyClear" type="button">Xoá key</button></div>
             <p class="small muted"><span class="aiHelp"></span> Key chỉ lưu trên trình duyệt máy này.</p>
             <div class="customAi hidden">
-              <label>Địa chỉ API (Base URL)<input class="aiBase" placeholder="VD: https://ten-web-trung-gian.com/v1" autocomplete="off"></label>
+              <label>Địa chỉ API (Base URL)<input class="aiBase" placeholder="VD: https://ten-web.com/v1 — không chắc thì dán tên miền, bấm Kiểm tra để tự dò" autocomplete="off"></label>
               <div class="grid2">
                 <label>Chuẩn API
                   <select class="aiFormat"><option value="openai">Chuẩn OpenAI (/chat/completions) — phổ biến nhất</option><option value="anthropic">Chuẩn Anthropic (/messages)</option></select>
                 </label>
-                <label>Tên model<input class="aiModel" list="aiModelList" placeholder="VD: claude-sonnet-4-5, gpt-4o…" autocomplete="off"></label>
+                <label>Tên model<input class="aiModel" list="aiModelList" placeholder="Tên model, hoặc dán cả link trang model" autocomplete="off"></label>
               </div>
               <div class="row wrap">
                 <button class="btn sm aiLoadModels" type="button">📥 Tải danh sách model</button>
@@ -302,6 +302,6 @@
     f.classList.remove('hidden');
   }
 </script>
-<script type="module" src="app.js?v=10"></script>
+<script type="module" src="app.js?v=11"></script>
 </body>
 </html>

@@ -1,7 +1,7 @@
 import * as fb from './lib/graph.js?v=8';
 import { analyzePrompt, writePrompt, parseAnswer } from './lib/prompts.js?v=8';
 import { makeSlideshow } from './lib/video.js?v=8';
-import { PROVIDERS, imageFree, imageGemini, listCustomModels } from './lib/ai.js?v=9';
+import { PROVIDERS, imageFree, imageGemini, listCustomModels, probeCustom } from './lib/ai.js?v=11';
 
 // ================= Trạng thái =================
 const S = {
@@ -505,6 +505,10 @@ document.addEventListener('change', (e) => {
 document.addEventListener('input', (e) => {
   const field = Object.keys(CUSTOM_FIELDS).find((c) => e.target.classList?.contains(c));
   if (field) {
+    // Dán cả link trang model (…/models?model=meta%2Fabc%3Afree) → lấy đúng tên model.
+    if (field === 'aiModel' && /[?&]model=/.test(e.target.value)) {
+      try { e.target.value = new URL(e.target.value.trim()).searchParams.get('model') || e.target.value; } catch { /* giữ nguyên */ }
+    }
     const v = e.target.value.trim();
     v ? store.set('localStorage', CUSTOM_FIELDS[field], v) : store.del('localStorage', CUSTOM_FIELDS[field]);
     $$(`.${field}`).forEach((i) => i !== e.target && (i.value = e.target.value));
@@ -521,6 +525,11 @@ document.addEventListener('click', (e) => {
   syncAiBox();
   toast('Đã xoá API key khỏi máy này');
 });
+
+function saveBase(base) {
+  store.set('localStorage', 'customBase', base);
+  $$('.aiBase').forEach((i) => (i.value = base));
+}
 
 // Nút "Tải danh sách model" & "Kiểm tra kết nối" của web trung gian.
 document.addEventListener('click', (e) => {
@@ -540,10 +549,15 @@ document.addEventListener('click', (e) => {
         out.textContent = ids.length ? `Có ${ids.length} model — bấm vào ô "Tên model" để chọn.` : 'Web không trả về danh sách — hãy gõ tên model theo hướng dẫn của web.';
         if (ids.length) btn.closest('.customAi').querySelector('.aiModel').focus();
       } else {
-        const reply = await PROVIDERS.custom.ask(key, 'Trả lời đúng 1 từ: OK', customCfg());
-        out.textContent = `✅ Kết nối được! Model trả lời: "${reply.trim().slice(0, 40)}"`;
+        const cfg = customCfg();
+        if (!cfg.model) throw new Error('Nhập tên model trước (hoặc bấm "Tải danh sách model").');
+        const { base, reply } = await probeCustom(key, cfg);
+        const found = base !== cfg.base;
+        if (found) saveBase(base);
+        out.textContent = `✅ Kết nối được!${found ? ` Đã tự tìm đúng địa chỉ API: ${base}.` : ''} Model trả lời: "${reply.trim().slice(0, 40)}"`;
       }
     } catch (err) {
+      if (err.base && err.base !== customCfg().base) saveBase(err.base);
       out.textContent = `❌ ${err.message}`;
       throw err;
     }
