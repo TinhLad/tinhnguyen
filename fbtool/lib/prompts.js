@@ -32,9 +32,25 @@ ${JSON.stringify(data)}
 </data>`;
 }
 
-export function writePrompt({ topic, goal, tone, length, cta, link, pages }) {
+// source: bài viral làm cảm hứng { text, page, engagement, external } — AI phải VIẾT LẠI, không chép.
+function sourceBlock(source) {
+  if (!source?.text) return '';
+  const from = source.external ? 'một nguồn bên ngoài (do tôi tự sưu tầm)' : `Page "${source.page}" của tôi`;
+  return `
+BÀI VIRAL LÀM CẢM HỨNG (từ ${from}${source.engagement ? `, ${source.engagement} lượt tương tác` : ''}):
+<source>
+${String(source.text).slice(0, 3000)}
+</source>
+Yêu cầu khi dùng bài này:
+- Phân tích VÌ SAO bài này hút tương tác (chủ đề, góc nhìn, cảm xúc, cách mở bài) rồi áp dụng lại — KHÔNG chép nguyên văn, không giữ câu chữ gốc quá 1 câu ngắn.
+- Viết lại bằng góc nhìn mới, thêm giá trị (mẹo, ví dụ, câu hỏi gợi bình luận), hợp giọng từng Page.
+- Không dùng tên người, số liệu, hình ảnh riêng của bài gốc nếu không chắc chắn đúng.${source.external ? '\n- Nếu nhắc tới ý tưởng/thông tin cụ thể của nguồn ngoài, ghi "Nguồn: tổng hợp" ở cuối bài.' : ''}
+`;
+}
+
+export function writePrompt({ topic, goal, tone, length, cta, link, pages, source }) {
   return `Bạn là chuyên gia content Facebook tại Việt Nam. Viết bài đăng Facebook.
-- Chủ đề / thông tin sản phẩm: ${topic}
+- Chủ đề / thông tin sản phẩm: ${topic || (source?.text ? 'theo bài viral bên dưới' : '')}
 - Mục tiêu: ${goal}
 - Giọng văn: ${tone}
 - Độ dài: ${length}
@@ -42,14 +58,17 @@ export function writePrompt({ topic, goal, tone, length, cta, link, pages }) {
 ${link ? `- Link đính kèm: ${link}\n` : ''}
 Viết một phiên bản riêng cho TỪNG Page dưới đây — điều chỉnh theo lĩnh vực và giọng văn của Page, mở bài khác nhau
 (Facebook giảm phân phối nội dung trùng lặp giữa các Page). Emoji vừa phải, xuống dòng dễ đọc, 3-6 hashtag.
-Kèm 3-6 câu ngắn (tối đa ~12 từ) để chèn lên từng cảnh video slideshow,
-và 1 mô tả ảnh minh hoạ bằng tiếng Anh (image_prompt: chủ thể, bối cảnh, ánh sáng, phong cách; không chứa chữ trong ảnh).
-
+Kèm kịch bản video ngắn 4-6 cảnh (video_scenes): mỗi cảnh có caption tiếng Việt ngắn (tối đa ~12 từ) hiện trên màn hình
+và image_prompt tiếng Anh mô tả hình ảnh của cảnh đó (chủ thể, bối cảnh, ánh sáng, phong cách; không chứa chữ trong ảnh);
+các cảnh nối tiếp nhau thành 1 câu chuyện: mở đầu gây chú ý → nội dung chính → kêu gọi hành động.
+Và 1 mô tả ảnh minh hoạ chính bằng tiếng Anh (image_prompt) cho bài đăng dạng ảnh.
+${sourceBlock(source)}
 ${RULES}
 Cấu trúc JSON:
 {"headline": "tiêu đề ngắn cho video",
  "variants": [{"page_id": "...", "page_name": "...", "message": "...", "hashtags": ["#..."]}],
  "video_slides": ["...", "..."],
+ "video_scenes": [{"caption": "...", "image_prompt": "..."}],
  "image_prompt": "..."}
 
 <pages>

@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>FB Page Manager</title>
-  <link rel="stylesheet" href="style.css?v=13">
+  <link rel="stylesheet" href="style.css?v=14">
 </head>
 <body>
 <header class="top">
@@ -191,6 +191,27 @@
       <div id="targetPages" class="chips"></div>
     </div>
 
+    <div class="card" id="viralCard">
+      <div class="row between">
+        <h3>🔥 Lấy cảm hứng từ bài viral <span class="muted small">(tuỳ chọn)</span></h3>
+        <div class="row">
+          <label class="muted small">Trong
+            <select id="viralDays"><option value="7">7 ngày</option><option value="14" selected>14 ngày</option><option value="30">30 ngày</option><option value="90">90 ngày</option></select>
+          </label>
+          <button class="btn primary" id="btnFindViral" type="button">🔎 Tìm bài viral trên các Page</button>
+        </div>
+      </div>
+      <p class="muted small">Tool đọc bài trên <b>các Page bạn quản lý</b>, xếp hạng theo tương tác so với mức trung bình của chính Page đó. Chọn 1 bài → AI phân tích vì sao viral và <b>viết lại bài mới</b> (không chép nguyên văn) kèm ảnh/video mới.</p>
+      <div id="viralList"></div>
+      <details>
+        <summary class="small">📋 Hoặc dán nội dung bài viral bạn thấy ở nơi khác</summary>
+        <textarea id="viralExternal" rows="4" placeholder="Dán phần chữ của bài viral (không cần ảnh). AI sẽ học cách viết và chủ đề, rồi viết bài MỚI cho Page của bạn."></textarea>
+        <button class="btn sm" id="btnUseExternal" type="button">✨ Dùng nội dung này làm cảm hứng</button>
+        <p class="small muted">Chỉ dùng làm cảm hứng — không đăng lại nguyên văn bài/ảnh/video của người khác (vi phạm bản quyền, Facebook có thể giảm tiếp cận hoặc gỡ bài).</p>
+      </details>
+      <div id="viralSource" class="hidden"></div>
+    </div>
+
     <div class="grid2">
       <div class="card">
         <h3>② Viết nội dung bằng AI</h3>
@@ -214,7 +235,7 @@
         <label>Call-to-action<input id="cta" placeholder="VD: Inbox ngay để nhận tư vấn"></label>
         <div class="row wrap">
           <button class="btn primary" id="btnWriteAi">🤖 AI viết trực tiếp</button>
-          <label class="row small"><input type="checkbox" id="autoImage" checked> 🎨 Tạo ảnh luôn</label>
+          <label class="row small">Kèm theo <select id="autoMedia"><option value="photo">🎨 Ảnh AI</option><option value="video">🎬 Video AI</option><option value="none">Không</option></select></label>
           <span class="muted small">hoặc (miễn phí)</span>
           <button class="btn" id="btnWritePrompt">✨ Tạo prompt để dán vào Claude.ai</button>
         </div>
@@ -272,7 +293,8 @@
             <label>🎨 Hoặc để AI tạo ảnh — mô tả ảnh<textarea id="imgPrompt" rows="3" placeholder="VD: trẻ em vùng cao vui đêm trung thu, đèn lồng, ánh sáng ấm (AI viết bài sẽ tự gợi ý)"></textarea></label>
             <div class="row wrap">
               <select id="imgRatio"><option value="1:1">1:1 (Feed)</option><option value="4:5">4:5 (Feed dọc)</option><option value="16:9">16:9 (ngang)</option><option value="9:16">9:16 (Story)</option></select>
-              <select id="imgProvider"><option value="free">Miễn phí (không cần key)</option><option value="gemini">Gemini (cần key đã bật thanh toán)</option></select>
+              <select id="imgProvider"><option value="free">Miễn phí (không cần key)</option><option value="gemini">Gemini (cần key đã bật thanh toán)</option><option value="custom">Web trung gian (model ảnh)</option></select>
+              <input id="imgModel" class="hidden" placeholder="Model ảnh, VD: openai/gpt-image-2.5" autocomplete="off">
               <button class="btn primary" id="btnMakeImage" type="button">🎨 AI tạo ảnh</button>
             </div>
             <p class="small muted">Ảnh AI có thể chưa hoàn hảo — xem kỹ trước khi đăng. Bấm lại để tạo ảnh khác.</p>
@@ -282,11 +304,20 @@
           <div class="row wrap">
             <label class="radio"><input type="radio" name="vsrc" value="upload" checked> Video có sẵn</label>
             <label class="radio"><input type="radio" name="vsrc" value="make"> Tạo video từ ảnh</label>
+            <label class="radio"><input type="radio" name="vsrc" value="ai"> 🤖 AI tự tạo video</label>
           </div>
           <div id="vsrc-upload"><input type="file" id="videoFile" accept="video/*"></div>
           <div id="vsrc-make" class="hidden">
             <label>Ảnh các cảnh (chọn nhiều)<input type="file" id="vImages" accept="image/*" multiple></label>
             <label>Chữ trên từng cảnh (mỗi dòng 1 cảnh)<textarea id="vTexts" rows="4" placeholder="AI sẽ gợi ý khi bạn dán kết quả viết bài"></textarea></label>
+          </div>
+          <div id="vsrc-ai" class="hidden">
+            <label>Kịch bản các cảnh — mỗi dòng 1 cảnh: <code>Chữ trên màn hình | mô tả ảnh (tiếng Anh)</code>
+              <textarea id="vScenes" rows="5" placeholder="Bấm 🤖 AI viết trực tiếp (Kèm theo: Video AI) để AI tự viết kịch bản.&#10;VD: Da sạm sau mùa hè? | tired woman looking at mirror, soft morning light"></textarea></label>
+            <label>AI vẽ ảnh bằng<select id="vImgProvider"><option value="free">Miễn phí (không cần key)</option><option value="gemini">Gemini (cần key đã bật thanh toán)</option><option value="custom">Web trung gian (model ảnh — nhập ở mục Ảnh)</option></select></label>
+            <p class="small muted">AI vẽ ảnh cho từng cảnh rồi tự dựng video có chữ + nhạc. Mất khoảng 1–3 phút.</p>
+          </div>
+          <div id="vCommon" class="hidden">
             <div class="grid3">
               <label>Khung hình<select id="vFormat"><option value="9:16">9:16 (Reels)</option><option value="1:1">1:1 (Feed)</option><option value="16:9">16:9</option></select></label>
               <label>Giây/cảnh<input id="vSeconds" type="number" value="3" min="1" max="15"></label>
@@ -294,6 +325,7 @@
             </div>
             <label>Nhạc nền (tuỳ chọn — dùng nhạc có bản quyền)<input type="file" id="vAudio" accept="audio/*"></label>
             <button class="btn" id="btnMakeVideo">🎬 Tạo video</button>
+            <button class="btn primary hidden" id="btnAiVideo" type="button">🤖 AI tạo video</button>
             <p class="muted small">Video được dựng theo thời gian thực — giữ tab này mở trong lúc tạo.</p>
           </div>
           <label>Tiêu đề video<input id="vTitle"></label>
@@ -338,6 +370,6 @@
     f.classList.remove('hidden');
   }
 </script>
-<script type="module" src="app.js?v=13"></script>
+<script type="module" src="app.js?v=14"></script>
 </body>
 </html>

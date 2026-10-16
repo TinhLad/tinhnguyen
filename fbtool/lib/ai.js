@@ -298,6 +298,30 @@ const SIZES = { '1:1': [1080, 1080], '4:5': [1080, 1350], '16:9': [1280, 720], '
 const NO_TEXT = ' No text, no letters, no watermark in the image. Photorealistic, high quality, suitable for a Facebook post.';
 
 // Miễn phí, không cần key (Pollinations.ai — dịch vụ cộng đồng, có thể chậm hoặc tạm ngừng).
+// Web trung gian: tạo ảnh theo chuẩn OpenAI (POST /images/generations), đi qua Cầu nối nếu có.
+const OPENAI_SIZES = { '1:1': '1024x1024', '4:5': '1024x1536', '9:16': '1024x1536', '16:9': '1536x1024' };
+export async function imageCustom(key, cfg, model, prompt, ratio = '1:1') {
+  const base = normalizeBase(cfg.base);
+  if (!base) throw new Error('Chưa cài web trung gian — điền ở khung "🤖 Cài đặt AI" (tab 1).');
+  if (!model) throw new Error('Nhập tên model tạo ảnh của web trung gian (VD: openai/gpt-image-2.5).');
+  const data = await customFetch(`${base}/images/generations`, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json', ...customHeaders(key, 'openai') },
+    body: JSON.stringify({ model, prompt: prompt + NO_TEXT, n: 1, size: OPENAI_SIZES[ratio] || '1024x1024' }),
+  }, cfg.bridge);
+  const item = data.data?.[0] || {};
+  if (item.b64_json) {
+    const bytes = Uint8Array.from(atob(item.b64_json), (c) => c.charCodeAt(0));
+    return new Blob([bytes], { type: 'image/png' });
+  }
+  if (item.url) {
+    const res = await fetch(item.url).catch(() => null);
+    if (res?.ok) return res.blob();
+    throw new Error('Web trung gian trả về link ảnh nhưng trình duyệt không tải được — thử model ảnh khác.');
+  }
+  throw new Error('Web trung gian không trả về ảnh — kiểm tra tên model tạo ảnh (model chat không vẽ được ảnh).');
+}
+
 export async function imageFree(prompt, ratio = '1:1') {
   const [w, h] = SIZES[ratio] || SIZES['1:1'];
   const url = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt + NO_TEXT)}?width=${w}&height=${h}&nologo=true&seed=${Date.now() % 1e6}`;
