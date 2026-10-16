@@ -1,7 +1,7 @@
 import * as fb from './lib/graph.js?v=8';
 import { analyzePrompt, writePrompt, parseAnswer } from './lib/prompts.js?v=8';
 import { makeSlideshow } from './lib/video.js?v=8';
-import { PROVIDERS, imageFree, imageGemini, listCustomModels, probeCustom } from './lib/ai.js?v=11';
+import { PROVIDERS, imageFree, imageGemini, listCustomModels, probeCustom, modelIdProblem } from './lib/ai.js?v=12';
 
 // ================= Trạng thái =================
 const S = {
@@ -551,6 +551,7 @@ document.addEventListener('click', (e) => {
       } else {
         const cfg = customCfg();
         if (!cfg.model) throw new Error('Nhập tên model trước (hoặc bấm "Tải danh sách model").');
+        if (modelIdProblem(cfg.model)) throw new Error(modelIdProblem(cfg.model));
         const { base, reply } = await probeCustom(key, cfg);
         const found = base !== cfg.base;
         if (found) saveBase(base);

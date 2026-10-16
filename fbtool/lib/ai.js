@@ -136,22 +136,54 @@ export function baseCandidates(raw) {
 // Gửi 1 câu hỏi ngắn tới từng địa chỉ cho tới khi có địa chỉ trả lời đúng kiểu API.
 export async function probeCustom(key, cfg = {}) {
   let firstErr;
+  const unreachable = [];
   for (const base of baseCandidates(cfg.base)) {
     try {
       const reply = await askCustom(key, 'Trả lời đúng 1 từ: OK', { ...cfg, base });
       return { base, reply };
     } catch (err) {
       if (err.apiLike) throw Object.assign(err, { base }); // địa chỉ đúng, lỗi do key/model/tiền
+      if (err.status === 0) unreachable.push(base);
       firstErr ??= err;
     }
   }
+  // Mọi địa chỉ đều "không kết nối được": phân biệt máy chủ CÓ tồn tại nhưng chặn trình duyệt (CORS)
+  // với máy chủ KHÔNG tồn tại, bằng 1 yêu cầu no-cors (trình duyệt cho gửi nhưng không cho đọc kết quả).
+  for (const base of unreachable) {
+    if (await reachable(`${base}/models`)) {
+      throw Object.assign(new Error(`Đã tìm thấy máy chủ API tại ${base} nhưng web trung gian CHẶN gọi trực tiếp từ trình duyệt (lỗi CORS), nên chưa kiểm tra được key và model. Cách khắc phục: hỏi hỗ trợ của web trung gian có bật "CORS / cho phép gọi API từ trình duyệt" không; nếu không, cần một cầu nối (proxy) để gọi thay.`), { base, cors: true });
+    }
+  }
+  if (unreachable.length) throw new Error('Không tìm thấy máy chủ API ở các địa chỉ phổ biến — hãy tìm đúng "Base URL / Endpoint" trong trang API Keys hoặc Tài liệu (Docs) của web trung gian rồi dán vào.');
   throw firstErr || new Error('Chưa nhập "Địa chỉ API" của web trung gian.');
+}
+
+async function reachable(url) {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 8000);
+  try {
+    await fetch(url, { mode: 'no-cors', signal: ctrl.signal });
+    return true;
+  } catch {
+    return false;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+// Tên hiển thị ("Mistral Large 4") thay vì mã model ("mistral/mistral-large-4").
+export function modelIdProblem(model) {
+  if (/\s/.test(String(model).trim())) {
+    return `"${model}" là TÊN HIỂN THỊ, chưa phải mã model. Hãy copy dòng chữ nhỏ màu xám ngay dưới tên model trên web trung gian (dạng nhà-cung-cấp/tên-model, không có dấu cách), hoặc bấm "Tải danh sách model" để chọn.`;
+  }
+  return '';
 }
 
 export async function askCustom(key, prompt, cfg = {}) {
   const base = normalizeBase(cfg.base);
   if (!base) throw new Error('Chưa nhập "Địa chỉ API" của web trung gian.');
   if (!cfg.model) throw new Error('Chưa nhập tên model (bấm "Tải danh sách model" để chọn).');
+  if (modelIdProblem(cfg.model)) throw new Error(modelIdProblem(cfg.model));
   const format = cfg.format === 'anthropic' ? 'anthropic' : 'openai';
   const headers = { 'content-type': 'application/json', ...customHeaders(key, format) };
 
