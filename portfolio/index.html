@@ -95,6 +95,8 @@
     a:hover { color: var(--accent-ink); }
     button { font: inherit; color: inherit; }
     h1, h2, h3, p { margin: 0; }
+    h1, h2, h3, .label { text-wrap: balance; }
+    p, li { text-wrap: pretty; }
     ul { margin: 0; padding: 0; list-style: none; }
     [hidden] { display: none !important; }
 
@@ -174,6 +176,7 @@
     .nav a { color: var(--ink); font-weight: 500; font-size: 15px; padding: 10px 14px; border-radius: 999px; min-height: 44px; display: inline-flex; align-items: center; transition: background-color .2s; }
     .nav a:hover { background: rgba(26,26,26,.06); color: var(--ink); }
     .nav a.active { color: var(--accent-ink); }
+    .nav a.nav-cv { display: none; }
     .header-actions { display: flex; align-items: center; gap: 8px; }
     .menu-toggle {
       display: none; width: 44px; height: 44px; border-radius: 12px; border: 1px solid var(--line-strong);
@@ -204,6 +207,7 @@
     .hero-grid { grid-auto-rows: auto; }
     .h-intro { grid-column: 1 / span 8; grid-row: 1 / span 2; display: flex; flex-direction: column; justify-content: space-between; gap: 24px; }
     .h-photo { grid-column: 9 / span 4; grid-row: 1; padding: 0; overflow: hidden; min-height: 260px; }
+    .h-photo.no-status { grid-row: 1 / span 2; }
     .h-status { grid-column: 9 / span 4; grid-row: 2; display: flex; align-items: center; gap: 14px; }
     .h-budget { grid-column: 1 / span 4; }
     .h-years { grid-column: 5 / span 2; }
@@ -213,9 +217,9 @@
     .hello { display: inline-flex; align-items: center; gap: 8px; }
     .hero-name { margin-top: 10px; }
     .hero-role { margin-top: 10px; font-size: 18px; font-weight: 500; color: var(--ink); }
-    .hero-role span { color: var(--muted); font-weight: 400; }
+    .hero-role .role-company { color: var(--muted); font-weight: 400; white-space: nowrap; }
     .hero-value { margin-top: 18px; font-size: 22px; line-height: 1.4; font-weight: 600; letter-spacing: -0.01em; max-width: 38ch; }
-    .hero-value em { font-style: normal; color: var(--accent); }
+    .hero-value em { font-style: normal; color: var(--accent); white-space: nowrap; }
     .hero-sub { margin-top: 10px; color: var(--muted); max-width: 60ch; }
     .cta-row { display: flex; flex-wrap: wrap; gap: 12px; }
     .cta-note { font-size: 13px; color: var(--muted); margin-top: 10px; }
@@ -279,6 +283,12 @@
     .proj-metric .stat-label { margin-top: 8px; font-size: 14px; }
     .proj.featured .proj-summary { color: var(--muted); max-width: 55ch; }
     .proj .btn { align-self: flex-start; }
+    .flow { background: var(--bg); border-radius: 16px; padding: 18px; }
+    .flow ol { list-style: none; margin: 12px 0 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+    .flow li { display: inline-flex; align-items: center; gap: 8px; }
+    .flow-node { display: inline-flex; align-items: center; min-height: 40px; padding: 8px 14px; border-radius: 12px; background: var(--card); border: 1px solid var(--line); font-size: 14px; font-weight: 600; }
+    .flow li:nth-child(2) .flow-node { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .flow svg { width: 18px; height: 18px; color: var(--muted); flex: none; }
 
     /* Modal */
     dialog.modal {
@@ -345,9 +355,9 @@
 
     /* Contact */
     .contact-card { background: var(--accent); border-color: var(--accent); color: #fff; padding: 48px; display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 40px; align-items: end; }
-    .contact-card .label { color: rgba(255,255,255,.82); }
+    .contact-card .label { color: rgba(255,255,255,.94); }
     .contact-card .h2 { font-size: 40px; margin-top: 10px; max-width: 18ch; }
-    .contact-card p.sub { margin-top: 14px; color: rgba(255,255,255,.88); max-width: 50ch; }
+    .contact-card p.sub { margin-top: 14px; color: rgba(255,255,255,.94); max-width: 50ch; }
     .contact-list { display: grid; gap: 10px; margin-top: 24px; font-size: 15px; }
     .contact-list li { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
     .contact-list svg { width: 18px; height: 18px; flex: none; opacity: .9; }
@@ -363,6 +373,7 @@
       position: fixed; left: 50%; bottom: 24px; z-index: 200; transform: translate(-50%, 16px);
       background: var(--ink); color: #fff; padding: 12px 18px; border-radius: 12px; font-size: 14px; font-weight: 500;
       display: inline-flex; align-items: center; gap: 8px; opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s;
+      width: max-content; max-width: calc(100vw - 32px);
     }
     .toast svg { width: 18px; height: 18px; color: #7BE0A5; }
     .toast.show { opacity: 1; transform: translate(-50%, 0); }
@@ -384,13 +395,13 @@
     /* Tablet: 6 cột */
     @media (max-width: 1023px) {
       .bento { grid-template-columns: repeat(6, minmax(0, 1fr)); }
-      .h-intro { grid-column: 1 / -1; grid-row: auto; }
-      .h-photo { grid-column: 1 / span 3; grid-row: auto; min-height: 300px; }
-      .h-status { grid-column: 4 / span 3; grid-row: auto; flex-direction: column; align-items: flex-start; justify-content: flex-end; }
-      .h-budget { grid-column: 1 / -1; }
-      .h-years { grid-column: 1 / span 3; }
-      .h-team { grid-column: 4 / span 3; }
-      .h-tools { grid-column: 1 / -1; }
+      .h-intro { grid-column: 1 / -1; grid-row: 1; }
+      .h-photo { grid-column: 1 / span 3; grid-row: 2 / span 2 !important; min-height: 280px; }
+      .h-budget { grid-column: 4 / span 3; grid-row: 2; }
+      .h-status { grid-column: 4 / span 3; grid-row: 3; }
+      .h-years { grid-column: 1 / span 3; grid-row: 4; }
+      .h-team { grid-column: 4 / span 3; grid-row: 4; }
+      .h-tools { grid-column: 1 / -1; grid-row: 5; }
       .about-grid .a-main, .about-grid .a-side { grid-column: 1 / -1; }
       .svc:nth-child(n) { grid-column: span 3; }
       .proj:nth-child(1) { grid-column: 1 / -1; grid-row: auto; }
@@ -434,6 +445,9 @@
       .stat { min-height: 0; }
       .cta-row .btn { flex: 1 1 100%; }
       .header-cv { display: none; }
+      .nav a.nav-cv { display: inline-flex; color: var(--accent-ink); font-weight: 600; border-top: 1px solid var(--line); border-radius: 0; margin-top: 4px; }
+      .hero-role .role-company { display: block; white-space: normal; }
+      .hero-role .sep { display: none; }
       .steps { grid-template-columns: minmax(0, 1fr); }
       .step-num i { display: none; }
       .cs-block { grid-template-columns: 1fr; gap: 8px; }
@@ -448,9 +462,13 @@
     }
 
     /* Màn hình thấp: giữ hero trong màn hình đầu */
-    @media (min-width: 1024px) and (max-height: 820px) {
+    @media (min-width: 1024px) and (max-height: 860px) {
+      .hero { padding: 16px 0 24px; }
+      .h1 { font-size: 46px; }
       .hero-value { margin-top: 12px; font-size: 20px; }
-      .stat { min-height: 150px; gap: 12px; }
+      .hero-sub { margin-top: 8px; }
+      .h-intro { gap: 18px; }
+      .stat { min-height: 140px; gap: 12px; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -474,6 +492,7 @@
         <a href="#du-an">Dự án</a>
         <a href="#kinh-nghiem">Kinh nghiệm</a>
         <a href="#lien-he">Liên hệ</a>
+        <a class="nav-cv" id="navCv" href="./cv.pdf" download>Tải CV</a>
       </nav>
       <div class="header-actions">
         <a class="btn btn-primary btn-sm header-cv" id="headerCv" href="./cv.pdf" download>Tải CV</a>
@@ -664,6 +683,7 @@
         summary: "Thay báo cáo thủ công bằng workflow n8n tổng hợp dữ liệu Google Ads và GA4 vào một nơi.",
         metric: { value: "[CẦN ĐIỀN: vd tiết kiệm X giờ/tuần]", label: "Thời gian tiết kiệm cho team" },
         tags: ["n8n", "Google Ads", "GA4"],
+        flow: ["Google Ads + GA4", "n8n", "Báo cáo tự động"],   // để [] nếu không muốn hiện sơ đồ
         context: "Team quản lý nhiều tài khoản Google Ads cho nhiều khách hàng; số liệu nằm rải rác giữa Google Ads và GA4.",
         challenge: "[CẦN ĐIỀN: vd tổng hợp báo cáo thủ công mất bao lâu, sai sót gì, cập nhật chậm ra sao]",
         solution: [
@@ -691,7 +711,7 @@
       },
       {
         title: "Google Ads cho phòng khám nha khoa phục vụ khách nước ngoài",
-        industry: "Nha khoa · Khách quốc tế",
+        industry: "Nha khoa · Quốc tế",
         summary: "Google trở thành kênh mang lại doanh thu cao nhất cho phòng khám.",
         metric: { value: "[CẦN ĐIỀN: CPA / số lead]", label: "Google là kênh doanh thu cao nhất" },
         tags: ["Google Ads", "GA4", "Landing page"],
@@ -810,6 +830,7 @@
     $("#brandName").textContent = PROFILE.name;
     $("#menuToggle").innerHTML = ICONS.menu;
     $("#headerCv").setAttribute("href", PROFILE.cv);
+    $("#navCv").setAttribute("href", PROFILE.cv);
   }
 
   function statCell(cls, icon, s, dark) {
@@ -833,7 +854,7 @@
         <div>
           <p class="label hello">${t(h.hello)}</p>
           <h1 class="h1 hero-name" id="heroName">${t(PROFILE.name)}</h1>
-          <p class="hero-role">${t(PROFILE.title)} <span>· ${t(PROFILE.company)}</span></p>
+          <p class="hero-role">${t(PROFILE.title)} <span class="role-company"><span class="sep">· </span>${t(PROFILE.company)}</span></p>
           <p class="hero-value">${tRich(h.value)}</p>
           ${has(h.sub) ? `<p class="hero-sub">${t(h.sub)}</p>` : ""}
         </div>
@@ -872,7 +893,7 @@
         <ul class="chips">${h.tools.map((x) => `<li class="chip">${t(x)}</li>`).join("")}</ul>
       </div>` : ""}
     `;
-    if (!h.available) $(".h-photo").style.gridRow = "1 / span 2";
+    if (!h.available) $(".h-photo").classList.add("no-status");
   }
 
   function renderAbout() {
@@ -910,6 +931,11 @@
         ${i === 0 && has(p.summary) ? `<p class="proj-summary">${t(p.summary)}</p>` : ""}
         ${i === 0 && has(p.context) ? `<p class="proj-summary"><b class="label" style="display:block;margin-bottom:4px">Bối cảnh</b>${t(p.context)}</p>` : ""}
         ${has(p.tags) ? `<ul class="chips">${p.tags.map((x) => `<li class="chip">${t(x)}</li>`).join("")}</ul>` : ""}
+        ${has(p.flow) ? `
+        <div class="flow">
+          <p class="label">Luồng dữ liệu</p>
+          <ol>${p.flow.map((x, k) => `<li>${k ? ICONS.arrowRight : ""}<span class="flow-node">${t(x)}</span></li>`).join("")}</ol>
+        </div>` : ""}
         ${p.metric && has(p.metric.value) ? `
         <div class="proj-metric">
           <div class="num">${t(p.metric.value)}</div>
@@ -978,7 +1004,7 @@
   function renderContact() {
     const linkBtn = (href, cls, icon, label) => href
       ? `<a class="btn ${cls}" href="${esc(href)}"${extAttrs(href)}>${icon}${label}</a>`
-      : `<span class="btn ${cls}" role="link" aria-disabled="true" title="Chưa điền thông tin">${icon}${label}</span>`;
+      : `<button class="btn ${cls}" type="button" data-todo="${esc(label)}">${icon}${label}</button>`;
     const liHref = filled(C.linkedin) ? (/^https?:/.test(C.linkedin) ? C.linkedin : `https://${C.linkedin}`) : "";
     $("#contact").innerHTML = `
       <div>
@@ -986,7 +1012,7 @@
         <h2 class="h2" id="contactTitle">${t(PROFILE.contact.heading)}</h2>
         ${has(C.sub) ? `<p class="sub">${t(C.sub)}</p>` : ""}
         <ul class="contact-list">
-          ${has(C.email) ? `<li>${ICONS.mail}<span class="sr-label">Email:</span> ${filled(C.email) ? `<a href="${esc(mailHref)}">${t(C.email)}</a>` : t(C.email)}</li>` : ""}
+          ${has(C.email) ? `<li>${ICONS.mail}<span>Email:</span> ${filled(C.email) ? `<a href="${esc(mailHref)}">${t(C.email)}</a>` : t(C.email)}</li>` : ""}
           ${has(C.phone) ? `<li>${ICONS.phone}<span>Zalo/SĐT:</span> ${t(C.phone)}</li>` : ""}
           <li>${ICONS.pin}<span>${t(PROFILE.location)} · ${t(PROFILE.timezone)}</span></li>
         </ul>
@@ -1095,7 +1121,7 @@
 
     // Đánh dấu mục menu đang xem
     if ("IntersectionObserver" in window) {
-      const links = [...nav.querySelectorAll("a")];
+      const links = [...nav.querySelectorAll('a[href^="#"]')];
       const io = new IntersectionObserver((entries) => {
         entries.forEach((en) => {
           if (en.isIntersecting) links.forEach((a) => a.classList.toggle("active", a.getAttribute("href") === `#${en.target.id}`));
@@ -1112,6 +1138,13 @@
     el.classList.add("show");
     clearTimeout(toastTimer);
     toastTimer = setTimeout(() => el.classList.remove("show"), 2200);
+  }
+
+  function initTodoButtons() {
+    document.addEventListener("click", (e) => {
+      const b = e.target.closest("[data-todo]");
+      if (b) toast(`Chưa có thông tin cho “${b.dataset.todo}” — điền trong PROFILE.contact`, false);
+    });
   }
 
   function initCopy() {
@@ -1170,6 +1203,7 @@
   initModal();
   initMenu();
   initCopy();
+  initTodoButtons();
   initReveal();
   initCountUp();
   </script>
