@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0f766e">
+  <title>Chấm công</title>
+  <link rel="stylesheet" href="style.css?v=1">
+</head>
+<body>
+<header class="top">
+  <div class="brand">⏱️ Chấm công</div>
+  <span id="modeBadge" class="badge">Demo</span>
+</header>
+
+<main>
+  <!-- CHẤM CÔNG -->
+  <section id="tab-punch" class="tab active">
+    <div id="loginCard" class="card">
+      <h2>Đăng nhập</h2>
+      <label>Mã nhân viên<input id="code" autocomplete="username" autocapitalize="characters" placeholder="VD: NV01"></label>
+      <label>PIN<input id="pin" type="password" inputmode="numeric" autocomplete="current-password" placeholder="••••"></label>
+      <button class="btn primary block" id="btnLogin">Đăng nhập</button>
+      <p class="muted small" id="loginHint"></p>
+    </div>
+
+    <div id="punchArea" hidden>
+      <div class="card hero">
+        <div class="hello">Xin chào, <b id="empName"></b> <span id="empCode"></span></div>
+        <div class="clock" id="clock">--:--:--</div>
+        <div class="small" id="clockDate"></div>
+        <div class="hint" id="timeHint"></div>
+      </div>
+
+      <div class="card">
+        <div class="today">
+          <div class="slot"><span class="muted small">Giờ vào</span><b id="inTime">—</b><span id="inBadge"></span></div>
+          <div class="slot"><span class="muted small">Giờ ra</span><b id="outTime">—</b><span id="outBadge"></span></div>
+        </div>
+        <p class="muted small center" id="rules"></p>
+      </div>
+
+      <div class="card">
+        <label>Địa điểm chấm công<select id="loc"></select></label>
+        <div class="gps">
+          <span id="gpsStatus" class="muted small">Đang chờ định vị…</span>
+          <button class="link small" id="btnRefreshGps">↻ Làm mới vị trí</button>
+        </div>
+        <button class="link small" id="btnDemoLoc" hidden>＋ Thêm vị trí hiện tại làm địa điểm (chỉ ở chế độ Demo)</button>
+        <div class="actions">
+          <button class="btn in" id="btnIn">CHECK-IN</button>
+          <button class="btn out" id="btnOut">CHECK-OUT</button>
+        </div>
+        <div id="result" class="result" hidden></div>
+      </div>
+      <p class="center"><button class="link small" id="btnLogout">Đăng xuất</button></p>
+    </div>
+  </section>
+
+  <!-- LỊCH SỬ -->
+  <section id="tab-history" class="tab">
+    <div class="card">
+      <h2>Lịch sử của tôi</h2>
+      <p class="muted small">Tổng kết tháng này</p>
+      <div id="histSummary" class="kpis"></div>
+      <div class="tablewrap"><table id="histTable"></table></div>
+      <p id="histMsg" class="muted small"></p>
+    </div>
+  </section>
+
+  <!-- QUẢN LÝ -->
+  <section id="tab-admin" class="tab">
+    <div id="adminLogin" class="card">
+      <h2>Quản lý</h2>
+      <label>Mật khẩu quản lý<input id="adminPass" type="password" autocomplete="current-password"></label>
+      <button class="btn primary block" id="btnAdminLogin">Vào trang quản lý</button>
+      <p class="muted small" id="adminHint"></p>
+    </div>
+
+    <div id="adminArea" hidden>
+      <div class="card">
+        <h2>Báo cáo chấm công</h2>
+        <div class="row">
+          <label>Từ ngày<input type="date" id="rFrom"></label>
+          <label>Đến ngày<input type="date" id="rTo"></label>
+        </div>
+        <div class="row wrap">
+          <button class="btn" data-range="today">Hôm nay</button>
+          <button class="btn" data-range="month">Tháng này</button>
+          <button class="btn primary" id="btnReport">Xem báo cáo</button>
+          <button class="btn" id="btnCsv">Xuất CSV</button>
+        </div>
+        <p id="reportMsg" class="small"></p>
+        <div id="kpis" class="kpis"></div>
+        <h3>Theo nhân viên</h3>
+        <div class="tablewrap"><table id="tblEmp"></table></div>
+        <div id="absentBox" hidden><h3>Chưa check-in / vắng</h3><p id="absentList" class="small"></p></div>
+        <h3>Chi tiết</h3>
+        <div class="tablewrap"><table id="tblDetail"></table></div>
+        <h3>Lượt chấm bị từ chối</h3>
+        <div class="tablewrap"><table id="tblReject"></table></div>
+      </div>
+
+      <!-- Chế độ Demo: quản lý ngay trong app -->
+      <div id="demoManage">
+        <div class="card">
+          <h3>Giờ làm & quy định</h3>
+          <div class="row">
+            <label>Hạn check-in<input type="time" id="sIn"></label>
+            <label>Giờ hết làm<input type="time" id="sOut"></label>
+          </div>
+          <div class="row">
+            <label>Ân hạn (phút)<input type="number" min="0" id="sGrace"></label>
+            <label>Sai số GPS tối đa (m)<input type="number" min="10" id="sAcc"></label>
+          </div>
+          <label>Mật khẩu quản lý<input id="sPass"></label>
+          <button class="btn primary" id="btnSaveSettings">Lưu quy định</button>
+        </div>
+
+        <div class="card">
+          <h3>Địa điểm</h3>
+          <div class="tablewrap"><table id="tblLoc"></table></div>
+          <div class="row">
+            <label>Tên địa điểm<input id="lName" placeholder="VD: Chi nhánh Quận 1"></label>
+            <label>Bán kính (m)<input type="number" id="lRadius" value="100" min="20"></label>
+          </div>
+          <div class="row">
+            <label>Vĩ độ (lat)<input id="lLat" inputmode="decimal" placeholder="10.776889"></label>
+            <label>Kinh độ (lng)<input id="lLng" inputmode="decimal" placeholder="106.700806"></label>
+          </div>
+          <div class="row wrap">
+            <button class="btn" id="btnLocHere">📍 Dùng vị trí hiện tại</button>
+            <button class="btn primary" id="btnAddLoc">Thêm địa điểm</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Nhân viên</h3>
+          <div class="tablewrap"><table id="tblEmpList"></table></div>
+          <div class="row">
+            <label>Mã NV<input id="eCode" autocapitalize="characters" placeholder="NV02"></label>
+            <label>PIN<input id="ePin" inputmode="numeric" placeholder="4–6 số"></label>
+          </div>
+          <label>Họ tên<input id="eName" placeholder="Trần Thị B"></label>
+          <button class="btn primary" id="btnAddEmp">Thêm nhân viên</button>
+        </div>
+
+        <div class="card">
+          <h3>Dữ liệu demo</h3>
+          <p class="muted small">Dữ liệu chỉ nằm trên trình duyệt của máy này.</p>
+          <button class="btn danger" id="btnResetDemo">Xóa toàn bộ dữ liệu demo</button>
+        </div>
+      </div>
+
+      <!-- Chế độ Google Sheets -->
+      <div id="sheetsManage" class="card" hidden>
+        <h3>Quản lý dữ liệu</h3>
+        <p class="small">Thêm/sửa <b>địa điểm, nhân viên, giờ làm</b> trực tiếp trong Google Sheet (các trang <code>DiaDiem</code>, <code>NhanVien</code>, <code>CauHinh</code>). App tự cập nhật khi nhân viên mở lại.</p>
+        <p class="small">Lấy tọa độ cho địa điểm mới: đứng tại địa điểm đó, bấm nút dưới rồi dán vào cột Vĩ độ / Kinh độ.</p>
+        <button class="btn" id="btnCoord">📍 Lấy tọa độ hiện tại</button>
+        <p id="coordOut" class="small"></p>
+      </div>
+
+      <p class="center"><button class="link small" id="btnAdminLogout">Thoát quản lý</button></p>
+    </div>
+  </section>
+
+  <!-- CÀI ĐẶT -->
+  <section id="tab-settings" class="tab">
+    <div class="card">
+      <h2>Kết nối dữ liệu</h2>
+      <label class="radio"><input type="radio" name="mode" value="demo"><span><b>Demo</b> — lưu ngay trên máy này, để thử</span></label>
+      <label class="radio"><input type="radio" name="mode" value="sheets"><span><b>Google Sheets</b> — dùng thật cho nhiều nhân viên</span></label>
+
+      <div id="sheetsBox">
+        <label>Link ứng dụng web Apps Script<input id="apiUrl" placeholder="https://script.google.com/macros/s/…/exec" autocomplete="off"></label>
+        <div class="row wrap">
+          <button class="btn primary" id="btnSaveUrl">Lưu &amp; kiểm tra</button>
+          <button class="btn" id="btnShareLink">Copy link gửi nhân viên</button>
+        </div>
+        <p id="connStatus" class="small"></p>
+        <details>
+          <summary>Hướng dẫn cài đặt Google Sheets (khoảng 5 phút)</summary>
+          <ol class="small">
+            <li>Tạo một Google Sheet mới → menu <b>Tiện ích mở rộng → Apps Script</b>.</li>
+            <li>Xóa mã mẫu, dán mã của app (<button class="link" id="btnCopyCode">bấm để copy mã</button> · <a href="apps-script/Code.gs" target="_blank" rel="noopener">xem mã</a>) → Lưu.</li>
+            <li>Chọn hàm <code>setup</code> → <b>Chạy</b> → cấp quyền. Sheet sẽ có các trang CauHinh, DiaDiem, NhanVien, ChamCong, NhatKy.</li>
+            <li>Sửa trang <b>DiaDiem</b> (tọa độ, bán kính), <b>NhanVien</b> (mã, tên, PIN), <b>CauHinh</b> (đổi <code>adminPassword</code>).</li>
+            <li><b>Triển khai → Tùy chọn triển khai mới → Ứng dụng web</b>: Thực thi với tư cách <i>Tôi</i>, Quyền truy cập <i>Bất kỳ ai</i> → copy URL <code>/exec</code> dán vào ô trên.</li>
+            <li>Bấm <b>Copy link gửi nhân viên</b> và gửi qua Zalo — nhân viên mở link là dùng được ngay.</li>
+          </ol>
+        </details>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Thiết bị này</h3>
+      <p class="small muted">Mã thiết bị: <code id="devId"></code></p>
+      <p class="small muted">Ở chế độ Google Sheets, mỗi nhân viên được gắn với 1 điện thoại (có thể tắt bằng <code>bindDevice</code> = FALSE).</p>
+    </div>
+  </section>
+</main>
+
+<nav class="bottom" id="nav">
+  <button data-tab="punch" class="active"><i>⏱️</i><span>Chấm công</span></button>
+  <button data-tab="history"><i>📅</i><span>Lịch sử</span></button>
+  <button data-tab="admin"><i>📊</i><span>Quản lý</span></button>
+  <button data-tab="settings"><i>⚙️</i><span>Cài đặt</span></button>
+</nav>
+
+<div id="toast" class="toast" hidden></div>
+<script src="app.js?v=1"></script>
+</body>
+</html>
