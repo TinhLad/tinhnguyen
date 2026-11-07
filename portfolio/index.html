@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <!-- SEO -->
-  <title>Nguyễn Chí Tính · Team Leader Performance Marketing</title>
-  <meta name="description" content="Nguyễn Chí Tính — Team Leader Performance Marketing tại Tập đoàn DNG. Quản lý ngân sách quảng cáo tối đa 1,5 tỷ đồng/tháng. Google Ads, Meta Ads, GA4, landing page, tự động hóa báo cáo n8n. TP. Hồ Chí Minh.">
-  <meta name="author" content="Nguyễn Chí Tính">
+  <title>Nguyễn Chí Tình · Lead Performance Marketing</title>
+  <meta name="description" content="Nguyễn Chí Tình — Lead Performance Marketing. Hơn 3 năm digital marketing, phụ trách ngân sách quảng cáo tối đa 1,5 tỷ đồng/tháng, quản lý team Ads, Design, Content. Google Ads, Meta Ads, GA4, n8n. TP. Hồ Chí Minh.">
+  <meta name="author" content="Nguyễn Chí Tình">
   <meta name="theme-color" content="#F5F5F2">
   <!-- Đổi tên miền (GitHub Pages / Netlify) thì sửa URL ở canonical, og:url, og:image, twitter:image và JSON-LD -->
   <link rel="canonical" href="https://tinhlad.github.io/tinhnguyen/portfolio/">
@@ -15,18 +15,18 @@
   <!-- Open Graph (Zalo, Facebook, LinkedIn) -->
   <meta property="og:type" content="profile">
   <meta property="og:locale" content="vi_VN">
-  <meta property="og:site_name" content="Nguyễn Chí Tính">
-  <meta property="og:title" content="Nguyễn Chí Tính · Team Leader Performance Marketing">
+  <meta property="og:site_name" content="Nguyễn Chí Tình">
+  <meta property="og:title" content="Nguyễn Chí Tình · Lead Performance Marketing">
   <meta property="og:description" content="Quảng cáo bằng dữ liệu, tăng trưởng đo được. Quản lý ngân sách tối đa 1,5 tỷ đồng/tháng · Google Ads · Meta Ads · GA4 · n8n.">
   <meta property="og:url" content="https://tinhlad.github.io/tinhnguyen/portfolio/">
   <meta property="og:image" content="https://tinhlad.github.io/tinhnguyen/portfolio/og-image.jpg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="Nguyễn Chí Tính · Team Leader Performance Marketing">
+  <meta property="og:image:alt" content="Nguyễn Chí Tình · Lead Performance Marketing">
 
   <!-- Twitter card -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Nguyễn Chí Tính · Team Leader Performance Marketing">
+  <meta name="twitter:title" content="Nguyễn Chí Tình · Lead Performance Marketing">
   <meta name="twitter:description" content="Quảng cáo bằng dữ liệu, tăng trưởng đo được. Google Ads · Meta Ads · GA4 · n8n.">
   <meta name="twitter:image" content="https://tinhlad.github.io/tinhnguyen/portfolio/og-image.jpg">
 
@@ -38,13 +38,15 @@
   {
     "@context": "https://schema.org",
     "@type": "Person",
-    "name": "Nguyễn Chí Tính",
-    "jobTitle": "Team Leader Performance Marketing",
+    "name": "Nguyễn Chí Tình",
+    "jobTitle": "Lead Performance Marketing",
     "worksFor": { "@type": "Organization", "name": "Tập đoàn DNG" },
     "address": { "@type": "PostalAddress", "addressLocality": "TP. Hồ Chí Minh", "addressCountry": "VN" },
+    "email": "mailto:tinhadsgugo@gmail.com",
+    "telephone": "+84826215731",
     "url": "https://tinhlad.github.io/tinhnguyen/portfolio/",
     "image": "https://tinhlad.github.io/tinhnguyen/portfolio/avatar.jpg",
-    "knowsAbout": ["Performance Marketing", "Google Ads", "Meta Ads", "TikTok Ads", "Google Analytics 4", "Landing page", "Conversion Rate Optimization", "n8n", "Marketing Automation"]
+    "knowsAbout": ["Performance Marketing", "Google Ads", "Meta Ads", "TikTok Ads", "Zalo Ads", "Google Analytics 4", "Google Tag Manager", "Landing page", "Conversion Rate Optimization", "n8n", "Marketing Automation"]
   }
   </script>
 
@@ -225,7 +227,7 @@
     .cta-note { font-size: 13px; color: var(--muted); margin-top: 10px; }
 
     .photo-wrap { position: absolute; inset: 0; background: var(--accent-soft); display: grid; place-items: center; }
-    .photo-wrap img { width: 100%; height: 100%; object-fit: cover; object-position: center 25%; position: absolute; inset: 0; }
+    .photo-wrap img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 36%; position: absolute; inset: 0; }
     .initials { font-size: 72px; font-weight: 700; color: var(--accent); letter-spacing: -0.02em; }
 
     .status-dot { position: relative; width: 12px; height: 12px; flex: none; }
@@ -269,11 +271,21 @@
 
     /* Projects */
     .proj { display: flex; flex-direction: column; gap: 16px; }
-    .proj:nth-child(1) { grid-column: 1 / span 6; grid-row: span 2; }
-    .proj:nth-child(2) { grid-column: 7 / span 6; }
-    .proj:nth-child(3) { grid-column: 7 / span 3; }
-    .proj:nth-child(4) { grid-column: 10 / span 3; }
-    .proj:nth-child(n+5) { grid-column: span 6; }
+    .proj:nth-child(n+2) { grid-column: span 4; }
+    /* Case nổi bật: full chiều ngang, trái = mô tả, phải = số liệu */
+    .proj.featured {
+      grid-column: 1 / -1; display: grid; align-content: start;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); column-gap: 48px; row-gap: 16px;
+    }
+    .proj.featured > * { grid-column: 1; }
+    .proj.featured > .proj-top { grid-row: 1; }
+    .proj.featured > .proj-title { grid-row: 2; }
+    .proj.featured > .proj-summary { grid-row: 3; }
+    .proj.featured > .chips { grid-row: 4; }
+    .proj.featured > .btn { grid-row: 5; align-self: end; justify-self: start; }
+    .proj.featured > .kpis { grid-column: 2; grid-row: 1 / span 3; align-self: start; }
+    .proj.featured > .flow { grid-column: 2; grid-row: 1 / span 3; }
+    .proj.featured > .proj-metric { grid-column: 2; grid-row: 4 / span 2; margin-top: 0; align-self: end; }
     .proj-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
     .proj-index { font-size: 13px; font-weight: 600; color: var(--muted); font-variant-numeric: tabular-nums; }
     .proj-title { font-size: 20px; line-height: 1.35; font-weight: 600; letter-spacing: -0.01em; }
@@ -283,6 +295,10 @@
     .proj-metric .stat-label { margin-top: 8px; font-size: 14px; }
     .proj.featured .proj-summary { color: var(--muted); max-width: 55ch; }
     .proj .btn { align-self: flex-start; }
+    .kpis { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+    .kpi { background: var(--bg); border-radius: 14px; padding: 14px 16px; display: flex; flex-direction: column; gap: 2px; }
+    .kpi b { font-size: 24px; line-height: 1.2; font-weight: 700; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; }
+    .kpi span { font-size: 13px; color: var(--muted); }
     .flow { background: var(--bg); border-radius: 16px; padding: 18px; }
     .flow ol { list-style: none; margin: 12px 0 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
     .flow li { display: inline-flex; align-items: center; gap: 8px; }
@@ -361,7 +377,8 @@
     .contact-list { display: grid; gap: 10px; margin-top: 24px; font-size: 15px; }
     .contact-list li { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
     .contact-list svg { width: 18px; height: 18px; flex: none; opacity: .9; }
-    .contact-list a { color: #fff; text-decoration: underline; text-underline-offset: 3px; }
+    .contact-list a { color: #fff; text-decoration: underline; text-underline-offset: 3px; display: inline-flex; align-items: center; min-height: 44px; }
+    .contact-list li { min-height: 28px; }
     .contact-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     .contact-actions .btn { width: 100%; }
     .email-row { grid-column: 1 / -1; display: flex; gap: 10px; }
@@ -405,6 +422,7 @@
       .about-grid .a-main, .about-grid .a-side { grid-column: 1 / -1; }
       .svc:nth-child(n) { grid-column: span 3; }
       .proj:nth-child(1) { grid-column: 1 / -1; grid-row: auto; }
+      .proj.featured { display: flex; }
       .proj:nth-child(2), .proj:nth-child(3) { grid-column: span 3; }
       .proj:nth-child(4), .proj:nth-child(n+5) { grid-column: 1 / -1; }
       .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -611,16 +629,16 @@
      - Chuỗi rỗng "" hoặc mảng rỗng [] → khối tương ứng tự ẩn.
      ========================================================= */
   const PROFILE = {
-    name: "Nguyễn Chí Tính",
+    name: "Nguyễn Chí Tình",
     initials: "NT",
-    title: "Team Leader Performance Marketing",
+    title: "Lead Performance Marketing",
     company: "Tập đoàn DNG",
     since: "2023 – nay",
     location: "TP. Hồ Chí Minh",
     timezone: "GMT+7",
     avatar: "./avatar.jpg",
     cv: "./cv.pdf",
-    updated: "10/2026",
+    updated: "11/2026",
 
     hero: {
       hello: "Xin chào, tôi là",
@@ -629,62 +647,92 @@
       ctaNote: "Nhà tuyển dụng: tải CV · Doanh nghiệp: trao đổi dự án qua Zalo hoặc email",
       available: true,
       availableText: "Đang nhận dự án freelance",
-      tools: ["Google Ads", "Meta Ads", "GA4", "n8n", "Landing page", "Google Business Profile"]
+      tools: ["Google Ads", "Meta Ads", "TikTok Ads", "Zalo Ads", "GA4", "Google Tag Manager", "n8n", "Landing page"]
     },
 
     stats: {
-      budget: { value: 1.5, decimals: 1, unit: "tỷ đ/tháng", label: "Ngân sách quảng cáo quản lý (tối đa)" },
+      budget: { value: 1.5, decimals: 1, unit: "tỷ đ/tháng", label: "Ngân sách quảng cáo phụ trách (tối đa)" },
       years:  { value: 3, decimals: 0, suffix: "+", unit: "năm", label: "Kinh nghiệm digital marketing" },
-      // Thông tin đầu vào đang mâu thuẫn (3 người / 6 người / >20 người) → cần xác nhận
-      team:   { text: "[CẦN ĐIỀN: số người trong team]", unit: "người", label: "Điều phối team Ads, Design, Content, SEO" }
+      team:   { value: 3, decimals: 0, unit: "nhân sự", label: "Quản lý trực tiếp: Ads, Design, Content" }
     },
 
     about: {
       heading: "Quảng cáo bằng dữ liệu, tăng trưởng đo được",
       paragraphs: [
-        "Hơn 3 năm làm digital marketing, hiện là Team Leader Performance Marketing tại Tập đoàn DNG. Tôi quản lý ngân sách quảng cáo tối đa 1,5 tỷ đồng/tháng và điều phối team Ads, Design, Content, SEO.",
-        "Cách tôi làm: đặt KPI trước, cài tracking trước khi chạy, scale ngân sách theo dữ liệu thay vì cảm tính, và tự động hóa báo cáo để thời gian dành cho tối ưu."
+        "Hơn 3 năm triển khai digital marketing trong lĩnh vực nha khoa, thẩm mỹ, đào tạo và dịch vụ. Tại Tập đoàn DNG, tôi quản lý trực tiếp nhóm Ads, Design, Content và phụ trách ngân sách quảng cáo tối đa 1,5 tỷ đồng/tháng.",
+        "Trọng tâm hiện tại: dẫn dắt hiệu quả quảng cáo, nội dung và đo lường đa kênh; phát triển truyền thông nha khoa hướng tới khách hàng Úc, New Zealand.",
+        "Cách tôi làm: đặt KPI trước, cài tracking trước khi chạy, scale ngân sách theo dữ liệu thay vì cảm tính, và tự động hóa báo cáo để dành thời gian cho tối ưu."
       ],
-      industries: ["Nha khoa", "Thẩm mỹ viện", "Trường dạy thẩm mỹ", "Bất động sản", "Nhôm kính & cửa", "Thẩm định giá", "Bán lẻ"],
-      channels: ["Google Ads", "Facebook Ads", "TikTok Ads", "GMV TikTok", "Sàn thương mại điện tử", "Google Business Profile", "GA4", "n8n"]
+      industries: ["Nha khoa", "Thẩm mỹ viện", "Đào tạo thẩm mỹ", "Bất động sản", "Nhôm kính & cửa", "Thẩm định giá", "Bán lẻ"],
+      channels: ["Google Ads", "Meta Ads", "TikTok Ads", "Zalo Ads", "GMV TikTok", "Sàn thương mại điện tử", "YouTube", "Google Maps"],
+      tools: ["GA4", "Google Tag Manager", "n8n", "API / MCP", "Claude Code", "Canva", "Photoshop", "CapCut"]
     },
 
     services: [
       {
         icon: "target",
         title: "Quảng cáo Google & Meta",
-        desc: "Lập kế hoạch, triển khai và tối ưu Google Ads, Facebook Ads, TikTok Ads. Phân khúc theo khu vực địa lý, scale ngân sách khi số liệu xác nhận hiệu quả.",
+        desc: "Lập kế hoạch, triển khai và tối ưu Google Ads, Meta Ads, TikTok Ads, Zalo Ads. Phân khúc theo thị trường, khu vực; scale ngân sách khi số liệu xác nhận hiệu quả.",
         outputs: ["Cấu trúc tài khoản & chiến dịch theo mục tiêu", "Phân bổ ngân sách theo thị trường, khu vực", "Kế hoạch scale dựa trên CPA, ROAS"]
       },
       {
         icon: "layout",
         title: "Landing page tối ưu chuyển đổi",
-        desc: "Thiết kế landing page bám sát ý định tìm kiếm và thông điệp quảng cáo, đo được từng hành động.",
+        desc: "Xây landing page bám sát ý định tìm kiếm và thông điệp quảng cáo; tối ưu Google Maps và trải nghiệm chuyển đổi.",
         outputs: ["Landing page theo từng nhóm dịch vụ", "Form, nút gọi, Zalo được gắn sự kiện", "Danh sách thử nghiệm A/B ưu tiên"]
       },
       {
         icon: "chart",
         title: "Đo lường & tracking GA4",
-        desc: "Cài đặt GA4 và sự kiện chuyển đổi, theo dõi hành trình khách hàng đa kênh để biết kênh nào thật sự mang lại doanh thu.",
+        desc: "Cài GA4, Google Tag Manager và sự kiện chuyển đổi; đồng bộ dữ liệu đo lường giữa các kênh để biết kênh nào thật sự mang lại doanh thu.",
         outputs: ["Kế hoạch đo lường & bảng sự kiện", "Chuyển đổi đồng bộ GA4 ↔ Google Ads", "Báo cáo hành trình đa kênh"]
       },
       {
         icon: "workflow",
         title: "Tự động hóa báo cáo n8n",
-        desc: "Tự động kéo dữ liệu Google Ads, GA4 vào báo cáo và dashboard. Bớt việc copy-paste, có số liệu mới mỗi ngày để ra quyết định.",
+        desc: "Kết nối dữ liệu Google Ads, GA4 qua API/MCP và n8n vào báo cáo, dashboard. Bớt việc copy-paste, có số liệu mới mỗi ngày để ra quyết định.",
         outputs: ["Workflow n8n tổng hợp dữ liệu tự động", "Dashboard hiệu suất theo kênh, thị trường", "Cảnh báo khi chỉ số vượt ngưỡng"]
       }
     ],
 
     projects: [
       {
+        title: "Nha khoa phục vụ khách Úc & New Zealand: 4,34 tỷ doanh thu trong 24 ngày",
+        industry: "Nha khoa · Quốc tế",
+        summary: "Định hướng chiến dịch Implant, răng sứ cho khách hàng Úc và New Zealand; Google là kênh mang lại doanh thu cao nhất.",
+        metric: { value: "4,34 tỷ đ", label: "Doanh thu toàn nguồn · 01–24/09/2026" },
+        kpis: [
+          { value: "1.807", label: "data" },
+          { value: "195", label: "khách mới" },
+          { value: "562 tr đ", label: "tổng chi phí" },
+          { value: "≈ 7,7×", label: "doanh thu / chi phí" }
+        ],
+        tags: ["Google Ads", "Meta Ads", "GA4", "Landing page"],
+        context: "Phòng khám nha khoa phục vụ khách nước ngoài, dịch vụ chủ lực Implant và răng sứ, thị trường mục tiêu Úc và New Zealand.",
+        challenge: "[CẦN ĐIỀN: vd cạnh tranh từ khóa tại Úc/NZ, chi phí/khách cao, chất lượng data]",
+        solution: [
+          "Định hướng chiến dịch Implant, răng sứ cho thị trường Úc và New Zealand.",
+          "Đồng bộ nội dung, thông tin thương hiệu và dữ liệu đo lường trên Google Ads, Facebook, website, YouTube, Zalo, Instagram, TikTok.",
+          "Xây landing page; tối ưu nội dung Google Maps và trải nghiệm chuyển đổi.",
+          "[CẦN ĐIỀN: cấu trúc chiến dịch Google Ads — nhóm từ khóa, khu vực, giá thầu]"
+        ],
+        results: [
+          "Doanh thu 4,34 tỷ đồng với tổng chi phí 562 triệu đồng (01–24/09/2026, toàn nguồn).",
+          "1.807 data, 195 khách mới.",
+          "Tính từ số liệu trên: doanh thu ≈ 7,7 lần chi phí · ≈ 2,88 triệu đ/khách mới · ≈ 311.000 đ/data.",
+          "Google là kênh mang lại doanh thu cao nhất.",
+          "[CẦN ĐIỀN: số liệu riêng kênh Google Ads — chi phí, doanh thu, CPA]"
+        ],
+        tools: ["Google Ads", "Meta Ads", "GA4", "Google Tag Manager", "Landing page", "Google Maps"]
+      },
+      {
         title: "Hệ thống tự động báo cáo Google Ads + GA4 bằng n8n",
-        industry: "Tự động hóa · Nội bộ agency",
+        industry: "Tự động hóa · Báo cáo",
         summary: "Thay báo cáo thủ công bằng workflow n8n tổng hợp dữ liệu Google Ads và GA4 vào một nơi.",
         metric: { value: "[CẦN ĐIỀN: vd tiết kiệm X giờ/tuần]", label: "Thời gian tiết kiệm cho team" },
-        tags: ["n8n", "Google Ads", "GA4"],
+        tags: ["n8n", "Google Ads", "GA4", "API / MCP"],
         flow: ["Google Ads + GA4", "n8n", "Báo cáo tự động"],   // để [] nếu không muốn hiện sơ đồ
-        context: "Team quản lý nhiều tài khoản Google Ads cho nhiều khách hàng; số liệu nằm rải rác giữa Google Ads và GA4.",
+        context: "Team quản lý nhiều tài khoản Google Ads; số liệu nằm rải rác giữa Google Ads và GA4.",
         challenge: "[CẦN ĐIỀN: vd tổng hợp báo cáo thủ công mất bao lâu, sai sót gì, cập nhật chậm ra sao]",
         solution: [
           "Xây workflow n8n kéo dữ liệu Google Ads và GA4 theo lịch.",
@@ -692,7 +740,7 @@
           "[CẦN ĐIỀN: tần suất cập nhật, cảnh báo, người nhận báo cáo]"
         ],
         results: ["[CẦN ĐIỀN: vd tiết kiệm X giờ/tuần]", "[CẦN ĐIỀN: vd báo cáo cập nhật hằng ngày cho Y tài khoản]"],
-        tools: ["n8n", "Google Ads", "GA4", "[CẦN ĐIỀN: công cụ hiển thị]"]
+        tools: ["n8n", "Google Ads", "GA4", "API / MCP", "[CẦN ĐIỀN: công cụ hiển thị]"]
       },
       {
         title: "Dashboard hiệu suất Messenger Ads tại 4 thị trường",
@@ -708,21 +756,6 @@
         ],
         results: ["[CẦN ĐIỀN]"],
         tools: ["Meta Ads", "[CẦN ĐIỀN: công cụ dashboard]"]
-      },
-      {
-        title: "Google Ads cho phòng khám nha khoa phục vụ khách nước ngoài",
-        industry: "Nha khoa · Quốc tế",
-        summary: "Google trở thành kênh mang lại doanh thu cao nhất cho phòng khám.",
-        metric: { value: "[CẦN ĐIỀN: CPA / số lead]", label: "Google là kênh doanh thu cao nhất" },
-        tags: ["Google Ads", "GA4", "Landing page"],
-        context: "Phòng khám nha khoa phục vụ khách nước ngoài.",
-        challenge: "[CẦN ĐIỀN: vd thị trường mục tiêu, cạnh tranh từ khóa, chất lượng lead]",
-        solution: ["[CẦN ĐIỀN: cấu trúc chiến dịch, thị trường, landing page, tracking]"],
-        results: [
-          "Google là kênh mang lại doanh thu cao nhất cho phòng khám.",
-          "[CẦN ĐIỀN: CPA]", "[CẦN ĐIỀN: số lead]", "[CẦN ĐIỀN: doanh thu]", "[CẦN ĐIỀN: thời gian]"
-        ],
-        tools: ["Google Ads", "[CẦN ĐIỀN]"]
       },
       {
         title: "Google Ads ngân sách nhỏ cho cửa chống cháy & composite",
@@ -741,26 +774,41 @@
     process: [
       { title: "Audit tài khoản & mục tiêu", desc: "Rà soát tài khoản quảng cáo, tracking, landing page. Chốt mục tiêu kinh doanh cần đạt.", out: ["Báo cáo audit", "Danh sách vấn đề ưu tiên"] },
       { title: "Lập kế hoạch & KPI", desc: "Chọn kênh, phân bổ ngân sách, đặt KPI theo từng giai đoạn: CPA, ROAS, số lead.", out: ["Media plan", "Bảng KPI"] },
-      { title: "Triển khai + cài tracking", desc: "Cài GA4, sự kiện chuyển đổi trước khi chạy. Dựng chiến dịch, landing page.", out: ["Tracking hoạt động", "Chiến dịch chạy"] },
+      { title: "Triển khai + cài tracking", desc: "Cài GA4, Google Tag Manager, sự kiện chuyển đổi trước khi chạy. Dựng chiến dịch, landing page.", out: ["Tracking hoạt động", "Chiến dịch chạy"] },
       { title: "Tối ưu & báo cáo định kỳ", desc: "Theo dõi số liệu hằng ngày, tối ưu hằng tuần, báo cáo tự động cho khách hàng.", out: ["Dashboard", "Báo cáo tuần/tháng"] }
     ],
 
     experience: [
       {
         period: "2023 – nay",
-        role: "Digital Marketing Executive",   // Lưu ý: hero ghi "Team Leader Performance Marketing" — kiểm tra lại
-        org: "Tập đoàn DNG · TP. Hồ Chí Minh",
+        role: "Digital Marketing Executive",
+        org: "Công ty Cổ phần Tập đoàn DNG · TP. Hồ Chí Minh",
         bullets: [
-          "[CẦN ĐIỀN: thành tích 1 có số liệu]",
-          "[CẦN ĐIỀN: thành tích 2 có số liệu]",
-          "[CẦN ĐIỀN: thành tích 3 có số liệu]"
+          "Quản lý trực tiếp 3 nhân sự Ads, Design, Content; giao việc và báo cáo kết quả cho Trưởng phòng Marketing.",
+          "Phụ trách ngân sách quảng cáo tối đa 1,5 tỷ đồng/tháng; triển khai Google Ads cho nha khoa, thẩm mỹ và đào tạo.",
+          "Định hướng chiến dịch Implant, răng sứ cho thị trường Úc và New Zealand.",
+          "Dự án nha khoa (01–24/09/2026, toàn nguồn): 1.807 data, 195 khách mới, doanh thu 4,34 tỷ đồng trên tổng chi phí 562 triệu đồng.",
+          "Đồng bộ nội dung, thông tin thương hiệu và dữ liệu đo lường trên Facebook, Google Ads, website, YouTube, Zalo, Instagram, TikTok.",
+          "Xây dựng landing page; tối ưu nội dung Google Maps và trải nghiệm chuyển đổi."
         ]
       },
       {
-        period: "[CẦN ĐIỀN: thời gian]",
-        role: "[CẦN ĐIỀN: vị trí trước đó nếu có]",
-        org: "[CẦN ĐIỀN: công ty]",
-        bullets: []
+        period: "2023",
+        role: "Digital Marketing Executive",
+        org: "Tập đoàn Thẩm định giá Hoàng Quân",
+        bullets: [
+          "Vận hành Google Ads, Facebook Ads, TikTok Ads; quản lý nội dung website và các kênh xã hội.",
+          "Phối hợp agency SEO, theo dõi website và báo cáo chiến dịch định kỳ."
+        ]
+      },
+      {
+        period: "2022 – 2023",
+        role: "Marketing Apprenticeship",
+        org: "Công ty TNHH NTN",
+        bullets: [
+          "Triển khai TikTok Ads, Google Ads cho sản phẩm bán lẻ; viết content, kịch bản video và landing page.",
+          "Tìm tư liệu, tạo voice AI, chỉnh sửa video và thiết kế ảnh hỗ trợ quảng cáo."
+        ]
       }
     ],
     education: ["[CẦN ĐIỀN: trường, chuyên ngành, năm]"],
@@ -772,8 +820,8 @@
     contact: {
       heading: "Cần tăng hiệu quả quảng cáo? Hãy bắt đầu bằng một buổi trao đổi.",
       sub: "Gửi tôi tình hình tài khoản và mục tiêu của bạn. Tôi phản hồi trong 24 giờ làm việc.",
-      email: "[CẦN ĐIỀN: email]",
-      phone: "[CẦN ĐIỀN: số Zalo/SĐT]",   // vd "0901234567" → nút Zalo mở https://zalo.me/0901234567
+      email: "tinhadsgugo@gmail.com",
+      phone: "0826 215 731",              // nút Zalo mở https://zalo.me/0826215731
       linkedin: "[CẦN ĐIỀN: link LinkedIn]"
     }
   };
@@ -906,6 +954,7 @@
       <div class="card a-side">
         ${has(a.industries) ? `<div><p class="label sub-label">Ngành đã triển khai</p><ul class="chips">${a.industries.map((x) => `<li class="chip chip-accent">${t(x)}</li>`).join("")}</ul></div>` : ""}
         ${has(a.channels) ? `<div><p class="label sub-label">Kênh &amp; nền tảng</p><ul class="chips">${a.channels.map((x) => `<li class="chip">${t(x)}</li>`).join("")}</ul></div>` : ""}
+        ${has(a.tools) ? `<div><p class="label sub-label">Đo lường &amp; công cụ</p><ul class="chips">${a.tools.map((x) => `<li class="chip">${t(x)}</li>`).join("")}</ul></div>` : ""}
       </div>`;
     const svc = PROFILE.services;
     $("#services").innerHTML = svc.map((s) => `
@@ -929,13 +978,14 @@
         </div>
         <h3 class="proj-title">${t(p.title)}</h3>
         ${i === 0 && has(p.summary) ? `<p class="proj-summary">${t(p.summary)}</p>` : ""}
-        ${i === 0 && has(p.context) ? `<p class="proj-summary"><b class="label" style="display:block;margin-bottom:4px">Bối cảnh</b>${t(p.context)}</p>` : ""}
+        ${i === 0 && has(p.context) && !has(p.kpis) ? `<p class="proj-summary"><b class="label" style="display:block;margin-bottom:4px">Bối cảnh</b>${t(p.context)}</p>` : ""}
         ${has(p.tags) ? `<ul class="chips">${p.tags.map((x) => `<li class="chip">${t(x)}</li>`).join("")}</ul>` : ""}
         ${has(p.flow) ? `
         <div class="flow">
           <p class="label">Luồng dữ liệu</p>
           <ol>${p.flow.map((x, k) => `<li>${k ? ICONS.arrowRight : ""}<span class="flow-node">${t(x)}</span></li>`).join("")}</ol>
         </div>` : ""}
+        ${has(p.kpis) ? `<ul class="kpis">${p.kpis.map((k) => `<li class="kpi"><b>${t(k.value)}</b><span>${t(k.label)}</span></li>`).join("")}</ul>` : ""}
         ${p.metric && has(p.metric.value) ? `
         <div class="proj-metric">
           <div class="num">${t(p.metric.value)}</div>
