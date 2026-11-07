@@ -46,6 +46,7 @@
     "telephone": "+84826215731",
     "url": "https://tinhlad.github.io/tinhnguyen/portfolio/",
     "image": "https://tinhlad.github.io/tinhnguyen/portfolio/avatar.jpg",
+    "award": ["Nhân viên xuất sắc năm 2024 – DN Group"],
     "knowsAbout": ["Performance Marketing", "Google Ads", "Meta Ads", "TikTok Ads", "Zalo Ads", "Google Analytics 4", "Google Tag Manager", "Landing page", "Conversion Rate Optimization", "n8n", "Marketing Automation"]
   }
   </script>
@@ -363,6 +364,22 @@
     .badge svg { width: 18px; height: 18px; color: var(--accent); flex: none; }
     .edu-list { margin-top: 14px; display: grid; gap: 10px; font-size: 15px; }
 
+    /* Awards */
+    .award { grid-column: span 4; display: flex; flex-direction: column; gap: 14px; }
+    .award.featured { grid-column: span 8; }
+    .award-media { --h: 200px; display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 12px; background: var(--bg); border-radius: 16px; padding: 14px; }
+    .award.featured .award-media { --h: 260px; }
+    .award-media a { display: block; border-radius: 10px; min-width: 0; flex: 0 1 auto; }
+    .award-media img { height: var(--h); width: auto; max-width: 100%; object-fit: contain; border-radius: 10px; }
+    .award-meta { font-size: 14px; color: var(--muted); }
+    .award p.desc { color: var(--muted); font-size: 15px; }
+    .hero-award {
+      margin-top: 14px; display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 6px 14px 6px 10px;
+      border-radius: 999px; background: var(--accent-soft); color: var(--accent-ink); font-size: 14px; font-weight: 600;
+    }
+    .hero-award svg { width: 18px; height: 18px; flex: none; }
+    .hero-award:hover { color: var(--accent-ink); background: #DCE6FD; }
+
     /* Testimonials */
     .testi { grid-column: span 6; display: flex; flex-direction: column; gap: 18px; }
     .testi blockquote { margin: 0; font-size: 17px; line-height: 1.6; }
@@ -429,6 +446,8 @@
       .step:nth-child(2) .step-num i { display: none; }
       .exp-grid .e-main, .exp-grid .e-side { grid-column: 1 / -1; }
       .testi { grid-column: 1 / -1; }
+      .award { grid-column: span 3; }
+      .award.featured { grid-column: 1 / -1; }
       .contact-card { grid-template-columns: 1fr; padding: 36px; gap: 28px; align-items: start; }
     }
 
@@ -477,6 +496,8 @@
       .email-row { flex-direction: column; }
       .email-row .btn:last-child { width: 100%; }
       .proj.featured .proj-title { font-size: 22px; }
+      .award-media, .award.featured .award-media { --h: 180px; }
+      .hero-award { min-height: 44px; }
     }
 
     /* Màn hình thấp: giữ hero trong màn hình đầu */
@@ -509,6 +530,7 @@
         <a href="#gioi-thieu">Giới thiệu</a>
         <a href="#du-an">Dự án</a>
         <a href="#kinh-nghiem">Kinh nghiệm</a>
+        <a href="#giai-thuong">Giải thưởng</a>
         <a href="#lien-he">Liên hệ</a>
         <a class="nav-cv" id="navCv" href="./cv.pdf" download>Tải CV</a>
       </nav>
@@ -581,7 +603,20 @@
       </div>
     </section>
 
-    <!-- 6. NHẬN XÉT (ẩn nếu rỗng) -->
+    <!-- 6. GIẢI THƯỞNG (ẩn nếu rỗng) -->
+    <section id="giai-thuong" aria-labelledby="awardTitle">
+      <div class="container">
+        <div class="section-head reveal">
+          <div>
+            <p class="label">Giải thưởng &amp; ghi nhận</p>
+            <h2 class="h2" id="awardTitle">Được ghi nhận bằng kết quả</h2>
+          </div>
+        </div>
+        <div class="bento" id="awards"></div>
+      </div>
+    </section>
+
+    <!-- 7. NHẬN XÉT (ẩn nếu rỗng) -->
     <section id="nhan-xet" aria-labelledby="testiTitle" hidden>
       <div class="container">
         <div class="section-head reveal">
@@ -647,6 +682,7 @@
       ctaNote: "Nhà tuyển dụng: tải CV · Doanh nghiệp: trao đổi dự án qua Zalo hoặc email",
       available: true,
       availableText: "Đang nhận dự án freelance",
+      badge: "Nhân viên xuất sắc năm 2024 · DN Group",   // để "" nếu không muốn hiện
       tools: ["Google Ads", "Meta Ads", "TikTok Ads", "Zalo Ads", "GA4", "Google Tag Manager", "n8n", "Landing page"]
     },
 
@@ -786,6 +822,7 @@
         bullets: [
           "Quản lý trực tiếp 3 nhân sự Ads, Design, Content; giao việc và báo cáo kết quả cho Trưởng phòng Marketing.",
           "Phụ trách ngân sách quảng cáo tối đa 1,5 tỷ đồng/tháng; triển khai Google Ads cho nha khoa, thẩm mỹ và đào tạo.",
+          "Đạt danh hiệu Nhân viên xuất sắc năm 2024 (Chuyên viên Google Ads) của DN Group.",
           "Định hướng chiến dịch Implant, răng sứ cho thị trường Úc và New Zealand.",
           "Dự án nha khoa (01–24/09/2026, toàn nguồn): 1.807 data, 195 khách mới, doanh thu 4,34 tỷ đồng trên tổng chi phí 562 triệu đồng.",
           "Đồng bộ nội dung, thông tin thương hiệu và dữ liệu đo lường trên Facebook, Google Ads, website, YouTube, Zalo, Instagram, TikTok.",
@@ -812,7 +849,56 @@
       }
     ],
     education: ["[CẦN ĐIỀN: trường, chuyên ngành, năm]"],
-    certifications: ["[CẦN ĐIỀN: vd Google Ads Search Certification]", "[CẦN ĐIỀN: vd Google Analytics Certification]"],
+    certifications: [
+      "Hoàn thành Đào tạo Nhân sự Nguồn Level 1–2 · DN Group · 2025",
+      "[CẦN ĐIỀN: chứng chỉ Google Ads / GA4 nếu có]"
+    ],
+
+    // Ảnh nằm trong thư mục ./awards — để [] thì section tự ẩn
+    awards: [
+      {
+        featured: true,
+        title: "Nhân viên xuất sắc năm 2024",
+        org: "DN Group",
+        date: "Khen tặng 11/01/2025",
+        desc: "Vinh danh ở vị trí Chuyên viên Google Ads, ghi nhận đóng góp giai đoạn 2023–2024.",
+        images: [
+          { src: "./awards/cup-nhan-vien-xuat-sac-2024.webp", w: 640, h: 1024, alt: "Cúp pha lê vinh danh Nhân viên xuất sắc năm 2024 của DN Group" },
+          { src: "./awards/bang-khen-nhan-vien-xuat-sac-2024.webp", w: 1100, h: 733, alt: "Bằng khen Nhân viên xuất sắc năm 2024 của DN Group" }
+        ]
+      },
+      {
+        title: "Hoàn thành Đào tạo Nhân sự Nguồn Level 1–2",
+        org: "DN Group",
+        date: "Khóa 8/2025 · cấp 11/11/2025",
+        desc: "",
+        images: [{ src: "./awards/chung-nhan-nhan-su-nguon-2025.webp", w: 1100, h: 733, alt: "Chứng nhận hoàn thành chuỗi chương trình Đào tạo Nhân sự Nguồn Level 1–2, khóa 8/2025" }]
+      },
+      {
+        title: "Tuyên dương Nhân sự xuất sắc tháng",
+        org: "DN Group",
+        date: "[CẦN ĐIỀN: tháng/năm]",
+        desc: "",
+        images: [{ src: "./awards/huy-chuong-nhan-su-thang.webp", w: 318, h: 585, alt: "Huy chương Tuyên dương Nhân sự xuất sắc tháng của DN Group" }]
+      },
+      {
+        title: "Quán quân Giải bóng đá “Sức mạnh đồng đội”",
+        org: "DN Group",
+        date: "[CẦN ĐIỀN: năm]",
+        desc: "",
+        images: [{ src: "./awards/huy-chuong-bong-da.webp", w: 315, h: 585, alt: "Huy chương Quán quân Giải bóng đá Sức mạnh đồng đội của DN Group" }]
+      },
+      {
+        title: "Ngày hội Văn hóa DN Group: “Thích ứng · Chuyển đổi · Bứt phá”",
+        org: "DN Group",
+        date: "[CẦN ĐIỀN: lần tổ chức, năm]",
+        desc: "1 huy chương vàng, 1 huy chương bạc · [CẦN ĐIỀN: nội dung đạt giải]",
+        images: [
+          { src: "./awards/huy-chuong-ngay-hoi-vang.webp", w: 323, h: 585, alt: "Huy chương vàng Ngày hội Văn hóa DN Group" },
+          { src: "./awards/huy-chuong-ngay-hoi-bac.webp", w: 335, h: 585, alt: "Huy chương bạc Ngày hội Văn hóa DN Group" }
+        ]
+      }
+    ],
 
     // { quote: "...", name: "...", role: "..." } — để [] thì section tự ẩn
     testimonials: [],
@@ -903,6 +989,7 @@
           <p class="label hello">${t(h.hello)}</p>
           <h1 class="h1 hero-name" id="heroName">${t(PROFILE.name)}</h1>
           <p class="hero-role">${t(PROFILE.title)} <span class="role-company"><span class="sep">· </span>${t(PROFILE.company)}</span></p>
+          ${has(h.badge) ? `<a class="hero-award" href="#giai-thuong">${ICONS.award}<span>${t(h.badge)}</span></a>` : ""}
           <p class="hero-value">${tRich(h.value)}</p>
           ${has(h.sub) ? `<p class="hero-sub">${t(h.sub)}</p>` : ""}
         </div>
@@ -1029,7 +1116,7 @@
       <div class="e-side${exp.length ? "" : " e-main"}">
         ${certs.length ? `
         <div class="card reveal">
-          <p class="label">Chứng chỉ</p>
+          <p class="label">Đào tạo &amp; chứng chỉ</p>
           <ul class="badges">${certs.map((c) => `<li class="badge">${ICONS.award}<span>${t(c)}</span></li>`).join("")}</ul>
         </div>` : ""}
         ${edu.length ? `
@@ -1038,6 +1125,24 @@
           <ul class="edu-list">${edu.map((c) => `<li class="badge">${ICONS.grad}<span>${t(c)}</span></li>`).join("")}</ul>
         </div>` : ""}
       </div>` : ""}`;
+  }
+
+  function renderAwards() {
+    const list = (PROFILE.awards || []).filter((a) => a && has(a.title));
+    if (!list.length) { $("#giai-thuong").hidden = true; return; }
+    $("#awards").innerHTML = list.map((a) => `
+      <article class="card award hoverable reveal${a.featured ? " featured" : ""}">
+        ${has(a.images) ? `
+        <div class="award-media">
+          ${a.images.map((im) => `<a href="${esc(im.src)}" target="_blank" rel="noopener" aria-label="Xem ảnh lớn: ${esc(im.alt)}"><img src="${esc(im.src)}" alt="${esc(im.alt)}" width="${im.w}" height="${im.h}" loading="lazy" decoding="async"></a>`).join("")}
+        </div>` : ""}
+        <div>
+          <p class="label">${t(a.org)}</p>
+          <h3 class="h3" style="margin-top:6px">${t(a.title)}</h3>
+          ${has(a.date) ? `<p class="award-meta" style="margin-top:4px">${t(a.date)}</p>` : ""}
+          ${has(a.desc) ? `<p class="desc" style="margin-top:8px">${t(a.desc)}</p>` : ""}
+        </div>
+      </article>`).join("");
   }
 
   function renderTestimonials() {
@@ -1247,6 +1352,7 @@
   renderProjects();
   renderProcess();
   renderExperience();
+  renderAwards();
   renderTestimonials();
   renderContact();
   renderFooter();
