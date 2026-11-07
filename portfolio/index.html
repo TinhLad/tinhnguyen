@@ -296,7 +296,7 @@
     .proj-metric { margin-top: auto; padding-top: 16px; border-top: 1px solid var(--line); }
     .proj-metric .num { color: var(--accent); }
     .proj-metric .stat-label { margin-top: 8px; font-size: 14px; }
-    .proj.featured .proj-summary { color: var(--muted); max-width: 55ch; }
+    .proj .proj-summary { color: var(--muted); max-width: 55ch; }
     .proj .btn { align-self: flex-start; }
     .kpis { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
     .kpi { background: var(--bg); border-radius: 14px; padding: 14px 16px; display: flex; flex-direction: column; gap: 2px; }
@@ -443,6 +443,9 @@
       .svc:nth-child(n) { grid-column: span 3; }
       .proj:nth-child(1) { grid-column: 1 / -1; grid-row: auto; }
       .proj.featured { display: flex; }
+      .proj.featured > *, .proj.featured > .kpis, .proj.featured > .flow, .proj.featured > .proj-metric { align-self: stretch; }
+      .proj.featured > .proj-metric { margin-top: 0; }
+      .proj.featured > .btn { align-self: flex-start; }
       .proj:nth-child(2), .proj:nth-child(3) { grid-column: span 3; }
       .proj:nth-child(4), .proj:nth-child(n+5) { grid-column: 1 / -1; }
       .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -573,7 +576,7 @@
           <div>
             <p class="label">Dự án tiêu biểu</p>
             <h2 class="h2" id="projTitle">Case study theo ngành</h2>
-            <p class="lead">Tên khách hàng được ẩn. Mỗi dự án gồm bối cảnh, thách thức, giải pháp, kết quả và công cụ.</p>
+            <p class="lead">Tên khách hàng được ẩn, mô tả theo ngành.</p>
           </div>
         </div>
         <div class="bento" id="projects"></div>
@@ -748,19 +751,17 @@
         ],
         tags: ["Google Ads", "Meta Ads", "GA4", "Landing page"],
         context: "Phòng khám nha khoa phục vụ khách nước ngoài, dịch vụ chủ lực Implant và răng sứ, thị trường mục tiêu Úc và New Zealand.",
-        challenge: "[CẦN ĐIỀN: vd cạnh tranh từ khóa tại Úc/NZ, chi phí/khách cao, chất lượng data]",
+        challenge: "",
         solution: [
           "Định hướng chiến dịch Implant, răng sứ cho thị trường Úc và New Zealand.",
           "Đồng bộ nội dung, thông tin thương hiệu và dữ liệu đo lường trên Google Ads, Facebook, website, YouTube, Zalo, Instagram, TikTok.",
-          "Xây landing page; tối ưu nội dung Google Maps và trải nghiệm chuyển đổi.",
-          "[CẦN ĐIỀN: cấu trúc chiến dịch Google Ads — nhóm từ khóa, khu vực, giá thầu]"
+          "Xây landing page; tối ưu nội dung Google Maps và trải nghiệm chuyển đổi."
         ],
         results: [
           "Doanh thu 4,34 tỷ đồng với tổng chi phí 562 triệu đồng (01–24/09/2026, toàn nguồn).",
           "1.807 data, 195 khách mới.",
           "Tính từ số liệu trên: doanh thu ≈ 7,7 lần chi phí · ≈ 2,88 triệu đ/khách mới · ≈ 311.000 đ/data.",
-          "Google là kênh mang lại doanh thu cao nhất.",
-          "[CẦN ĐIỀN: số liệu riêng kênh Google Ads — chi phí, doanh thu, CPA]"
+          "Google là kênh mang lại doanh thu cao nhất."
         ],
         tools: ["Google Ads", "Meta Ads", "GA4", "Google Tag Manager", "Landing page", "Google Maps"]
       },
@@ -768,13 +769,13 @@
         title: "Google Ads ngân sách nhỏ cho cửa chống cháy & composite",
         industry: "Vật liệu xây dựng · B2B",
         summary: "Chạy Google Ads với ngân sách khoảng 300.000đ/ngày.",
-        metric: { value: "[CẦN ĐIỀN: kết quả chính]", label: "Ngân sách ~300.000đ/ngày" },
+        metric: null,
         tags: ["Google Ads", "Search"],
         context: "Doanh nghiệp cửa chống cháy/composite, ngân sách quảng cáo khoảng 300.000đ/ngày.",
-        challenge: "[CẦN ĐIỀN: vd ngân sách nhỏ trong ngành có CPC cao]",
-        solution: ["[CẦN ĐIỀN: cách tập trung ngân sách — từ khóa, khu vực, khung giờ]"],
-        results: ["[CẦN ĐIỀN]"],
-        tools: ["Google Ads", "[CẦN ĐIỀN]"]
+        challenge: "",
+        solution: [],
+        results: [],
+        tools: ["Google Ads"]
       }
     ],
 
@@ -1032,7 +1033,7 @@
           <span class="proj-index">${String(i + 1).padStart(2, "0")}</span>
         </div>
         <h3 class="proj-title">${t(p.title)}</h3>
-        ${i === 0 && has(p.summary) ? `<p class="proj-summary">${t(p.summary)}</p>` : ""}
+        ${(i === 0 || !(p.metric && has(p.metric.value))) && has(p.summary) ? `<p class="proj-summary">${t(p.summary)}</p>` : ""}
         ${i === 0 && has(p.context) && !has(p.kpis) ? `<p class="proj-summary"><b class="label" style="display:block;margin-bottom:4px">Bối cảnh</b>${t(p.context)}</p>` : ""}
         ${has(p.tags) ? `<ul class="chips">${p.tags.map((x) => `<li class="chip">${t(x)}</li>`).join("")}</ul>` : ""}
         ${has(p.flow) ? `
@@ -1046,7 +1047,7 @@
           <div class="num">${t(p.metric.value)}</div>
           ${has(p.metric.label) ? `<p class="stat-label">${t(p.metric.label)}</p>` : ""}
         </div>` : ""}
-        <button class="btn btn-ghost btn-sm" type="button" data-case="${i}" aria-haspopup="dialog">Xem chi tiết ${ICONS.arrowRight}</button>
+        ${has(p.challenge) || has(p.solution) || has(p.results) ? `<button class="btn btn-ghost btn-sm" type="button" data-case="${i}" aria-haspopup="dialog">Xem chi tiết ${ICONS.arrowRight}</button>` : ""}
       </article>`).join("");
   }
 
