@@ -273,6 +273,7 @@
     /* Projects */
     .proj { display: flex; flex-direction: column; gap: 16px; }
     .proj:nth-child(n+2) { grid-column: span 4; }
+    .proj.featured:nth-last-child(3) ~ .proj { grid-column: span 6; }
     /* Case nổi bật: full chiều ngang, trái = mô tả, phải = số liệu */
     .proj.featured {
       grid-column: 1 / -1; display: grid; align-content: start;
@@ -398,6 +399,7 @@
     .contact-list li { min-height: 28px; }
     .contact-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     .contact-actions .btn { width: 100%; }
+    .contact-actions .full-row { grid-column: 1 / -1; }
     .email-row { grid-column: 1 / -1; display: flex; gap: 10px; }
     .email-row .btn:first-child { flex: 1; }
     .email-row .btn:last-child { width: auto; flex: none; }
@@ -762,23 +764,6 @@
         tools: ["Google Ads", "Meta Ads", "GA4", "Google Tag Manager", "Landing page", "Google Maps"]
       },
       {
-        title: "Hệ thống tự động báo cáo Google Ads + GA4 bằng n8n",
-        industry: "Tự động hóa · Báo cáo",
-        summary: "Thay báo cáo thủ công bằng workflow n8n tổng hợp dữ liệu Google Ads và GA4 vào một nơi.",
-        metric: { value: "[CẦN ĐIỀN: vd tiết kiệm X giờ/tuần]", label: "Thời gian tiết kiệm cho team" },
-        tags: ["n8n", "Google Ads", "GA4", "API / MCP"],
-        flow: ["Google Ads + GA4", "n8n", "Báo cáo tự động"],   // để [] nếu không muốn hiện sơ đồ
-        context: "Team quản lý nhiều tài khoản Google Ads; số liệu nằm rải rác giữa Google Ads và GA4.",
-        challenge: "[CẦN ĐIỀN: vd tổng hợp báo cáo thủ công mất bao lâu, sai sót gì, cập nhật chậm ra sao]",
-        solution: [
-          "Xây workflow n8n kéo dữ liệu Google Ads và GA4 theo lịch.",
-          "[CẦN ĐIỀN: nơi lưu & hiển thị báo cáo — vd Google Sheets, Looker Studio]",
-          "[CẦN ĐIỀN: tần suất cập nhật, cảnh báo, người nhận báo cáo]"
-        ],
-        results: ["[CẦN ĐIỀN: vd tiết kiệm X giờ/tuần]", "[CẦN ĐIỀN: vd báo cáo cập nhật hằng ngày cho Y tài khoản]"],
-        tools: ["n8n", "Google Ads", "GA4", "API / MCP", "[CẦN ĐIỀN: công cụ hiển thị]"]
-      },
-      {
         title: "Dashboard hiệu suất Messenger Ads tại 4 thị trường",
         industry: "Đa thị trường · 1 thương hiệu",
         summary: "Một dashboard theo dõi hiệu suất Messenger Ads cho 1 thương hiệu tại 4 thị trường khu vực.",
@@ -848,11 +833,8 @@
         ]
       }
     ],
-    education: ["[CẦN ĐIỀN: trường, chuyên ngành, năm]"],
-    certifications: [
-      "Hoàn thành Đào tạo Nhân sự Nguồn Level 1–2 · DN Group · 2025",
-      "[CẦN ĐIỀN: chứng chỉ Google Ads / GA4 nếu có]"
-    ],
+    education: [],
+    certifications: ["Chứng chỉ Google Ads"],
 
     // Ảnh nằm trong thư mục ./awards — để [] thì section tự ẩn
     awards: [
@@ -908,7 +890,7 @@
       sub: "Gửi tôi tình hình tài khoản và mục tiêu của bạn. Tôi phản hồi trong 24 giờ làm việc.",
       email: "tinhadsgugo@gmail.com",
       phone: "0826 215 731",              // nút Zalo mở https://zalo.me/0826215731
-      linkedin: "[CẦN ĐIỀN: link LinkedIn]"
+      linkedin: ""                        // điền link để hiện nút LinkedIn
     }
   };
 
@@ -1116,7 +1098,7 @@
       <div class="e-side${exp.length ? "" : " e-main"}">
         ${certs.length ? `
         <div class="card reveal">
-          <p class="label">Đào tạo &amp; chứng chỉ</p>
+          <p class="label">Chứng chỉ</p>
           <ul class="badges">${certs.map((c) => `<li class="badge">${ICONS.award}<span>${t(c)}</span></li>`).join("")}</ul>
         </div>` : ""}
         ${edu.length ? `
@@ -1173,7 +1155,7 @@
         </ul>
       </div>
       <div class="contact-actions">
-        ${has(C.phone) ? linkBtn(zaloHref, "btn-light", ICONS.message, "Nhắn Zalo") : ""}
+        ${has(C.phone) ? linkBtn(zaloHref, has(C.linkedin) ? "btn-light" : "btn-light full-row", ICONS.message, "Nhắn Zalo") : ""}
         ${has(C.linkedin) ? linkBtn(liHref, "btn-outline-light", ICONS.linkedin, "LinkedIn") : ""}
         ${has(C.email) ? `
         <div class="email-row">
