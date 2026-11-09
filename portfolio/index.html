@@ -254,7 +254,12 @@
     .about-grid .a-main { grid-column: 1 / span 7; }
     .about-grid .a-side { grid-column: 8 / span 5; display: flex; flex-direction: column; gap: 22px; }
     .a-main p + p { margin-top: 12px; }
-    .method { margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--line); }
+    .pillars { margin: 20px 0 0; display: grid; gap: 14px; }
+    .pillars > div { display: grid; grid-template-columns: 110px minmax(0, 1fr); gap: 12px; align-items: baseline; }
+    .pillars dt { color: var(--accent-ink); }
+    .pillars dd { margin: 0; color: var(--ink); font-size: 16px; max-width: 60ch; }
+    .method { margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--line); }
+    @media (max-width: 639px) { .pillars > div { grid-template-columns: minmax(0, 1fr); gap: 4px; } }
     .method-steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
     .method-steps li { display: flex; align-items: center; gap: 10px; background: var(--bg); border-radius: 12px; padding: 10px 12px; font-size: 15px; font-weight: 500; }
     .method-steps b { width: 26px; height: 26px; flex: none; border-radius: 50%; background: var(--ink); color: #fff; display: grid; place-items: center; font-size: 13px; font-weight: 600; }
@@ -711,13 +716,16 @@
     about: {
       heading: "Quảng cáo bằng dữ liệu, tăng trưởng đo được",
       paragraphs: [
-        "Hơn 4 năm kinh nghiệm digital marketing trong lĩnh vực nha khoa, thẩm mỹ, đào tạo và dịch vụ.",
-        "Hiện tại, tôi quản lý ngân sách quảng cáo hơn 1,5 tỷ đồng/tháng tại DN Group và phát triển marketing đa kênh cho nha khoa hướng tới khách hàng Úc, New Zealand."
+        "Hơn 4 năm kinh nghiệm digital marketing đa ngành. Tôi giúp doanh nghiệp xây hệ thống marketing đa kênh đo lường được, để mỗi đồng ngân sách tạo ra khách hàng thật."
+      ],
+      pillars: [
+        { label: "Định hướng", text: "Tăng trưởng bền vững: quảng cáo hiệu suất để có khách ngay, kết hợp nội dung, SEO và kênh đối tác để xây lòng tin lâu dài." },
+        { label: "Tư duy", text: "Bắt đầu từ mục tiêu kinh doanh, không bắt đầu từ kênh. Đo lường trước khi chi tiền; dữ liệu quyết định kênh nào dồn lực, kênh nào cắt giảm." }
       ],
       method: {
-        label: "Cách tôi làm",
+        label: "Cách làm",
         steps: ["Nghiên cứu & audit", "Chiến lược & KPI", "Triển khai & đo lường", "Tối ưu & mở rộng"],
-        note: "Mỗi quyết định ngân sách đều dựa trên dữ liệu thực tế của từng kênh."
+        note: ""
       },
       industries: ["Nha khoa", "Thẩm mỹ viện", "Đào tạo thẩm mỹ", "Nhà hàng", "Bất động sản", "Nhôm kính & cửa", "Thẩm định giá", "Bán lẻ"],
       channels: ["Google Ads", "Meta Ads", "TikTok Ads", "Zalo Ads", "Messenger Ads (4 thị trường)", "GMV TikTok", "Sàn thương mại điện tử", "Instagram", "YouTube", "SEO", "Google Maps"],
@@ -1047,6 +1055,7 @@
       <div class="card a-main">
         <h3 class="h3">${t(a.heading)}</h3>
         ${a.paragraphs.filter(has).map((p) => `<p class="muted" style="max-width:65ch">${t(p)}</p>`).join("")}
+        ${has(a.pillars) ? `<dl class="pillars">${a.pillars.map((x) => `<div><dt class="label">${t(x.label)}</dt><dd>${t(x.text)}</dd></div>`).join("")}</dl>` : ""}
         ${a.method && has(a.method.steps) ? `
         <div class="method">
           <p class="label sub-label">${t(a.method.label)}</p>
