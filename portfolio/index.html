@@ -457,7 +457,7 @@
       .about-grid .a-main, .about-grid .a-side { grid-column: 1 / -1; }
       .svc:nth-child(n) { grid-column: span 3; }
       .proj:nth-child(1) { grid-column: 1 / -1; grid-row: auto; }
-      .proj.featured { display: flex; }
+      .proj.featured { display: flex; grid-column: 1 / -1; }
       .proj.featured > *, .proj.featured > .kpis, .proj.featured > .flow, .proj.featured > .proj-metric { align-self: stretch; }
       .proj.featured > .proj-metric { margin-top: 0; }
       .proj.featured > .btn { align-self: flex-start; }
@@ -590,8 +590,8 @@
         <div class="section-head reveal">
           <div>
             <p class="label">Dự án tiêu biểu</p>
-            <h2 class="h2" id="projTitle">Kết quả thực tế từ dự án</h2>
-            <p class="lead">Tên khách hàng được ẩn. Số liệu lấy từ dashboard theo dõi của dự án.</p>
+            <h2 class="h2" id="projTitle">Kết quả thực tế từ các dự án</h2>
+            <p class="lead">Tên khách hàng được ẩn. Số liệu lấy từ dashboard theo dõi của từng dự án.</p>
           </div>
         </div>
         <div class="bento" id="projects"></div>
@@ -798,6 +798,40 @@
           "Google là kênh chủ lực của dự án."
         ],
         tools: ["Google Ads", "Meta Ads", "Instagram", "WhatsApp", "TikTok", "Zalo", "YouTube", "SEO", "GA4", "Google Tag Manager", "Google Tag Gateway", "Google Search Console", "Dashboard (vibe coding)", "Landing page", "Google Maps"]
+      },
+      {
+        featured: true,
+        title: "Mỹ phẩm đa kênh TikTok & Shopee: doanh thu tháng 8 tăng 84,9%",
+        industry: "Mỹ phẩm · Thương mại điện tử · Đa kênh",
+        summary: "Quản lý tài khoản TikTok, Shopee, Fanpage, YouTube; chạy quảng cáo nội sàn, ngoại sàn, KOL affiliate, GMV TikTok, Facebook Ads và livestream; tự xây dashboard thống kê số liệu bằng vibe code.",
+        metric: { value: "+84,9%", label: "Doanh thu so với tháng 7 · tháng 08/2026" },
+        kpis: [
+          { value: "54", label: "đơn hàng" },
+          { value: "84", label: "sản phẩm bán ra" },
+          { value: "5,55×", label: "ROAS" },
+          { value: "18%", label: "chi phí quảng cáo / doanh thu" }
+        ],
+        tags: ["TikTok", "Shopee", "GMV TikTok", "KOL Affiliate", "Facebook Ads", "Livestream", "Dashboard"],
+        image: {
+          src: "./cases/my-pham-dashboard-08-2026.webp", w: 1901, h: 874,
+          alt: "Dashboard mỹ phẩm tháng 08/2026: 54 đơn hàng, 84 sản phẩm bán ra, ROAS 5,55×, tỷ lệ chi phí/doanh thu 18%; các số tiền đã được làm mờ",
+          caption: "Dashboard tự xây bằng vibe code, số liệu tháng 08/2026. Các số liệu doanh thu, chi phí và giá trị đơn đã được làm mờ."
+        },
+        context: "Thương hiệu mỹ phẩm bán hàng trên sàn thương mại điện tử (TikTok, Shopee) và mạng xã hội.",
+        challenge: "",
+        solution: [
+          "Quản lý tài khoản đa kênh: TikTok, Shopee, Fanpage, YouTube.",
+          "Chạy quảng cáo nội sàn và ngoại sàn: GMV TikTok, Facebook Ads.",
+          "Hợp tác KOL affiliate và livestream bán hàng.",
+          "Tự xây dashboard bằng vibe code, đồng bộ từ Google Sheets: thống kê số liệu theo tuần, kênh bán và sản phẩm; đối soát doanh thu thực nhận từ sàn."
+        ],
+        results: [
+          "Tháng 08/2026: 54 đơn hàng, 84 sản phẩm bán ra.",
+          "So với tháng 7: doanh thu +84,9%, số đơn +14,9%, sản phẩm bán ra +42,4%, chi phí/đơn −20,4%.",
+          "ROAS 5,55×; chi phí quảng cáo bằng 18% doanh thu.",
+          "Tỷ lệ thực nhận 78,3% doanh thu sàn."
+        ],
+        tools: ["TikTok Shop", "Shopee", "GMV TikTok", "KOL Affiliate", "Facebook Ads", "Livestream", "Fanpage", "YouTube", "Google Sheets", "Dashboard (vibe coding)"]
       }
     ],
 
@@ -1083,13 +1117,13 @@
     const list = PROFILE.projects;
     if (!has(list)) { $("#du-an").hidden = true; return; }
     $("#projects").innerHTML = list.map((p, i) => `
-      <article class="card proj hoverable reveal${i === 0 ? " featured" : ""}">
+      <article class="card proj hoverable reveal${i === 0 || p.featured ? " featured" : ""}">
         <div class="proj-top">
           <span class="label">${t(p.industry)}</span>
           <span class="proj-index">${String(i + 1).padStart(2, "0")}</span>
         </div>
         <h3 class="proj-title">${t(p.title)}</h3>
-        ${(i === 0 || !(p.metric && has(p.metric.value))) && has(p.summary) ? `<p class="proj-summary">${t(p.summary)}</p>` : ""}
+        ${(i === 0 || p.featured || !(p.metric && has(p.metric.value))) && has(p.summary) ? `<p class="proj-summary">${t(p.summary)}</p>` : ""}
         ${i === 0 && has(p.context) && !has(p.kpis) ? `<p class="proj-summary"><b class="label" style="display:block;margin-bottom:4px">Bối cảnh</b>${t(p.context)}</p>` : ""}
         ${has(p.tags) ? `<ul class="chips">${p.tags.map((x) => `<li class="chip">${t(x)}</li>`).join("")}</ul>` : ""}
         ${has(p.flow) ? `
