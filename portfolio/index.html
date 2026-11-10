@@ -323,9 +323,19 @@
     .proj .proj-summary { color: var(--muted); max-width: 55ch; }
     .proj .btn { align-self: flex-start; }
     .proj-shot { margin: 0; }
+    .highlights { background: var(--accent-soft); border-radius: 14px; padding: 14px 16px; }
+    .highlights .label { color: var(--accent-ink); }
+    .highlights ul { list-style: none; margin: 8px 0 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+    .highlights li { display: flex; flex-direction: column; }
+    .highlights b { font-size: 24px; line-height: 1.2; font-weight: 700; color: var(--accent-ink); font-variant-numeric: tabular-nums; }
+    .highlights span { font-size: 13px; color: var(--ink); }
+    .cs-gallery { display: grid; gap: 14px; }
+    .cs-gallery figure { margin: 0; }
+    .cs-gallery figcaption { margin-top: 6px; font-size: 13px; color: var(--muted); }
     .proj-shot img, .cs-img { width: 100%; height: auto; border-radius: 14px; border: 1px solid var(--line); background: #141414; }
     .proj-shot figcaption { margin-top: 8px; font-size: 13px; color: var(--muted); }
-    .proj.featured > .proj-shot { grid-column: 1 / -1; grid-row: 6; margin-top: 8px; }
+    .proj.featured > .proj-shot { grid-column: 1 / -1; grid-row: 7; margin-top: 8px; }
+    .proj.featured > .highlights { grid-column: 1 / -1; grid-row: 6; }
     .kpis { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
     .kpi { background: var(--bg); border-radius: 14px; padding: 14px 16px; display: flex; flex-direction: column; gap: 2px; }
     .kpi b { font-size: 24px; line-height: 1.2; font-weight: 700; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; }
@@ -807,7 +817,7 @@
       {
         title: "Nha khoa phục vụ khách Úc & New Zealand: 256 khách mới trong tháng 9",
         industry: "Nha khoa · Quốc tế · Đa kênh",
-        summary: "Phát triển marketing đa kênh cho dịch vụ Implant, răng sứ hướng tới khách hàng Úc và New Zealand: Google, Facebook, TikTok, Zalo, Instagram, SEO và kênh đối tác.",
+        summary: "Tiếp quản từ giữa tháng 8/2026. Chuyển ngân sách sang kênh có ROAS cao (Google 65% · Facebook/Instagram 35%), mở WhatsApp, đẩy Google Maps và video khách hàng thật để tăng niềm tin với khách nước ngoài.",
         metric: { value: "256", label: "Khách mới · tổng tháng 09/2026" },
         kpis: [
           { value: "2.163", label: "data" },
@@ -815,26 +825,49 @@
           { value: "307k", label: "CPA (chi phí/data)" },
           { value: "11,8%", label: "CVR (data → khách mới)" }
         ],
-        tags: ["Google", "Facebook", "TikTok", "Zalo", "Instagram", "SEO", "Đối tác"],
+        tags: ["Google Ads", "Facebook/Instagram", "WhatsApp", "Google Maps", "YouTube", "SEO", "Đối tác"],
         image: {
           src: "./cases/nha-khoa-dashboard-09-2026.webp", w: 1654, h: 686,
           alt: "Dashboard tháng 09/2026: 2.163 data mới, 529 data kết nối, chi phí 307k/data, CVR 11,8%; số data và chi phí/data theo nguồn",
           caption: "Dashboard theo dõi tháng 09/2026: data theo nguồn và chi phí/data theo kênh."
         },
-        context: "Phòng khám nha khoa phục vụ khách nước ngoài, dịch vụ chủ lực Implant và răng sứ, thị trường mục tiêu Úc và New Zealand.",
-        challenge: "",
-        solution: [
-          "Liên kết đối tác: mở thêm nguồn khách ngoài quảng cáo.",
-          "Tìm kênh chủ lực: chạy full-funnel trên nhiều kênh, đo lường hiệu quả từng kênh và xác định Google là kênh chủ lực.",
-          "Tái phân bổ ngân sách: giảm Facebook Ads, tăng Instagram Ads và WhatsApp để mở rộng nhận diện thương hiệu.",
-          "Phát triển nội dung: sản xuất hình ảnh, video để phát triển kênh TikTok, Zalo, YouTube và Fanpage.",
-          "Xây dựng lòng tin: tối ưu SEO website, landing page và Google Maps để khách hàng tin tưởng trước khi liên hệ."
+        // Kết quả trước–sau hiển thị trên thẻ
+        highlights: {
+          label: "Google Maps · tháng 9 so với tháng 7 (trước khi tiếp quản)",
+          items: [
+            { value: "+174%", label: "lượt xem đường đi" },
+            { value: "+115%", label: "lượt tương tác" },
+            { value: "+22%", label: "cuộc gọi" }
+          ]
+        },
+        gallery: [
+          { src: "./cases/nha-khoa-maps-tuong-tac.webp", w: 1514, h: 555, title: "Google Maps: lượt tương tác và cuộc gọi, tháng 9 so với tháng 7" },
+          { src: "./cases/nha-khoa-maps-duong-di.webp", w: 1553, h: 552, title: "Google Maps: lượt xem đường đi, tháng 9 so với tháng 7" }
         ],
+        context: "Phòng khám nha khoa phục vụ khách nước ngoài (Úc, New Zealand), dịch vụ chủ lực Implant và răng sứ. Tôi tiếp quản marketing từ giữa tháng 8/2026.",
+        challenge: [
+          "Ngân sách chia gần như đều giữa Google Ads và Facebook/Instagram Ads, chưa phân bổ theo hiệu quả.",
+          "Google: CPL cao nhưng ROAS và CVR cao. Facebook: CPL rất rẻ, CVR tương đương Google nhưng ROAS thấp.",
+          "Khách nước ngoài tra cứu Google Maps rất nhiều, nhưng Maps còn yếu: ít đánh giá, chưa đẩy quảng cáo Maps.",
+          "SEO website cho thị trường nước ngoài còn yếu."
+        ],
+        decisions: [
+          "Chạy full-funnel trên nhiều kênh, đo hiệu quả từng kênh và xác định Google là kênh chủ lực.",
+          "Tái phân bổ ngân sách theo ROAS: Google 65%, Facebook/Instagram 35%.",
+          "Tăng chiến dịch nhắn tin WhatsApp trên cả Facebook và Google.",
+          "Tối ưu Google Maps: tăng đánh giá thật từ khách hàng, đẩy quảng cáo Maps.",
+          "Đưa video khách hàng thật lên YouTube; tối ưu SEO website và landing page.",
+          "Liên kết đối tác để mở thêm nguồn khách ngoài quảng cáo."
+        ],
+        solution: [],
         results: [
-          "Tổng tháng 09/2026: 2.163 data, 529 kết nối, 256 khách mới.",
-          "CPA 307.000 đ/data.",
-          "CVR 11,8% (data → khách mới).",
+          "Google Maps tháng 9 so với tháng 7: lượt xem đường đi +174,1% (1,7 nghìn), lượt tương tác +115% (2 nghìn), cuộc gọi +22,2% (88).",
+          "Tổng tháng 09/2026: 2.163 data, 529 kết nối, 256 khách mới; CVR 11,8% (data → khách mới); CPA 307.000 đ/data.",
           "Google là kênh chủ lực của dự án."
+        ],
+        role: [
+          "Trực tiếp phân tích số liệu và ra quyết định phân bổ ngân sách, chọn kênh; triển khai quảng cáo Google, Facebook, WhatsApp và tối ưu Google Maps.",
+          "Phối hợp phòng Design, Media, Content, Seeding, SEO để sản xuất hình ảnh, video, review và nội dung website."
         ],
         tools: ["Google Ads", "Meta Ads", "Instagram", "WhatsApp", "TikTok", "Zalo", "YouTube", "SEO", "GA4", "Google Tag Manager", "Google Tag Gateway", "Google Search Console", "Dashboard (vibe coding)", "Landing page", "Google Maps"]
       },
@@ -1147,6 +1180,11 @@
           <p class="label">Luồng dữ liệu</p>
           <ol>${p.flow.map((x, k) => `<li>${k ? ICONS.arrowRight : ""}<span class="flow-node">${t(x)}</span></li>`).join("")}</ol>
         </div>` : ""}
+        ${p.highlights && has(p.highlights.items) ? `
+        <div class="highlights">
+          <p class="label">${t(p.highlights.label)}</p>
+          <ul>${p.highlights.items.map((x) => `<li><b>${t(x.value)}</b><span>${t(x.label)}</span></li>`).join("")}</ul>
+        </div>` : ""}
         ${has(p.kpis) ? `<ul class="kpis">${p.kpis.map((k) => `<li class="kpi"><b>${t(k.value)}</b><span>${t(k.label)}</span></li>`).join("")}</ul>` : ""}
         ${p.metric && has(p.metric.value) ? `
         <div class="proj-metric">
@@ -1158,7 +1196,7 @@
           <a href="${esc(p.image.src)}" target="_blank" rel="noopener" aria-label="Xem ảnh lớn: ${esc(p.image.alt)}"><img src="${esc(p.image.src)}" alt="${esc(p.image.alt)}" width="${p.image.w}" height="${p.image.h}" loading="lazy" decoding="async"></a>
           ${has(p.image.caption) ? `<figcaption>${t(p.image.caption)}</figcaption>` : ""}
         </figure>` : ""}
-        ${has(p.challenge) || has(p.solution) || has(p.results) ? `<button class="btn btn-ghost btn-sm" type="button" data-case="${i}" aria-haspopup="dialog">Xem chi tiết ${ICONS.arrowRight}</button>` : ""}
+        ${has(p.challenge) || has(p.decisions) || has(p.solution) || has(p.results) ? `<button class="btn btn-ghost btn-sm" type="button" data-case="${i}" aria-haspopup="dialog">Xem chi tiết ${ICONS.arrowRight}</button>` : ""}
       </article>`).join("");
   }
 
@@ -1290,9 +1328,12 @@
     $("#caseModalTitle").innerHTML = t(p.title);
     $("#caseModalBody").innerHTML =
       caseBlock("Bối cảnh", p.context) +
-      caseBlock("Thách thức", p.challenge) +
+      caseBlock("Vấn đề ban đầu", p.challenge) +
+      caseBlock("Quyết định của tôi", p.decisions) +
       caseBlock("Giải pháp", p.solution) +
       caseBlock("Kết quả", p.results, "result") +
+      caseBlock("Vai trò & phối hợp", p.role) +
+      (has(p.gallery) ? `<div class="cs-block"><p class="label">Trước – sau</p><div class="cs-gallery">${p.gallery.map((g) => `<figure><a href="${esc(g.src)}" target="_blank" rel="noopener" aria-label="Xem ảnh lớn: ${esc(g.title)}"><img class="cs-img" src="${esc(g.src)}" alt="${esc(g.title)}" width="${g.w}" height="${g.h}" loading="lazy" decoding="async"></a><figcaption>${t(g.title)}</figcaption></figure>`).join("")}</div></div>` : "") +
       (p.image ? `<div class="cs-block"><p class="label">Dashboard</p><a href="${esc(p.image.src)}" target="_blank" rel="noopener" aria-label="Xem ảnh lớn: ${esc(p.image.alt)}"><img class="cs-img" src="${esc(p.image.src)}" alt="${esc(p.image.alt)}" width="${p.image.w}" height="${p.image.h}" loading="lazy" decoding="async"></a></div>` : "") +
       (has(p.tools) ? `<div class="cs-block"><p class="label">Công cụ</p><ul class="chips">${p.tools.map((x) => `<li class="chip">${t(x)}</li>`).join("")}</ul></div>` : "");
     $("#caseModalBody").scrollTop = 0;
