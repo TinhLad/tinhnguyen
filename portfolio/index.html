@@ -274,6 +274,17 @@
     .svc:nth-child(2) { grid-column: span 5; }
     .svc:nth-child(3) { grid-column: span 5; }
     .svc:nth-child(4) { grid-column: span 7; }
+    .svc.has-shots { grid-column: 1 / -1 !important; }
+    .shots { margin-top: 20px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+    .shots.single { grid-template-columns: minmax(0, 1fr); max-width: 760px; }
+    .shot { margin: 0; display: flex; flex-direction: column; gap: 10px; }
+    .shot a { display: block; border-radius: 14px; overflow: hidden; border: 1px solid var(--line); background: var(--bg); }
+    .shot img { width: 100%; aspect-ratio: 16 / 9; height: auto; object-fit: cover; object-position: top left; transition: transform .3s ease; }
+    .shots.single .shot img { aspect-ratio: auto; }
+    .shot a:hover img { transform: scale(1.02); }
+    .shot figcaption { display: flex; flex-direction: column; gap: 2px; font-size: 14px; line-height: 1.5; color: var(--muted); }
+    .shot figcaption b { color: var(--ink); font-size: 15px; font-weight: 600; }
+    @media (max-width: 639px) { .shots { grid-template-columns: minmax(0, 1fr); } }
     .svc-icon { width: 44px; height: 44px; border-radius: 12px; background: var(--accent-soft); color: var(--accent); display: grid; place-items: center; margin-bottom: 18px; }
     .svc-icon svg { width: 22px; height: 22px; }
     .svc p { margin-top: 8px; color: var(--muted); max-width: 60ch; }
@@ -754,13 +765,23 @@
           "GA4: đo lường Google Business Profile (Maps)",
           "Google Search Console: đo lường hiệu quả SEO",
           "Pancake: đo lường tin nhắn WhatsApp, Instagram, Messenger"
+        ],
+        // Ảnh minh họa (thư mục ./tools) — chi phí, CPA và ID tài khoản đã làm mờ
+        shots: [
+          { src: "./tools/ga4-thuoc-tinh.webp", w: 824, h: 563, title: "GA4: thuộc tính đo lường", desc: "Quản lý thuộc tính GA4 cho từng thương hiệu: website, Google Maps theo chi nhánh, Search Console." },
+          { src: "./tools/gtm-the-chuyen-doi.webp", w: 1907, h: 882, title: "Google Tag Manager: thẻ chuyển đổi", desc: "Cài thẻ Google Ads và sự kiện chuyển đổi form cho website, quản lý nhiều vùng chứa." },
+          { src: "./tools/google-ads-mcc.webp", w: 781, h: 924, title: "Google Ads MCC: quản lý đa tài khoản", desc: "Vận hành nhiều tài khoản quảng cáo của các thương hiệu, chi nhánh trong một tài khoản quản lý." },
+          { src: "./tools/lead-dashboard-cpa.webp", w: 1694, h: 910, title: "Executive lead dashboard: CPA theo chiến dịch", desc: "Tự xây bằng vibe code: ghép chi phí Google Ads với lead chất lượng, tự đề xuất tăng/giảm ngân sách từng chiến dịch." }
         ]
       },
       {
         icon: "workflow",
         title: "Vibe code dashboard & công cụ",
         desc: "Tự dựng dashboard, giao diện web và công cụ báo cáo bằng vibe code (Claude Code), kết nối dữ liệu quảng cáo và đo lường qua API/MCP. Có số liệu mới mỗi ngày để ra quyết định.",
-        outputs: ["Dashboard hiệu suất theo kênh, thị trường", "Báo cáo kéo dữ liệu trực tiếp từ nền tảng quảng cáo, GA4", "Giao diện web, landing page dựng nhanh"]
+        outputs: ["Dashboard hiệu suất theo kênh, thị trường", "Báo cáo kéo dữ liệu trực tiếp từ nền tảng quảng cáo, GA4", "Giao diện web, landing page dựng nhanh"],
+        shots: [
+          { src: "./tools/fb-page-manager.webp", w: 1895, h: 911, title: "FB Page Manager: AI viết & đăng bài đa Fanpage", desc: "Tự xây bằng vibe code: AI viết nội dung theo giọng văn từng Page, tạo ảnh, hẹn giờ và đăng lên nhiều Fanpage cùng lúc." }
+        ]
       }
     ],
 
@@ -1104,11 +1125,19 @@
       </div>`;
     const svc = PROFILE.services;
     $("#services").innerHTML = svc.map((s) => `
-      <article class="card svc hoverable reveal">
+      <article class="card svc hoverable reveal${has(s.shots) ? " has-shots" : ""}">
         <div class="svc-icon">${ICONS[s.icon] || ICONS.target}</div>
         <h3 class="h3">${t(s.title)}</h3>
         <p>${t(s.desc)}</p>
         ${has(s.outputs) ? `<ul class="outputs" aria-label="Đầu ra">${s.outputs.map((o) => `<li>${ICONS.check}<span>${t(o)}</span></li>`).join("")}</ul>` : ""}
+        ${has(s.shots) ? `
+        <div class="shots${s.shots.length === 1 ? " single" : ""}">
+          ${s.shots.map((x) => `
+          <figure class="shot">
+            <a href="${esc(x.src)}" target="_blank" rel="noopener" aria-label="Xem ảnh lớn: ${esc(x.title)}"><img src="${esc(x.src)}" alt="${esc(x.title)}. ${esc(x.desc)}" width="${x.w}" height="${x.h}" loading="lazy" decoding="async"></a>
+            <figcaption><b>${t(x.title)}</b><span>${t(x.desc)}</span></figcaption>
+          </figure>`).join("")}
+        </div>` : ""}
       </article>`).join("");
     if (!has(svc)) $("#services").hidden = true;
   }
