@@ -275,6 +275,7 @@
     .svc:nth-child(3) { grid-column: span 5; }
     .svc:nth-child(4) { grid-column: span 7; }
     .svc.has-shots { grid-column: 1 / -1 !important; }
+    .svc.has-shots + .svc:not(.has-shots) { grid-column: 1 / -1 !important; }
     .shots { margin-top: 20px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
     .shots.single { grid-template-columns: minmax(0, 1fr); max-width: 760px; }
     .shot { margin: 0; display: flex; flex-direction: column; gap: 10px; }
@@ -748,7 +749,14 @@
         icon: "target",
         title: "Marketing đa kênh",
         desc: "Lập kế hoạch, triển khai và tối ưu Google Ads, Facebook, Instagram, TikTok, Zalo, kết hợp SEO và kênh đối tác. Phân khúc theo thị trường, khu vực; scale ngân sách khi số liệu xác nhận hiệu quả.",
-        outputs: ["Cấu trúc tài khoản & chiến dịch theo mục tiêu", "Phân bổ ngân sách theo thị trường, khu vực", "Kế hoạch scale dựa trên CPA, ROAS"]
+        outputs: ["Cấu trúc tài khoản & chiến dịch theo mục tiêu", "Phân bổ ngân sách theo thị trường, khu vực", "Kế hoạch scale dựa trên CPA, ROAS"],
+        // Ảnh tài khoản quảng cáo — ID và số lượng tài khoản đã làm mờ
+        shots: [
+          { src: "./tools/google-ads-mcc.webp", w: 781, h: 924, title: "Google Ads MCC: quản lý đa tài khoản", desc: "Vận hành nhiều tài khoản quảng cáo của các thương hiệu, chi nhánh trong một tài khoản quản lý." },
+          { src: "./tools/search-console-seo.webp", w: 1653, h: 698, title: "Google Search Console: hiệu suất SEO", desc: "Theo dõi lượt nhấp từ tìm kiếm tự nhiên, lập chỉ mục và trải nghiệm trang của website." },
+          { src: "./tools/meta-business-manager.webp", w: 937, h: 459, title: "Meta Business Manager: tài khoản quảng cáo", desc: "Quản lý trang quản lý tài sản doanh nghiệp và tài khoản quảng cáo Facebook của nhiều thương hiệu." },
+          { src: "./tools/tiktok-business-center.webp", w: 1569, h: 701, title: "TikTok for Business: Business Center & Ads Manager", desc: "Quản lý Business Center và tài khoản quảng cáo TikTok cho từng thương hiệu." }
+        ]
       },
       {
         icon: "layout",
@@ -769,11 +777,7 @@
         // Ảnh minh họa (thư mục ./tools) — chi phí, CPA và ID tài khoản đã làm mờ
         shots: [
           { src: "./tools/ga4-thuoc-tinh.webp", w: 824, h: 563, title: "GA4: thuộc tính đo lường", desc: "Quản lý thuộc tính GA4 cho từng thương hiệu: website, Google Maps theo chi nhánh, Search Console." },
-          { src: "./tools/gtm-the-chuyen-doi.webp", w: 1907, h: 882, title: "Google Tag Manager: thẻ chuyển đổi", desc: "Cài thẻ Google Ads và sự kiện chuyển đổi form cho website, quản lý nhiều vùng chứa." },
-          { src: "./tools/google-ads-mcc.webp", w: 781, h: 924, title: "Google Ads MCC: quản lý đa tài khoản", desc: "Vận hành nhiều tài khoản quảng cáo của các thương hiệu, chi nhánh trong một tài khoản quản lý." },
-          { src: "./tools/search-console-seo.webp", w: 1653, h: 698, title: "Google Search Console: hiệu suất SEO", desc: "Theo dõi lượt nhấp từ tìm kiếm tự nhiên, lập chỉ mục và trải nghiệm trang của website." },
-          { src: "./tools/meta-business-manager.webp", w: 937, h: 459, title: "Meta Business Manager: tài khoản quảng cáo", desc: "Quản lý trang quản lý tài sản doanh nghiệp và tài khoản quảng cáo Facebook của nhiều thương hiệu." },
-          { src: "./tools/tiktok-business-center.webp", w: 1569, h: 701, title: "TikTok for Business: Business Center & Ads Manager", desc: "Quản lý Business Center và tài khoản quảng cáo TikTok cho từng thương hiệu." }
+          { src: "./tools/gtm-the-chuyen-doi.webp", w: 1907, h: 882, title: "Google Tag Manager: thẻ chuyển đổi", desc: "Cài thẻ Google Ads và sự kiện chuyển đổi form cho website, quản lý nhiều vùng chứa." },,,
         ]
       },
       {
