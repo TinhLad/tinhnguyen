@@ -6,7 +6,7 @@
 
   <!-- SEO -->
   <title>Nguyễn Chí Tình · Lead Performance Marketing</title>
-  <meta name="description" content="Nguyễn Chí Tình — Lead Performance Marketing. Hơn 4 năm digital marketing, quản lý ngân sách quảng cáo hơn 1,5 tỷ đồng/tháng, quản lý output gián tiếp Design, Content, Social. Google Ads, Meta Ads, GA4, vibe code dashboard. TP. Hồ Chí Minh.">
+  <meta name="description" content="Nguyễn Chí Tình — Lead Performance Marketing. Hơn 4 năm digital marketing: phân bổ ngân sách quảng cáo theo hiệu quả kinh doanh, đo lường và phân tích dữ liệu để hỗ trợ ra quyết định, tự xây công cụ báo cáo tự động. TP. Hồ Chí Minh.">
   <meta name="author" content="Nguyễn Chí Tình">
   <meta name="theme-color" content="#F5F5F2">
   <!-- Đổi tên miền (GitHub Pages / Netlify) thì sửa URL ở canonical, og:url, og:image, twitter:image và JSON-LD -->
@@ -17,7 +17,7 @@
   <meta property="og:locale" content="vi_VN">
   <meta property="og:site_name" content="Nguyễn Chí Tình">
   <meta property="og:title" content="Nguyễn Chí Tình · Lead Performance Marketing">
-  <meta property="og:description" content="Quảng cáo bằng dữ liệu, tăng trưởng đo được. Quản lý ngân sách hơn 1,5 tỷ đồng/tháng · Google Ads · Meta Ads · GA4 · Vibe code.">
+  <meta property="og:description" content="Performance Marketing · Đo lường & phân tích dữ liệu · Tự động hóa báo cáo. Hơn 4 năm digital marketing.">
   <meta property="og:url" content="https://tinhlad.github.io/tinhnguyen/portfolio/">
   <meta property="og:image" content="https://tinhlad.github.io/tinhnguyen/portfolio/og-image.jpg">
   <meta property="og:image:width" content="1200">
@@ -27,7 +27,7 @@
   <!-- Twitter card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Nguyễn Chí Tình · Lead Performance Marketing">
-  <meta name="twitter:description" content="Quảng cáo bằng dữ liệu, tăng trưởng đo được. Google Ads · Meta Ads · GA4 · Vibe code.">
+  <meta name="twitter:description" content="Performance Marketing · Đo lường & phân tích dữ liệu · Tự động hóa báo cáo.">
   <meta name="twitter:image" content="https://tinhlad.github.io/tinhnguyen/portfolio/og-image.jpg">
 
   <!-- Favicon SVG chữ viết tắt -->
@@ -47,7 +47,7 @@
     "url": "https://tinhlad.github.io/tinhnguyen/portfolio/",
     "image": "https://tinhlad.github.io/tinhnguyen/portfolio/avatar.jpg",
     "award": ["Nhân viên xuất sắc năm 2024 – DN Group"],
-    "knowsAbout": ["Performance Marketing", "Google Ads", "Meta Ads", "TikTok Ads", "Zalo Ads", "Google Analytics 4", "Google Tag Manager", "Google Tag Gateway", "Google Search Console", "SEO", "Landing page", "Conversion Rate Optimization", "Vibe coding", "Dashboard"]
+    "knowsAbout": ["Performance Marketing", "Phân bổ ngân sách quảng cáo", "Đo lường và phân tích dữ liệu marketing", "Tự động hóa báo cáo", "Google Ads", "Meta Ads", "TikTok Ads", "Google Analytics 4", "Google Tag Manager", "Landing page"]
   }
   </script>
 
@@ -212,9 +212,12 @@
     .h-photo { grid-column: 9 / span 4; grid-row: 1; padding: 0; overflow: hidden; min-height: 260px; }
     .h-photo.no-status { grid-row: 1 / span 2; }
     .h-status { grid-column: 9 / span 4; grid-row: 2; display: flex; align-items: center; gap: 14px; }
-    .h-budget { grid-column: 1 / span 4; }
-    .h-years { grid-column: 5 / span 2; }
-    .h-team { grid-column: 7 / span 2; }
+    .h-focus { grid-column: 1 / span 6; display: flex; flex-direction: column; gap: 16px; justify-content: space-between; }
+    .h-years { grid-column: 7 / span 3; }
+    .h-team { grid-column: 10 / span 3; }
+    .focus-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+    .focus-list li { display: flex; align-items: center; gap: 12px; font-size: 16px; font-weight: 500; line-height: 1.4; }
+    .focus-list b { width: 28px; height: 28px; flex: none; border-radius: 50%; background: var(--accent); color: #fff; display: grid; place-items: center; font-size: 13px; }
     .h-tools { grid-column: 9 / span 4; }
 
     .hello { display: inline-flex; align-items: center; gap: 8px; }
@@ -270,17 +273,15 @@
 
     /* Services */
     .services { margin-top: var(--gap); }
-    .svc:nth-child(1) { grid-column: span 7; }
-    .svc:nth-child(2) { grid-column: span 5; }
-    .svc:nth-child(3) { grid-column: span 5; }
-    .svc:nth-child(4) { grid-column: span 7; }
+    .svc:nth-child(1), .svc:nth-child(2) { grid-column: span 6; }
+    .svc:nth-child(n+3) { grid-column: span 12; }
     .svc.has-shots { grid-column: 1 / -1 !important; }
     .svc.has-shots + .svc:not(.has-shots) { grid-column: 1 / -1 !important; }
-    .shots { margin-top: 18px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+    .shots { margin-top: 18px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
     .shots.single { grid-template-columns: minmax(0, 1fr); max-width: 300px; }
     .shot { margin: 0; display: flex; flex-direction: column; gap: 10px; }
     .shot a { display: block; border-radius: 14px; overflow: hidden; border: 1px solid var(--line); background: var(--bg); }
-    .shot img { width: 100%; aspect-ratio: 16 / 9; height: auto; object-fit: cover; object-position: top left; transition: transform .3s ease; }
+    .shot img { width: 100%; height: auto; transition: transform .3s ease; }
     .shots.single .shot img { aspect-ratio: 16 / 9; }
     .shot a:hover img { transform: scale(1.02); }
     .shot figcaption { font-size: 13px; line-height: 1.4; color: var(--muted); }
@@ -310,6 +311,22 @@
     .proj.featured > .proj-summary { grid-row: 3; }
     .proj.featured > .chips { grid-row: 4; }
     .proj.featured > .btn { grid-row: 5; align-self: end; justify-self: start; }
+    .proj.featured > .focus-box { grid-column: 2; grid-row: 1 / span 5; align-self: start; }
+    .focus-box { background: var(--bg); border-radius: 16px; padding: 18px 20px; }
+    .focus-box .label { color: var(--accent-ink); }
+    .focus-box ol { list-style: none; margin: 12px 0 0; padding: 0; display: grid; gap: 12px; }
+    .focus-box li { display: flex; gap: 12px; align-items: flex-start; font-size: 16px; font-weight: 500; line-height: 1.45; }
+    .focus-box b { width: 26px; height: 26px; flex: none; border-radius: 50%; background: var(--ink); color: #fff; display: grid; place-items: center; font-size: 13px; margin-top: 1px; }
+    .cs-wide { grid-template-columns: 1fr !important; }
+    .probs { display: grid; gap: 14px; }
+    .prob { border: 1px solid var(--line); border-radius: 16px; padding: 16px 18px; }
+    .prob-title { display: flex; gap: 10px; align-items: flex-start; font-weight: 600; font-size: 16px; line-height: 1.45; }
+    .prob-title b { width: 26px; height: 26px; flex: none; border-radius: 50%; background: var(--accent); color: #fff; display: grid; place-items: center; font-size: 13px; }
+    .prob dl { margin: 12px 0 0; display: grid; gap: 10px; }
+    .prob dl > div { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 12px; }
+    .prob dt { font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); padding-top: 2px; }
+    .prob dd { margin: 0; font-size: 15px; line-height: 1.55; }
+    @media (max-width: 639px) { .prob dl > div { grid-template-columns: 1fr; gap: 2px; } }
     .proj.featured > .kpis { grid-column: 2; grid-row: 1 / span 3; align-self: start; }
     .proj.featured > .flow { grid-column: 2; grid-row: 1 / span 3; }
     .proj.featured > .proj-metric { grid-column: 2; grid-row: 4 / span 2; margin-top: 0; align-self: end; }
@@ -472,7 +489,7 @@
       .bento { grid-template-columns: repeat(6, minmax(0, 1fr)); }
       .h-intro { grid-column: 1 / -1; grid-row: 1; }
       .h-photo { grid-column: 1 / span 3; grid-row: 2 / span 2 !important; min-height: 280px; }
-      .h-budget { grid-column: 4 / span 3; grid-row: 2; }
+      .h-focus { grid-column: 4 / span 3; grid-row: 2; }
       .h-status { grid-column: 4 / span 3; grid-row: 3; }
       .h-photo.no-status { grid-row: 2 !important; }
       .h-years { grid-column: 1 / span 3; grid-row: 4; }
@@ -599,9 +616,9 @@
       <div class="container">
         <div class="section-head reveal">
           <div>
-            <p class="label">Dự án tiêu biểu</p>
-            <h2 class="h2" id="projTitle">Kết quả thực tế từ các dự án</h2>
-            <p class="lead">Tên khách hàng được ẩn. Số liệu lấy từ dashboard theo dõi của từng dự án.</p>
+            <p class="label">Tình huống tiêu biểu</p>
+            <h2 class="h2" id="projTitle">Cách tôi xử lý bài toán marketing</h2>
+            <p class="lead">Các tình huống tập trung vào phương pháp xử lý và đóng góp cá nhân. Thông tin nhận diện và số liệu kinh doanh nội bộ đã được lược bỏ.</p>
           </div>
         </div>
         <div class="bento" id="projects"></div>
@@ -723,18 +740,26 @@
     hero: {
       hello: "Xin chào, tôi là",
       value: "Biến ngân sách quảng cáo thành <em>doanh thu đo lường được</em>.",
-      sub: "Tôi làm quảng cáo bằng dữ liệu: lập kế hoạch, triển khai, đo lường và tự động hóa báo cáo. Mỗi đồng ngân sách đều được theo dõi và tối ưu.",
+      sub: "Tôi lập kế hoạch và phân bổ ngân sách quảng cáo theo hiệu quả kinh doanh, đo lường từng kênh để hỗ trợ ra quyết định, và tự xây công cụ báo cáo tự động để vận hành nhanh hơn.",
       ctaNote: "",
       available: false,
       availableText: "Đang nhận dự án freelance",
       badge: "",   // để "" nếu không muốn hiện
-      tools: ["Google Ads", "Meta Ads", "TikTok Ads", "GA4", "Google Tag Manager", "Vibe code"]
+      tools: []
     },
 
     stats: {
-      budget: { value: 1.5, decimals: 1, suffix: "+", unit: "tỷ đ/tháng", label: "Ngân sách quảng cáo quản lý" },
+      // Ô nền tối: 3 năng lực trọng tâm (không hiển thị số liệu kinh doanh)
+      focus: {
+        label: "3 năng lực trọng tâm",
+        items: [
+          "Performance Marketing và phân bổ nguồn lực",
+          "Đo lường, phân tích dữ liệu, hỗ trợ ra quyết định",
+          "Xây công cụ, tự động hóa báo cáo, cải tiến vận hành"
+        ]
+      },
       years:  { value: 4, decimals: 0, suffix: "+", unit: "năm", label: "Kinh nghiệm digital marketing" },
-      team:   { value: 3, decimals: 0, unit: "mảng", label: "Quản lý output công việc gián tiếp: Design, Content, Social" }
+      team:   { value: 3, decimals: 0, unit: "mảng", label: "Quản lý đầu ra công việc gián tiếp: Design, Content, Social" }
     },
 
     about: {
@@ -752,160 +777,119 @@
         note: ""
       },
       industries: ["Nha khoa", "Thẩm mỹ viện", "Đào tạo thẩm mỹ", "Nhà hàng", "Bất động sản", "Nhôm kính & cửa", "Thẩm định giá", "Bán lẻ"],
-      channels: ["Google Ads", "Meta Ads", "TikTok Ads", "Zalo Ads", "GMV TikTok", "Sàn thương mại điện tử", "SEO", "Seeding cộng đồng"],
-      tools: ["GA4", "Google Tag Manager", "Google Tag Gateway", "Google Search Console", "Pancake", "Vibe code (Claude Code)", "Antigravity"]
+      channels: [],
+      tools: ["Google Ads", "Meta Ads", "TikTok Ads", "Zalo Ads", "Sàn TMĐT (TikTok Shop, Shopee)", "GA4", "Google Tag Manager & Tag Gateway", "Google Search Console", "Pancake", "Vibe code (Claude Code, Antigravity)"]
     },
 
     services: [
       {
         icon: "target",
-        title: "Quảng cáo & phát triển kênh",
-        desc: "Lập kế hoạch, triển khai và tối ưu Google Ads, Facebook, Instagram, TikTok, Zalo, kết hợp SEO và kênh đối tác. Phân khúc theo thị trường, khu vực; scale ngân sách khi số liệu xác nhận hiệu quả.",
-        outputs: ["Cấu trúc tài khoản & chiến dịch theo mục tiêu", "Phân bổ ngân sách theo thị trường, khu vực", "Kế hoạch scale dựa trên CPA, ROAS", "Seeding & social proof: dẫn dắt thảo luận trong group, bình luận, review; tạo tương tác ban đầu cho bài viết và livestream"],
-        // Ảnh tài khoản quảng cáo — ID và số lượng tài khoản đã làm mờ
-        shots: [
-          { src: "./tools/google-ads-mcc.webp", w: 781, h: 924, title: "Google Ads MCC: quản lý đa tài khoản", desc: "Vận hành nhiều tài khoản quảng cáo của các thương hiệu, chi nhánh trong một tài khoản quản lý." },
-          { src: "./tools/search-console-seo.webp", w: 1653, h: 698, title: "Google Search Console: hiệu suất SEO", desc: "Theo dõi lượt nhấp từ tìm kiếm tự nhiên, lập chỉ mục và trải nghiệm trang của website." },
-          { src: "./tools/meta-business-manager.webp", w: 937, h: 459, title: "Meta Business Manager: tài khoản quảng cáo", desc: "Quản lý trang quản lý tài sản doanh nghiệp và tài khoản quảng cáo Facebook của nhiều thương hiệu." },
-          { src: "./tools/tiktok-business-center.webp", w: 1569, h: 701, title: "TikTok for Business: Business Center & Ads Manager", desc: "Quản lý Business Center và tài khoản quảng cáo TikTok cho từng thương hiệu." }
-        ]
-      },
-      {
-        icon: "layout",
-        title: "Landing page tối ưu chuyển đổi",
-        desc: "Xây landing page bám sát ý định tìm kiếm và thông điệp quảng cáo; tối ưu Google Maps và trải nghiệm chuyển đổi.",
-        outputs: ["Landing page theo từng nhóm dịch vụ", "Form, nút gọi, Zalo được gắn sự kiện", "Danh sách thử nghiệm A/B ưu tiên"],
-        shots: [
-          { src: "./tools/ladipage-landing-pages.webp", w: 1355, h: 791, title: "LadiPage: quản lý landing page đa thương hiệu", desc: "Xây và vận hành landing page cho từng dịch vụ, chi nhánh và kênh quảng cáo (Google, TikTok, Cốc Cốc); gắn tag để theo dõi hiệu suất và quản lý data leads." }
+        title: "Performance Marketing & phân bổ nguồn lực",
+        desc: "Lập kế hoạch, triển khai và tối ưu quảng cáo trên Google, Facebook/Instagram, TikTok, Zalo và sàn thương mại điện tử. Điều chỉnh ngân sách giữa các kênh theo hiệu quả kinh doanh, không chỉ theo chi phí mỗi khách tiềm năng.",
+        outputs: [
+          "Cấu trúc tài khoản và chiến dịch theo mục tiêu kinh doanh",
+          "Phân bổ, điều chỉnh ngân sách theo kênh, thị trường, khu vực",
+          "Landing page bám sát nhu cầu của khách và thông điệp quảng cáo",
+          "Seeding cộng đồng: thảo luận trong group, bình luận, đánh giá; tạo tương tác ban đầu cho bài viết và livestream"
         ]
       },
       {
         icon: "chart",
-        title: "Đo lường & tracking",
-        desc: "Đo lường riêng từng kênh rồi ghép lại thành một bức tranh chung, để biết kênh nào thật sự mang lại doanh thu.",
+        title: "Đo lường, phân tích dữ liệu & hỗ trợ ra quyết định",
+        desc: "Thiết lập đo lường cho từng kênh rồi ghép thành một bức tranh chung, để so sánh chất lượng khách chứ không chỉ số lượng, từ đó đề xuất kênh nên tăng hay giảm đầu tư.",
         outputs: [
-          "GA4 + Google Tag Manager: sự kiện chuyển đổi, đồng bộ với Google Ads",
-          "GA4: đo lường Google Business Profile (Maps)",
-          "Google Search Console: đo lường hiệu quả SEO",
-          "Pancake: đo lường tin nhắn WhatsApp, Instagram, Messenger"
-        ],
-        // Ảnh minh họa (thư mục ./tools) — chi phí, CPA và ID tài khoản đã làm mờ
-        shots: [
-          { src: "./tools/ga4-thuoc-tinh.webp", w: 824, h: 563, title: "GA4: thuộc tính đo lường", desc: "Quản lý thuộc tính GA4 cho từng thương hiệu: website, Google Maps theo chi nhánh, Search Console." },
-          { src: "./tools/gtm-the-chuyen-doi.webp", w: 1907, h: 882, title: "Google Tag Manager: thẻ chuyển đổi", desc: "Cài thẻ Google Ads và sự kiện chuyển đổi form cho website, quản lý nhiều vùng chứa." },,,
+          "Sự kiện chuyển đổi trên website, đồng bộ với Google Ads (GA4, Google Tag Manager)",
+          "Theo dõi Google Maps (Trang doanh nghiệp) và hiệu quả SEO (Search Console)",
+          "Theo dõi tin nhắn WhatsApp, Instagram, Messenger (Pancake)"
         ]
       },
       {
         icon: "workflow",
-        title: "Dashboard & báo cáo tự động (vibe code)",
-        desc: "Tự xây dashboard và báo cáo tự động bằng vibe code, thay cho Looker Studio, Power BI hoặc thuê bên thứ ba vốn tốn thời gian dựng, phát sinh chi phí và khó đọc nếu không rành chỉ số.",
+        title: "Xây công cụ, tự động hóa báo cáo & cải tiến vận hành",
+        desc: "Tự xây dashboard và báo cáo tự động bằng vibe code, thay cho việc dựng trên Looker Studio, Power BI hoặc thuê bên thứ ba vốn tốn thời gian, phát sinh chi phí và khó đọc nếu không rành chỉ số.",
         outputs: [
-          "Không tốn chi phí công cụ hay thuê ngoài",
-          "Dựng nhanh, số liệu cập nhật tự động thay vì tổng hợp thủ công",
-          "Chỉ số trực quan, ai trong team cũng đọc được",
-          "Điều chỉnh mục tiêu và phân bổ ngân sách theo từng hạng mục dựa trên số liệu mới nhất"
+          "Dashboard tự cập nhật từ Google Sheets: theo tuần, kênh bán, sản phẩm, chiến dịch",
+          "Quy tắc gợi ý tăng, giữ hoặc giảm ngân sách từng chiến dịch dựa trên chất lượng khách tiềm năng",
+          "Công cụ AI hỗ trợ viết và lên lịch đăng bài cho nhiều Fanpage",
+          "Không phát sinh chi phí công cụ trả phí; mọi người trong nhóm đều đọc được số liệu"
         ],
+        // Ảnh minh họa dùng dữ liệu giả lập — không chứa số liệu hay thông tin nhận diện thật
         shots: [
-          { src: "./tools/lead-dashboard-cpa.webp", w: 1694, h: 910, title: "Executive lead dashboard: CPA theo chiến dịch", desc: "Tự xây bằng vibe code: ghép chi phí Google Ads với lead chất lượng, tự đề xuất tăng/giảm ngân sách từng chiến dịch." },
-          { src: "./tools/dashboard-data-theo-nguon.webp", w: 1668, h: 730, title: "Dashboard quản trị KPI: data theo nguồn", desc: "Tự xây bằng vibe code: theo dõi data mới, data kết nối, CVR và chi phí/data theo từng nguồn, lọc theo thời gian, nguồn và chi nhánh." },
-          { src: "./tools/fb-page-manager.webp", w: 1895, h: 911, title: "FB Page Manager: AI viết & đăng bài đa Fanpage", desc: "Tự xây bằng vibe code: AI viết nội dung theo giọng văn từng Page, tạo ảnh, hẹn giờ và đăng lên nhiều Fanpage cùng lúc." }
+          { src: "./tools/minh-hoa-dashboard-chien-dich.webp", w: 1600, h: 704, title: "Dashboard theo dõi chiến dịch (dữ liệu minh họa)", desc: "Ghép chi phí với khách tiềm năng chất lượng theo chiến dịch; tự gợi ý tăng, giữ hoặc giảm ngân sách." },
+          { src: "./tools/minh-hoa-dashboard-ban-hang.webp", w: 1600, h: 537, title: "Dashboard bán hàng theo kênh (dữ liệu minh họa)", desc: "Theo dõi theo tuần, kênh bán, sản phẩm; đối soát doanh thu thực nhận từ sàn." }
         ]
       }
     ],
 
     projects: [
       {
-        title: "Nha khoa phục vụ khách Úc & New Zealand: 256 khách mới trong tháng 9",
+        title: "Tái cấu trúc marketing nha khoa cho khách Úc và New Zealand",
         industry: "Nha khoa · Khách quốc tế",
-        summary: "Tiếp quản từ giữa tháng 8/2026. Chuyển ngân sách sang kênh có ROAS cao (Google 65% · Facebook/Instagram 35%), mở WhatsApp, tái cấu trúc landing page, đẩy Google Maps và video khách hàng thật để tăng niềm tin với khách nước ngoài.",
-        metric: { value: "256", label: "Khách mới · tổng tháng 09/2026" },
-        kpis: [
-          { value: "2.163", label: "data" },
-          { value: "529", label: "kết nối" },
-          { value: "307k", label: "CPA (chi phí/data)" },
-          { value: "11,8%", label: "CVR (data → khách mới)" }
+        summary: "Tiếp nhận từ giữa tháng 8/2026. Phân tích lại hiệu quả từng kênh, đề xuất điều chỉnh phân bổ ngân sách và củng cố các điểm chạm tạo niềm tin với khách quốc tế: landing page, Google Maps, nội dung khách hàng thật.",
+        focusLabel: "3 vấn đề chính",
+        focus: [
+          "Phân bổ ngân sách chưa phản ánh hiệu quả kinh doanh của từng kênh",
+          "Landing page chưa giải đáp được băn khoăn của khách quốc tế",
+          "Chưa khai thác lại nhóm khách đã quan tâm và các điểm chạm khi khách tìm hiểu"
         ],
-        tags: ["Google Ads", "Facebook/Instagram", "WhatsApp", "Google Maps", "YouTube", "SEO", "Đối tác"],
-        image: {
-          src: "./cases/nha-khoa-dashboard-09-2026.webp", w: 1654, h: 686,
-          alt: "Dashboard tháng 09/2026: 2.163 data mới, 529 data kết nối, chi phí 307k/data, CVR 11,8%; số data và chi phí/data theo nguồn",
-          caption: "Dashboard theo dõi tháng 09/2026: data theo nguồn và chi phí/data theo kênh."
-        },
-        // Kết quả trước–sau hiển thị trên thẻ
-        highlights: {
-          label: "Google Maps · tháng 9 so với tháng 7 (trước khi tiếp quản)",
-          items: [
-            { value: "+174%", label: "lượt xem đường đi" },
-            { value: "+115%", label: "lượt tương tác" },
-            { value: "+22%", label: "cuộc gọi" }
-          ]
-        },
-        gallery: [
-          { src: "./cases/nha-khoa-maps-tuong-tac.webp", w: 1514, h: 555, title: "Google Maps: lượt tương tác và cuộc gọi, tháng 9 so với tháng 7" },
-          { src: "./cases/nha-khoa-maps-duong-di.webp", w: 1553, h: 552, title: "Google Maps: lượt xem đường đi, tháng 9 so với tháng 7" }
-        ],
-        context: "Phòng khám nha khoa phục vụ khách nước ngoài (Úc, New Zealand), dịch vụ chủ lực Implant và răng sứ. Tôi tiếp quản marketing từ giữa tháng 8/2026.",
-        challenge: [
-          "Phân bổ ngân sách: chia gần như đều giữa Google Ads và Facebook/Instagram Ads, chưa theo hiệu quả. Google có CPL cao nhưng ROAS và CVR cao; Facebook có CPL rất rẻ, CVR tương đương nhưng ROAS thấp.",
-          "Facebook: chưa tận dụng tệp khách chất lượng đến từ Google; chưa gắn pixel để remarketing, chưa tạo tệp lookalike.",
-          "Landing page: nội dung chưa đủ thuyết phục; thiếu câu chuyện khách hàng thật, đánh giá khách quan từ Google Maps và WhatClinic; thông tin bác sĩ chưa rõ ràng; chưa có FAQ giải đáp băn khoăn.",
-          "Chưa trả lời điều khách nước ngoài quan tâm nhất: hành trình từ nước họ sang Việt Nam điều trị và chế độ bảo hành khi về nước.",
-          "Google Maps yếu (ít đánh giá, chưa chạy quảng cáo Maps); SEO website cho thị trường nước ngoài còn yếu."
-        ],
-        decisions: [
-          "Chạy full-funnel trên nhiều kênh, đo hiệu quả từng kênh và xác định Google là kênh chủ lực.",
-          "Tái phân bổ ngân sách theo ROAS: Google 65%, Facebook/Instagram 35%; tăng chiến dịch nhắn tin WhatsApp trên cả hai kênh.",
-          "Tái cấu trúc landing page theo đúng băn khoăn của khách: thông tin bác sĩ, giải thưởng, review khách hàng thật, đánh giá Google Maps và WhatClinic, FAQ, hành trình điều trị và bảo hành khi về nước.",
-          "Gắn pixel, remarketing bám đuổi khách từ các kênh quảng cáo và tạo tệp lookalike từ nhóm khách chất lượng.",
-          "Tối ưu Google Maps: tăng đánh giá thật từ khách hàng, đẩy quảng cáo Maps.",
-          "Song song phát triển kênh organic để tăng hiển thị: video khách hàng thật trên YouTube, SEO website.",
-          "Liên kết đối tác để mở thêm nguồn khách ngoài quảng cáo."
-        ],
-        solution: [],
-        results: [
-          "Google Maps tháng 9 so với tháng 7: lượt xem đường đi +174,1% (1,7 nghìn), lượt tương tác +115% (2 nghìn), cuộc gọi +22,2% (88).",
-          "Tổng tháng 09/2026: 2.163 data, 529 kết nối, 256 khách mới; CVR 11,8% (data → khách mới); CPA 307.000 đ/data.",
-          "Google là kênh chủ lực của dự án."
+        tags: ["Phân bổ ngân sách", "Landing page", "Quảng cáo bám đuổi", "Google Maps"],
+        context: "Phòng khám nha khoa phục vụ khách nước ngoài (Úc, New Zealand), dịch vụ chính là cấy ghép Implant và răng sứ. Từ giữa tháng 8/2026, tôi trực tiếp triển khai và phát triển marketing cho phòng khám.",
+        problems: [
+          {
+            title: "Phân bổ ngân sách chưa phản ánh hiệu quả kinh doanh của từng kênh",
+            issue: "Ngân sách đang chia gần như đều giữa Google và Facebook/Instagram. Facebook có chi phí mỗi khách tiềm năng rất thấp.",
+            insight: "Chi phí mỗi khách tiềm năng thấp chưa đủ để kết luận một kênh hiệu quả hơn. Khi đối chiếu đến doanh thu: Facebook rẻ hơn ở bước đầu và có tỷ lệ chuyển đổi tương đương Google, nhưng hiệu quả doanh thu trên chi phí quảng cáo thấp hơn; Google có chi phí mỗi khách tiềm năng cao hơn nhưng mang lại hiệu quả doanh thu cao hơn.",
+            action: "Chạy thử trên nhiều kênh theo toàn bộ phễu để có số liệu so sánh, xác định Google là kênh chủ lực. Đề xuất với Trưởng phòng Marketing tăng tỷ trọng ngân sách cho Google, giảm cho Facebook/Instagram; bổ sung chiến dịch nhắn tin WhatsApp trên cả hai kênh."
+          },
+          {
+            title: "Landing page chưa giải đáp được băn khoăn của khách quốc tế",
+            issue: "Nội dung chưa đủ thuyết phục: thiếu câu chuyện khách hàng thật, thiếu đánh giá khách quan từ Google Maps và WhatClinic, thông tin bác sĩ chưa rõ ràng, chưa có phần hỏi đáp.",
+            insight: "Điều khách nước ngoài quan tâm nhất là hành trình từ nước họ sang Việt Nam điều trị và việc bảo hành khi đã về nước. Trang cần trả lời được những câu hỏi này.",
+            action: "Xây lại cấu trúc nội dung landing page: thông tin bác sĩ, giải thưởng, đánh giá của khách hàng thật, đánh giá trên Google Maps và WhatClinic, phần hỏi đáp, hành trình điều trị và hỗ trợ bảo hành sau khi về nước."
+          },
+          {
+            title: "Chưa khai thác lại nhóm khách đã quan tâm và các điểm chạm khi khách tìm hiểu",
+            issue: "Khách đến từ Google có chất lượng tốt nhưng chưa được gắn pixel để quảng cáo bám đuổi, chưa tạo tệp khách tương tự. Google Maps còn ít đánh giá, chưa chạy quảng cáo Maps; SEO website cho thị trường nước ngoài còn yếu.",
+            insight: "Khách nước ngoài tra cứu Google Maps rất nhiều, nên Maps là một điểm chạm quan trọng. Nhóm khách chất lượng từ Google là nguồn có thể khai thác lại trên các kênh quảng cáo khác.",
+            action: "Gắn pixel, chạy quảng cáo bám đuổi khách từ các kênh quảng cáo và tạo tệp khách tương tự. Tăng đánh giá thật trên Google Maps và chạy quảng cáo Maps. Song song phát triển kênh tự nhiên: video khách hàng thật trên YouTube, SEO website; mở thêm nguồn khách qua đối tác."
+          }
         ],
         role: [
-          "Phân tích số liệu, đề xuất phương án phân bổ ngân sách và chọn kênh, thống nhất cùng Trưởng phòng Marketing; trực tiếp triển khai quảng cáo Google, Facebook, WhatsApp và tối ưu Google Maps.",
-          "Phối hợp phòng Design, Media, Content, Seeding, SEO để sản xuất hình ảnh, video, review và nội dung website."
-        ],
-        tools: ["Google Ads", "Meta Ads", "Meta Pixel", "Instagram", "WhatsApp", "TikTok", "Zalo", "YouTube", "SEO", "GA4", "Google Tag Manager", "Google Tag Gateway", "Google Search Console", "Dashboard (vibe coding)", "Landing page", "Google Maps"]
-      },
-      {
-        featured: true,
-        title: "Mỹ phẩm trên TikTok & Shopee: doanh thu tháng 8 tăng 84,9%",
-        industry: "Mỹ phẩm · Thương mại điện tử",
-        summary: "Quản lý tài khoản TikTok, Shopee, Fanpage, YouTube; chạy quảng cáo nội sàn, ngoại sàn, KOL affiliate, GMV TikTok, Facebook Ads và livestream; tự xây dashboard thống kê số liệu bằng vibe code.",
-        metric: { value: "+84,9%", label: "Doanh thu so với tháng 7 · tháng 08/2026" },
-        kpis: [
-          { value: "54", label: "đơn hàng" },
-          { value: "84", label: "sản phẩm bán ra" },
-          { value: "5,55×", label: "ROAS" },
-          { value: "18%", label: "chi phí quảng cáo / doanh thu" }
-        ],
-        tags: ["TikTok", "Shopee", "GMV TikTok", "KOL Affiliate", "Facebook Ads", "Livestream", "Dashboard"],
-        image: {
-          src: "./cases/my-pham-dashboard-08-2026.webp", w: 1901, h: 874,
-          alt: "Dashboard mỹ phẩm tháng 08/2026: 54 đơn hàng, 84 sản phẩm bán ra, ROAS 5,55×, tỷ lệ chi phí/doanh thu 18%; các số tiền đã được làm mờ",
-          caption: "Dashboard tự xây bằng vibe code, số liệu tháng 08/2026. Các số liệu doanh thu, chi phí và giá trị đơn đã được làm mờ."
-        },
-        context: "Thương hiệu mỹ phẩm bán hàng trên sàn thương mại điện tử (TikTok, Shopee) và mạng xã hội.",
-        challenge: "",
-        solution: [
-          "Quản lý tài khoản TikTok, Shopee, Fanpage, YouTube.",
-          "Chạy quảng cáo nội sàn và ngoại sàn: GMV TikTok, Facebook Ads.",
-          "Hợp tác KOL affiliate và livestream bán hàng.",
-          "Tự xây dashboard bằng vibe code, đồng bộ từ Google Sheets: thống kê số liệu theo tuần, kênh bán và sản phẩm; đối soát doanh thu thực nhận từ sàn."
+          "Trực tiếp thực hiện: phân tích số liệu từng kênh; triển khai quảng cáo Google, Facebook, WhatsApp; xây cấu trúc nội dung landing page; tối ưu Google Maps.",
+          "Đề xuất: phương án phân bổ ngân sách và lựa chọn kênh, thống nhất cùng Trưởng phòng Marketing.",
+          "Phối hợp: phòng Design, Media, Content, Seeding, SEO sản xuất hình ảnh, video, đánh giá và nội dung website."
         ],
         results: [
-          "Tháng 08/2026: 54 đơn hàng, 84 sản phẩm bán ra.",
-          "So với tháng 7: doanh thu +84,9%, số đơn +14,9%, sản phẩm bán ra +42,4%, chi phí/đơn −20,4%.",
-          "ROAS 5,55×; chi phí quảng cáo bằng 18% doanh thu.",
-          "Tỷ lệ thực nhận 78,3% doanh thu sàn."
+          "Trang doanh nghiệp trên Google Maps (tháng 9 so với tháng 7, trước khi tiếp nhận): lượt xem đường đi, lượt tương tác và cuộc gọi đều tăng; lượt nhấp vào website giảm.",
+          "Google được xác định là kênh chủ lực của dự án.",
+          "Kết quả trên là của cả dự án, có sự tham gia của nhiều bộ phận. Số liệu hiện có chưa đủ để tách riêng mức tác động của từng hoạt động."
+        ]
+      },
+      {
+        title: "Vận hành marketing mỹ phẩm trên sàn thương mại điện tử và xây dựng hệ thống báo cáo",
+        industry: "Mỹ phẩm · Thương mại điện tử",
+        summary: "Từ giữa năm 2026, quản lý tài khoản bán hàng và kênh nội dung của một thương hiệu mỹ phẩm; tự xây dashboard theo dõi số liệu bán hàng và đối soát doanh thu thực nhận từ sàn.",
+        focusLabel: "Phạm vi công việc",
+        focus: [
+          "Vận hành TikTok, Shopee, Fanpage, YouTube",
+          "Quảng cáo trong sàn, ngoài sàn, tiếp thị liên kết và livestream",
+          "Tự xây dashboard theo tuần, kênh bán, sản phẩm"
         ],
-        tools: ["TikTok Shop", "Shopee", "GMV TikTok", "KOL Affiliate", "Facebook Ads", "Livestream", "Fanpage", "YouTube", "Google Sheets", "Dashboard (vibe coding)"]
+        tags: ["TikTok Shop", "Shopee", "Livestream", "Dashboard"],
+        context: "Thương hiệu mỹ phẩm bán hàng trên TikTok, Shopee và mạng xã hội. Từ giữa năm 2026, tôi quản lý tài khoản các kênh bán hàng và kênh nội dung của thương hiệu.",
+        scope: [
+          "Vận hành tài khoản TikTok, Shopee, Fanpage, YouTube.",
+          "Triển khai quảng cáo trong sàn (GMV TikTok) và ngoài sàn (Facebook Ads), tiếp thị liên kết qua KOL và livestream bán hàng."
+        ],
+        system: [
+          "Tự xây dashboard bằng vibe code, lấy dữ liệu từ Google Sheets.",
+          "Theo dõi số liệu theo tuần, theo kênh bán và theo sản phẩm.",
+          "Đối soát doanh thu thực nhận (tiền sàn đã quyết toán) với doanh thu ghi nhận trên sàn; phần chênh lệch gồm phí sàn, hoàn/hủy và đơn chưa đến kỳ quyết toán."
+        ],
+        role: [
+          "Trực tiếp thực hiện: quản lý tài khoản các kênh, triển khai quảng cáo, xây và vận hành dashboard."
+        ],
+        results: []
       }
     ],
 
@@ -917,10 +901,10 @@
         role: "Digital Marketing Executive",
         org: "DN Group · TP. Hồ Chí Minh",
         bullets: [
-          "Từ giữa năm 2026: phụ trách marketing cho nha khoa hướng tới khách Úc, New Zealand (Google, Facebook, TikTok, Zalo, Instagram, SEO, đối tác), đồng thời quản lý tài khoản sàn thương mại điện tử.",
-          "Dự án nha khoa tháng 09/2026: 2.163 data, 256 khách mới, CVR 11,8%.",
-          "Quản lý ngân sách quảng cáo hơn 1,5 tỷ đồng/tháng cho thẩm mỹ viện, nha khoa, trường dạy thẩm mỹ, nhà hàng.",
-          "Tự xây dashboard và báo cáo tự động bằng vibe code, thay cho báo cáo thủ công và công cụ trả phí; hỗ trợ phân bổ ngân sách theo từng hạng mục.",
+          "Từ giữa năm 2026: phụ trách marketing cho phòng khám nha khoa phục vụ khách Úc, New Zealand; phân tích số liệu từng kênh và đề xuất phương án phân bổ ngân sách với Trưởng phòng Marketing. Đồng thời quản lý tài khoản sàn thương mại điện tử.",
+          "Triển khai và tối ưu quảng cáo cho thẩm mỹ viện, nha khoa, trường dạy thẩm mỹ, nhà hàng.",
+          "Tự xây dashboard và báo cáo tự động bằng vibe code, thay cho báo cáo thủ công và công cụ trả phí.",
+          "Quản lý đầu ra công việc gián tiếp với Design, Content, Social; phối hợp SEO (đưa từ khóa, kiểm tra nội dung bài viết).",
           "Đạt danh hiệu Nhân viên xuất sắc năm 2024 (Chuyên viên Google Ads)."
         ]
       },
@@ -930,8 +914,8 @@
         org: "Công ty Cổ phần Tập đoàn Thẩm định giá Hoàng Quân",
         bullets: [
           "Vận hành Google Ads, Facebook Ads, TikTok Ads; lập kế hoạch chiến dịch đa nền tảng theo từng giai đoạn.",
-          "Quản lý kênh Website, Fanpage, TikTok, YouTube; viết script và xử lý hình ảnh, video quảng cáo.",
-          "Làm việc với agency SEO & Ads, theo dõi hiệu quả SEO website.",
+          "Quản lý kênh Website, Fanpage, TikTok, YouTube; viết kịch bản và xử lý hình ảnh, video quảng cáo.",
+          "Làm việc với đơn vị SEO và quảng cáo thuê ngoài, theo dõi hiệu quả SEO website.",
           "Báo cáo hiệu quả chiến dịch định kỳ cho quản lý."
         ]
       },
@@ -941,7 +925,7 @@
         org: "Công ty TNHH NTN",
         bullets: [
           "Triển khai TikTok Ads, Google Ads cho sản phẩm bán lẻ.",
-          "Viết content bán hàng, kịch bản video 30–60 giây; tạo voice AI, edit video, thiết kế hình ảnh quảng cáo.",
+          "Viết nội dung bán hàng, kịch bản video 30–60 giây; lồng tiếng bằng AI, dựng video, thiết kế hình ảnh quảng cáo.",
           "Thiết kế landing page sản phẩm, tối ưu chuyển đổi."
         ]
       }
@@ -1083,7 +1067,7 @@
         <div>
           <p class="label hello">${t(h.hello)}</p>
           <h1 class="h1 hero-name" id="heroName">${t(PROFILE.name)}</h1>
-          <p class="hero-role">${t(PROFILE.title)} <span class="role-company"><span class="sep">· </span>${t(PROFILE.company)}</span></p>
+          <p class="hero-role">${t(PROFILE.title)}</p>
           ${has(h.badge) ? `<a class="hero-award" href="#giai-thuong">${ICONS.award}<span>${t(h.badge)}</span></a>` : ""}
           <p class="hero-value">${tRich(h.value)}</p>
           ${has(h.sub) ? `<p class="hero-sub">${t(h.sub)}</p>` : ""}
@@ -1113,7 +1097,11 @@
         </div>
       </div>` : ""}
 
-      ${statCell("h-budget", "wallet", S.budget, true)}
+      ${S.focus && has(S.focus.items) ? `
+      <div class="card h-focus dark hoverable">
+        <p class="label">${t(S.focus.label)}</p>
+        <ol class="focus-list">${S.focus.items.map((x, k) => `<li><b>${k + 1}</b><span>${t(x)}</span></li>`).join("")}</ol>
+      </div>` : ""}
       ${statCell("h-years", "calendar", S.years, false)}
       ${statCell("h-team", "users", S.team, false)}
 
@@ -1143,7 +1131,7 @@
       <div class="card a-side">
         ${has(a.industries) ? `<div><p class="label sub-label">Ngành đã triển khai</p><ul class="chips">${a.industries.map((x) => `<li class="chip chip-accent">${t(x)}</li>`).join("")}</ul></div>` : ""}
         ${has(a.channels) ? `<div><p class="label sub-label">Kênh &amp; nền tảng</p><ul class="chips">${a.channels.map((x) => `<li class="chip">${t(x)}</li>`).join("")}</ul></div>` : ""}
-        ${has(a.tools) ? `<div><p class="label sub-label">Đo lường &amp; công cụ</p><ul class="chips">${a.tools.map((x) => `<li class="chip">${t(x)}</li>`).join("")}</ul></div>` : ""}
+        ${has(a.tools) ? `<div><p class="label sub-label">Nền tảng &amp; công cụ</p><ul class="chips">${a.tools.map((x) => `<li class="chip">${t(x)}</li>`).join("")}</ul></div>` : ""}
       </div>`;
     const svc = PROFILE.services;
     $("#services").innerHTML = svc.map((s) => `
@@ -1174,31 +1162,14 @@
           <span class="proj-index">${String(i + 1).padStart(2, "0")}</span>
         </div>
         <h3 class="proj-title">${t(p.title)}</h3>
-        ${(i === 0 || p.featured || !(p.metric && has(p.metric.value))) && has(p.summary) ? `<p class="proj-summary">${t(p.summary)}</p>` : ""}
-        ${i === 0 && has(p.context) && !has(p.kpis) ? `<p class="proj-summary"><b class="label" style="display:block;margin-bottom:4px">Bối cảnh</b>${t(p.context)}</p>` : ""}
+        ${has(p.summary) ? `<p class="proj-summary">${t(p.summary)}</p>` : ""}
         ${has(p.tags) ? `<ul class="chips">${p.tags.map((x) => `<li class="chip">${t(x)}</li>`).join("")}</ul>` : ""}
-        ${has(p.flow) ? `
-        <div class="flow">
-          <p class="label">Luồng dữ liệu</p>
-          <ol>${p.flow.map((x, k) => `<li>${k ? ICONS.arrowRight : ""}<span class="flow-node">${t(x)}</span></li>`).join("")}</ol>
+        ${has(p.focus) ? `
+        <div class="focus-box">
+          <p class="label">${t(p.focusLabel || "")}</p>
+          <ol>${p.focus.map((x, k) => `<li><b>${k + 1}</b><span>${t(x)}</span></li>`).join("")}</ol>
         </div>` : ""}
-        ${p.highlights && has(p.highlights.items) ? `
-        <div class="highlights">
-          <p class="label">${t(p.highlights.label)}</p>
-          <ul>${p.highlights.items.map((x) => `<li><b>${t(x.value)}</b><span>${t(x.label)}</span></li>`).join("")}</ul>
-        </div>` : ""}
-        ${has(p.kpis) ? `<ul class="kpis">${p.kpis.map((k) => `<li class="kpi"><b>${t(k.value)}</b><span>${t(k.label)}</span></li>`).join("")}</ul>` : ""}
-        ${p.metric && has(p.metric.value) ? `
-        <div class="proj-metric">
-          <div class="num">${t(p.metric.value)}</div>
-          ${has(p.metric.label) ? `<p class="stat-label">${t(p.metric.label)}</p>` : ""}
-        </div>` : ""}
-        ${p.image ? `
-        <figure class="proj-shot">
-          <a href="${esc(p.image.src)}" target="_blank" rel="noopener" aria-label="Xem ảnh lớn: ${esc(p.image.alt)}"><img src="${esc(p.image.src)}" alt="${esc(p.image.alt)}" width="${p.image.w}" height="${p.image.h}" loading="lazy" decoding="async"></a>
-          ${has(p.image.caption) ? `<figcaption>${t(p.image.caption)}</figcaption>` : ""}
-        </figure>` : ""}
-        ${has(p.challenge) || has(p.decisions) || has(p.solution) || has(p.results) ? `<button class="btn btn-ghost btn-sm" type="button" data-case="${i}" aria-haspopup="dialog">Xem chi tiết ${ICONS.arrowRight}</button>` : ""}
+        <button class="btn btn-ghost btn-sm" type="button" data-case="${i}" aria-haspopup="dialog">Xem chi tiết ${ICONS.arrowRight}</button>
       </article>`).join("");
   }
 
@@ -1328,16 +1299,22 @@
     lastTrigger = trigger || null;
     $("#caseModalIndustry").innerHTML = t(p.industry);
     $("#caseModalTitle").innerHTML = t(p.title);
+    const probs = (p.problems || []).map((x, k) => `
+      <div class="prob">
+        <p class="prob-title"><b>${k + 1}</b>${t(x.title)}</p>
+        <dl>
+          ${has(x.issue) ? `<div><dt>Vấn đề</dt><dd>${t(x.issue)}</dd></div>` : ""}
+          ${has(x.insight) ? `<div><dt>Nhận định & căn cứ</dt><dd>${t(x.insight)}</dd></div>` : ""}
+          ${has(x.action) ? `<div><dt>Hành động</dt><dd>${t(x.action)}</dd></div>` : ""}
+        </dl>
+      </div>`).join("");
     $("#caseModalBody").innerHTML =
-      caseBlock("Bối cảnh", p.context) +
-      caseBlock("Vấn đề ban đầu", p.challenge) +
-      caseBlock("Phương án tôi đề xuất & triển khai", p.decisions) +
-      caseBlock("Giải pháp", p.solution) +
-      caseBlock("Kết quả", p.results, "result") +
+      caseBlock("Bối cảnh & nhiệm vụ", p.context) +
+      (probs ? `<div class="cs-block cs-wide"><p class="label">Vấn đề → nhận định → hành động</p><div class="probs">${probs}</div></div>` : "") +
+      caseBlock("Phạm vi công việc", p.scope) +
+      caseBlock("Hệ thống báo cáo", p.system) +
       caseBlock("Vai trò & phối hợp", p.role) +
-      (has(p.gallery) ? `<div class="cs-block"><p class="label">Trước – sau</p><div class="cs-gallery">${p.gallery.map((g) => `<figure><a href="${esc(g.src)}" target="_blank" rel="noopener" aria-label="Xem ảnh lớn: ${esc(g.title)}"><img class="cs-img" src="${esc(g.src)}" alt="${esc(g.title)}" width="${g.w}" height="${g.h}" loading="lazy" decoding="async"></a><figcaption>${t(g.title)}</figcaption></figure>`).join("")}</div></div>` : "") +
-      (p.image ? `<div class="cs-block"><p class="label">Dashboard</p><a href="${esc(p.image.src)}" target="_blank" rel="noopener" aria-label="Xem ảnh lớn: ${esc(p.image.alt)}"><img class="cs-img" src="${esc(p.image.src)}" alt="${esc(p.image.alt)}" width="${p.image.w}" height="${p.image.h}" loading="lazy" decoding="async"></a></div>` : "") +
-      (has(p.tools) ? `<div class="cs-block"><p class="label">Công cụ</p><ul class="chips">${p.tools.map((x) => `<li class="chip">${t(x)}</li>`).join("")}</ul></div>` : "");
+      caseBlock("Thay đổi sau triển khai", p.results, "result");
     $("#caseModalBody").scrollTop = 0;
     document.documentElement.classList.add("modal-open");
     if (typeof modal.showModal === "function") modal.showModal(); else modal.setAttribute("open", "");
