@@ -423,9 +423,15 @@
 
     /* Awards */
     .award { grid-column: span 4; display: flex; flex-direction: column; gap: 14px; }
-    .award.featured { grid-column: span 8; }
+    .award { grid-column: span 3 !important; }
+    .award.featured { grid-column: span 6 !important; }
+    .award.group { grid-column: 1 / -1 !important; }
+    .award.featured .award-media { --h: 190px; flex-wrap: nowrap; }
+    .award.featured .award-media a { flex: 0 1 auto; }
+    .award-more { margin-top: 12px; }
+    .award-more summary { cursor: pointer; font-size: 14px; font-weight: 600; color: var(--accent-ink); min-height: 44px; display: inline-flex; align-items: center; }
+    .award-media.small { --h: 120px; margin-top: 8px; justify-content: flex-start; }
     .award-media { --h: 200px; display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 12px; background: var(--bg); border-radius: 16px; padding: 14px; }
-    .award.featured .award-media { --h: 260px; }
     .award-media a { display: block; border-radius: 10px; min-width: 0; flex: 0 1 auto; }
     .award-media img { height: var(--h); width: auto; max-width: 100%; object-fit: contain; border-radius: 10px; }
     .award-meta { font-size: 14px; color: var(--muted); }
@@ -509,7 +515,7 @@
       .exp-grid .e-main, .exp-grid .e-side { grid-column: 1 / -1; }
       .testi { grid-column: 1 / -1; }
       .award { grid-column: span 3; }
-      .award.featured { grid-column: 1 / -1; }
+      .award.featured, .award.group { grid-column: 1 / -1 !important; }
       .contact-card { grid-template-columns: 1fr; padding: 36px; gap: 28px; align-items: start; }
     }
 
@@ -759,13 +765,13 @@
         ]
       },
       years:  { value: 4, decimals: 0, suffix: "+", unit: "năm", label: "Kinh nghiệm digital marketing" },
-      team:   { value: 3, decimals: 0, unit: "mảng", label: "Quản lý đầu ra công việc gián tiếp: Design, Content, Social" }
+      team:   { value: 3, decimals: 0, unit: "mảng", label: "Điều phối và theo dõi đầu ra của Design, Content và Social theo mục tiêu triển khai" }
     },
 
     about: {
       heading: "Quảng cáo bằng dữ liệu, tăng trưởng đo được",
       paragraphs: [
-        "Hơn 4 năm kinh nghiệm digital marketing đa ngành. Tôi giúp doanh nghiệp xây hệ thống marketing đo lường được, để mỗi đồng ngân sách tạo ra khách hàng thật."
+        "Hơn 4 năm kinh nghiệm Digital Marketing đa ngành. Tôi tập trung kết nối quảng cáo, nội dung và dữ liệu đo lường để đánh giá hiệu quả, đề xuất phân bổ nguồn lực và cải tiến cách vận hành marketing."
       ],
       pillars: [
         { label: "Định hướng", text: "Tăng trưởng bền vững: quảng cáo hiệu suất để có khách ngay, kết hợp nội dung, SEO và kênh đối tác để xây lòng tin lâu dài." },
@@ -805,13 +811,12 @@
       },
       {
         icon: "workflow",
-        title: "Xây công cụ, tự động hóa báo cáo & cải tiến vận hành",
-        desc: "Tự xây dashboard và báo cáo tự động bằng vibe code, thay cho việc dựng trên Looker Studio, Power BI hoặc thuê bên thứ ba vốn tốn thời gian, phát sinh chi phí và khó đọc nếu không rành chỉ số.",
+        title: "Xây dựng công cụ và tự động hóa báo cáo",
+        desc: "Tôi xây dựng dashboard và công cụ hỗ trợ theo nhu cầu vận hành của đội ngũ, sử dụng AI trong quá trình phát triển. Trọng tâm là tổ chức dữ liệu dễ theo dõi, cập nhật từ Google Sheets và hỗ trợ đánh giá hiệu quả theo từng kênh, sản phẩm hoặc chiến dịch.",
         outputs: [
-          "Dashboard tự cập nhật từ Google Sheets: theo tuần, kênh bán, sản phẩm, chiến dịch",
-          "Quy tắc gợi ý tăng, giữ hoặc giảm ngân sách từng chiến dịch dựa trên chất lượng khách tiềm năng",
-          "Công cụ AI hỗ trợ viết và lên lịch đăng bài cho nhiều Fanpage",
-          "Không phát sinh chi phí công cụ trả phí; mọi người trong nhóm đều đọc được số liệu"
+          "Dashboard theo dõi chiến dịch",
+          "Báo cáo bán hàng và đối soát doanh thu",
+          "Công cụ hỗ trợ viết và lên lịch nội dung cho nhiều Fanpage"
         ],
         // Ảnh minh họa dùng dữ liệu giả lập — không chứa số liệu hay thông tin nhận diện thật
         shots: [
@@ -838,20 +843,20 @@
           {
             title: "Phân bổ ngân sách chưa phản ánh hiệu quả và vai trò của từng kênh",
             issue: "Ngân sách đang chia gần như đều giữa Google và Facebook/Instagram, chưa gắn với mức đóng góp doanh thu của từng kênh. Facebook có chi phí mỗi khách tiềm năng rất thấp nên dễ được xem là kênh hiệu quả; nếu chỉ dựa vào chỉ số này, ngân sách có thể tiếp tục chảy vào kênh chưa mang lại doanh thu tương xứng.",
-            insight: "Cần đánh giá kênh đến bước doanh thu, không dừng ở chi phí mỗi khách tiềm năng. Khi đối chiếu: Facebook rẻ hơn ở bước đầu và có tỷ lệ chuyển đổi tương đương Google, nhưng hiệu quả doanh thu trên chi phí quảng cáo thấp hơn; Google có chi phí mỗi khách tiềm năng cao hơn nhưng mang lại hiệu quả doanh thu cao hơn. Tuy vậy, dồn toàn bộ vào một kênh sẽ tạo rủi ro phụ thuộc, nên các kênh còn lại cần được tối ưu theo vai trò riêng chứ không cắt bỏ.",
-            action: "Chạy thử theo toàn bộ phễu trên nhiều kênh để so sánh hiệu quả đến bước doanh thu, từ đó xác định Google là kênh chủ lực và đề xuất với Trưởng phòng Marketing chuyển trọng tâm ngân sách sang Google. Song song, tối ưu các kênh còn lại theo vai trò riêng để không phụ thuộc vào một kênh: Facebook/Instagram tập trung vào nhận diện thương hiệu và bám đuổi khách đã quan tâm; bổ sung chiến dịch nhắn tin WhatsApp trên cả hai kênh; phát triển thêm nguồn khách từ Google Maps, nội dung tự nhiên và đối tác (chi tiết ở vấn đề 3)."
+            insight: "Tôi đánh giá hiệu quả kênh bằng cách đối chiếu chi phí thu hút khách tiềm năng với khả năng chuyển đổi và doanh thu ghi nhận. Trong giai đoạn đánh giá, Google có chi phí đầu vào cao hơn nhưng mang lại hiệu quả doanh thu tốt hơn. Đây là cơ sở để đề xuất tăng mức ưu tiên cho Google, đồng thời xác định vai trò phù hợp của Facebook/Instagram trong việc xây dựng nhận diện và tiếp cận lại khách đã quan tâm. Việc tiếp tục tăng ngân sách cần được đánh giá theo chất lượng khách và hiệu quả phát sinh, thay vì chỉ dựa vào kết quả trung bình trước đó.",
+            action: "Sau giai đoạn chạy thử trên nhiều kênh, đề xuất với Trưởng phòng Marketing tăng mức ưu tiên ngân sách cho Google và giữ Facebook/Instagram cho vai trò nhận diện, tiếp cận lại khách đã quan tâm. Bổ sung chiến dịch nhắn tin WhatsApp trên cả hai kênh để không phụ thuộc vào một nguồn khách."
           },
           {
             title: "Landing page chưa giải đáp được băn khoăn của khách quốc tế",
             issue: "Nội dung chưa đủ thuyết phục: thiếu câu chuyện khách hàng thật, thiếu đánh giá khách quan từ Google Maps và WhatClinic, thông tin bác sĩ chưa rõ ràng, chưa có phần hỏi đáp.",
-            insight: "Điều khách nước ngoài quan tâm nhất là hành trình từ nước họ sang Việt Nam điều trị và việc bảo hành khi đã về nước. Trang cần trả lời được những câu hỏi này.",
-            action: "Xây lại cấu trúc nội dung landing page: thông tin bác sĩ, giải thưởng, đánh giá của khách hàng thật, đánh giá trên Google Maps và WhatClinic, phần hỏi đáp, hành trình điều trị và hỗ trợ bảo hành sau khi về nước."
+            insight: "Tôi nhận định landing page cần giúp khách quốc tế đánh giá được mức độ tin cậy của phòng khám và hình dung rõ quá trình điều trị tại Việt Nam. Vì vậy, nội dung cần làm rõ năng lực bác sĩ, trải nghiệm của khách hàng trước, hành trình điều trị và chính sách hỗ trợ sau khi khách trở về nước. Đây là những nhóm thông tin tôi ưu tiên khi tái cấu trúc trang.",
+            action: "Xây lại cấu trúc nội dung landing page theo các nhóm thông tin trên, bổ sung giải thưởng, đánh giá trên Google Maps và WhatClinic, và phần hỏi đáp."
           },
           {
             title: "Chưa khai thác lại nhóm khách đã quan tâm và các điểm chạm khi khách tìm hiểu",
             issue: "Khách đến từ Google có chất lượng tốt nhưng chưa được gắn pixel để quảng cáo bám đuổi, chưa tạo tệp khách tương tự. Google Maps còn ít đánh giá, chưa chạy quảng cáo Maps; SEO website cho thị trường nước ngoài còn yếu.",
-            insight: "Khách nước ngoài tra cứu Google Maps rất nhiều, nên Maps là một điểm chạm quan trọng. Nhóm khách chất lượng từ Google là nguồn có thể khai thác lại trên các kênh quảng cáo khác.",
-            action: "Gắn pixel, chạy quảng cáo bám đuổi khách từ các kênh quảng cáo và tạo tệp khách tương tự. Tăng đánh giá thật trên Google Maps và chạy quảng cáo Maps. Song song phát triển kênh tự nhiên: video khách hàng thật trên YouTube, SEO website; mở thêm nguồn khách qua đối tác."
+            insight: "Tôi xem Google Maps là một điểm chạm giúp khách kiểm chứng thông tin phòng khám thông qua địa điểm, hình ảnh và đánh giá thực tế. Song song, nhóm khách đã quan tâm cần được tiếp cận lại bằng nội dung phù hợp để hỗ trợ quá trình cân nhắc. Vì vậy, tôi kết hợp tối ưu Google Maps với hoạt động quảng cáo bám đuổi và phát triển nội dung tạo niềm tin.",
+            action: "Gắn pixel, chạy quảng cáo bám đuổi và tạo tệp khách tương tự. Tăng đánh giá thật và chạy quảng cáo trên Google Maps. Phát triển video khách hàng thật trên YouTube, SEO website và nguồn khách qua đối tác."
           }
         ],
         role: [
@@ -860,34 +865,33 @@
           "Phối hợp: phòng Design, Media, Content, Seeding, SEO sản xuất hình ảnh, video, đánh giá và nội dung website."
         ],
         results: [
-          "Trang doanh nghiệp trên Google Maps (tháng 9 so với tháng 7/2026): lượt xem đường đi, lượt tương tác và cuộc gọi đều tăng; lượt nhấp vào website giảm.",
-          "Google được xác định là kênh chủ lực; các kênh khác vẫn được duy trì và tối ưu theo vai trò riêng, tránh phụ thuộc vào một nguồn khách duy nhất.",
-          "Các hạng mục nêu trong tình huống này là phần việc của bộ phận Marketing. Kết quả chung của phòng khám còn chịu tác động từ các hoạt động vận hành khác không được đề cập ở đây, vì vậy kết quả trên không được quy riêng cho marketing hay cho cá nhân tôi."
+          "Qua theo dõi Google Maps, lượt tương tác, cuộc gọi và yêu cầu chỉ đường tăng trong giai đoạn so sánh; lượt nhấp vào website giảm và cần được xem xét thêm trong tổng thể hành trình khách hàng.",
+          "Google được xác định là kênh chủ lực dựa trên hiệu quả doanh thu ghi nhận. Các kênh còn lại tiếp tục được tối ưu theo vai trò riêng, kết hợp với việc hoàn thiện nội dung và các điểm chạm tạo niềm tin.",
+          "Phần trình bày tập trung vào những hạng mục tôi trực tiếp thực hiện và phối hợp; kết quả kinh doanh chung còn phụ thuộc vào hoạt động tư vấn, điều trị và vận hành của phòng khám."
         ]
       },
       {
-        title: "Vận hành marketing mỹ phẩm trên sàn thương mại điện tử và xây dựng hệ thống báo cáo",
+        title: "Vận hành marketing mỹ phẩm và xây dựng hệ thống báo cáo",
         industry: "Mỹ phẩm · Thương mại điện tử",
-        summary: "Từ tháng 12/2025, quản lý tài khoản bán hàng và kênh nội dung của một thương hiệu mỹ phẩm; tự xây dashboard theo dõi số liệu bán hàng và đối soát doanh thu thực nhận từ sàn.",
+        summary: "Từ tháng 12/2025, tôi phụ trách tài khoản bán hàng và các kênh nội dung của một thương hiệu mỹ phẩm, đồng thời xây dựng dashboard theo dõi hoạt động bán hàng trên sàn.",
         focusLabel: "Phạm vi công việc",
         focus: [
           "Vận hành TikTok, Shopee, Fanpage, YouTube",
           "Quảng cáo trong sàn, ngoài sàn, tiếp thị liên kết và livestream",
-          "Tự xây dashboard theo tuần, kênh bán, sản phẩm"
+          "Dashboard bán hàng và đối soát doanh thu"
         ],
         tags: ["TikTok Shop", "Shopee", "Livestream", "Dashboard"],
-        context: "Thương hiệu mỹ phẩm bán hàng trên TikTok, Shopee và mạng xã hội. Từ tháng 12/2025, tôi quản lý tài khoản các kênh bán hàng và kênh nội dung của thương hiệu.",
+        context: "Thương hiệu mỹ phẩm bán hàng trên TikTok, Shopee và mạng xã hội.",
         scope: [
-          "Vận hành tài khoản TikTok, Shopee, Fanpage, YouTube.",
-          "Triển khai quảng cáo trong sàn (GMV TikTok) và ngoài sàn (Facebook Ads), tiếp thị liên kết qua KOL và livestream bán hàng."
+          "Vận hành TikTok, Shopee, Fanpage và YouTube; triển khai quảng cáo trong và ngoài sàn, tiếp thị liên kết và livestream bán hàng."
         ],
         system: [
-          "Tự xây dashboard bằng vibe code, lấy dữ liệu từ Google Sheets.",
-          "Theo dõi số liệu theo tuần, theo kênh bán và theo sản phẩm.",
-          "Đối soát doanh thu thực nhận (tiền sàn đã quyết toán) với doanh thu ghi nhận trên sàn; phần chênh lệch gồm phí sàn, hoàn/hủy và đơn chưa đến kỳ quyết toán."
+          "Tự xây dựng dashboard lấy dữ liệu từ Google Sheets, tổ chức thông tin theo tuần, kênh bán và sản phẩm.",
+          "Báo cáo theo dõi đồng thời doanh thu ghi nhận trên sàn và doanh thu thực nhận để phục vụ đối soát.",
+          "Khi đối soát, phân biệt các khoản phí, hoàn/hủy và đơn chưa đến kỳ quyết toán, tránh xem toàn bộ chênh lệch là chi phí."
         ],
         role: [
-          "Trực tiếp thực hiện: quản lý tài khoản các kênh, triển khai quảng cáo, xây và vận hành dashboard."
+          "Trực tiếp quản lý tài khoản, triển khai quảng cáo, xây dựng và vận hành dashboard."
         ],
         results: []
       }
@@ -901,10 +905,11 @@
         role: "Digital Marketing Executive – Senior Marketing Specialist",
         org: "DN Group · TP. Hồ Chí Minh",
         bullets: [
-          "Từ tháng 12/2025: phụ trách marketing cho phòng khám nha khoa phục vụ khách nước ngoài; phân tích số liệu từng kênh và đề xuất phương án phân bổ ngân sách với Trưởng phòng Marketing. Đồng thời quản lý tài khoản sàn thương mại điện tử.",
-          "Triển khai và tối ưu quảng cáo cho thẩm mỹ viện, nha khoa, trường dạy thẩm mỹ, nhà hàng.",
-          "Tự xây dashboard và báo cáo tự động bằng vibe code, thay cho báo cáo thủ công và công cụ trả phí.",
-          "Quản lý đầu ra công việc gián tiếp với Design, Content, Social; phối hợp SEO (đưa từ khóa, kiểm tra nội dung bài viết).",
+          "Triển khai và tối ưu quảng cáo cho nha khoa, thẩm mỹ, đào tạo và dịch vụ.",
+          "Từ tháng 12/2025, phụ trách triển khai, phát triển marketing nha khoa cho khách quốc tế và đề xuất phân bổ ngân sách với Trưởng phòng Marketing.",
+          "Xây cấu trúc nội dung landing page và tối ưu Google Maps.",
+          "Phối hợp Design, Content, Media, Social, SEO và theo dõi đầu ra.",
+          "Quản lý tài khoản sàn thương mại điện tử; xây dashboard theo dõi bán hàng và đối soát doanh thu.",
           "Đạt danh hiệu Nhân viên xuất sắc năm 2024 (Chuyên viên Google Ads)."
         ]
       },
@@ -957,22 +962,17 @@
         title: "Tuyên dương Nhân sự xuất sắc tháng",
         org: "DN Group",
         date: "",
-        desc: "",
+        desc: "Ghi nhận chuyên môn theo tháng.",
         images: [{ src: "./awards/huy-chuong-nhan-su-thang.webp", w: 318, h: 585, alt: "Huy chương Tuyên dương Nhân sự xuất sắc tháng của DN Group" }]
       },
       {
-        title: "Quán quân Giải bóng đá “Sức mạnh đồng đội”",
+        title: "Hoạt động tập thể",
         org: "DN Group",
         date: "",
-        desc: "",
-        images: [{ src: "./awards/huy-chuong-bong-da.webp", w: 315, h: 585, alt: "Huy chương Quán quân Giải bóng đá Sức mạnh đồng đội của DN Group" }]
-      },
-      {
-        title: "Ngày hội Văn hóa DN Group: “Thích ứng · Chuyển đổi · Bứt phá”",
-        org: "DN Group",
-        date: "",
-        desc: "1 huy chương vàng, 1 huy chương bạc.",
+        desc: "Tham gia và đạt các ghi nhận trong hoạt động thể thao, văn hóa tại DN Group.",
+        collapsed: true,   // ảnh nằm trong khu vực thu gọn
         images: [
+          { src: "./awards/huy-chuong-bong-da.webp", w: 315, h: 585, alt: "Huy chương Quán quân Giải bóng đá Sức mạnh đồng đội của DN Group" },
           { src: "./awards/huy-chuong-ngay-hoi-vang.webp", w: 323, h: 585, alt: "Huy chương vàng Ngày hội Văn hóa DN Group" },
           { src: "./awards/huy-chuong-ngay-hoi-bac.webp", w: 335, h: 585, alt: "Huy chương bạc Ngày hội Văn hóa DN Group" }
         ]
@@ -1222,8 +1222,8 @@
     const list = (PROFILE.awards || []).filter((a) => a && has(a.title));
     if (!list.length) { $("#giai-thuong").hidden = true; return; }
     $("#awards").innerHTML = list.map((a) => `
-      <article class="card award hoverable reveal${a.featured ? " featured" : ""}">
-        ${has(a.images) ? `
+      <article class="card award hoverable reveal${a.featured ? " featured" : ""}${a.collapsed ? " group" : ""}">
+        ${has(a.images) && !a.collapsed ? `
         <div class="award-media">
           ${a.images.map((im) => `<a href="${esc(im.src)}" target="_blank" rel="noopener" aria-label="Xem ảnh lớn: ${esc(im.alt)}"><img src="${esc(im.src)}" alt="${esc(im.alt)}" width="${im.w}" height="${im.h}" loading="lazy" decoding="async"></a>`).join("")}
         </div>` : ""}
@@ -1232,6 +1232,13 @@
           <h3 class="h3" style="margin-top:6px">${t(a.title)}</h3>
           ${has(a.date) ? `<p class="award-meta" style="margin-top:4px">${t(a.date)}</p>` : ""}
           ${has(a.desc) ? `<p class="desc" style="margin-top:8px">${t(a.desc)}</p>` : ""}
+          ${has(a.images) && a.collapsed ? `
+          <details class="award-more">
+            <summary>Xem ảnh (${a.images.length})</summary>
+            <div class="award-media small">
+              ${a.images.map((im) => `<a href="${esc(im.src)}" target="_blank" rel="noopener" aria-label="Xem ảnh lớn: ${esc(im.alt)}"><img src="${esc(im.src)}" alt="${esc(im.alt)}" width="${im.w}" height="${im.h}" loading="lazy" decoding="async"></a>`).join("")}
+            </div>
+          </details>` : ""}
         </div>
       </article>`).join("");
   }
@@ -1311,7 +1318,7 @@
     $("#caseModalBody").innerHTML =
       caseBlock("Bối cảnh & nhiệm vụ", p.context) +
       (probs ? `<div class="cs-block cs-wide"><p class="label">Vấn đề → nhận định → hành động</p><div class="probs">${probs}</div></div>` : "") +
-      caseBlock("Phạm vi công việc", p.scope) +
+      caseBlock("Phạm vi triển khai", p.scope) +
       caseBlock("Hệ thống báo cáo", p.system) +
       caseBlock("Vai trò & phối hợp", p.role) +
       caseBlock("Thay đổi sau triển khai", p.results, "result");
